@@ -1,4 +1,5 @@
 #include "openclcpp-lite/device.h"
+#include "openclcpp-lite/utils.h"
 
 namespace openclcpp_lite {
 
@@ -115,6 +116,7 @@ Device::get_info(cl_device_info name) const
     std::string val;
     val.resize(sz);
     OPENCL_CHECK(clGetDeviceInfo(this->id, name, sz, &val, nullptr));
+    val = utils::rtrim_null(val);
     return val;
 }
 

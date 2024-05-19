@@ -114,6 +114,7 @@ private:
     friend class Platform;
     friend class Context;
     friend class Queue;
+    friend class Program;
 };
 
 } // namespace openclcpp_lite

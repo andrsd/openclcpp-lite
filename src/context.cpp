@@ -82,11 +82,11 @@ default_context()
     if (platforms.empty())
         throw Exception("No OpenCL platofrms available");
 
-    auto devices = platforms[0].devices();
+    auto devices = platforms[0].devices(Device::DEFAULT);
     if (devices.empty())
         throw Exception("No OpenCL devices available");
 
-    Context ctx(devices[0]);
+    Context ctx(devices);
     return ctx;
 }
 

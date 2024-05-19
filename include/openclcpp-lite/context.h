@@ -12,8 +12,8 @@ namespace openclcpp_lite {
 
 class Context {
 public:
-    Context(const Device & device);
-    Context(const std::vector<Device> & devices);
+    explicit Context(const Device & device);
+    explicit Context(const std::vector<Device> & devices);
 
     /// Increment the context reference count.
     void retain() const;
@@ -78,6 +78,7 @@ private:
 
     friend class Queue;
     friend class Buffer;
+    friend class Program;
 };
 
 Context default_context();

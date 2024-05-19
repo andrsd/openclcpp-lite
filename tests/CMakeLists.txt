@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
     Error_test.cpp
     Exception_test.cpp
     Platform_test.cpp
+    Program_test.cpp
     Queue_test.cpp
 )
 

@@ -30,6 +30,14 @@ public:
     /// general use in applications. This feature is provided for identifying memory leaks.
     unsigned int reference_count() const;
 
+    /// Issues all previously queued OpenCL commands in a command-queue to the device associated
+    /// with the command-queue.
+    void flush() const;
+
+    /// Blocks until all previously queued OpenCL commands in a command-queue are issued to the
+    /// associated device and have completed.
+    void finish() const;
+
 private:
     template <typename T>
     T get_info(cl_context_info name) const;

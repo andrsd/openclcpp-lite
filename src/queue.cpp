@@ -47,6 +47,18 @@ Queue::reference_count() const
     return get_info<cl_uint>(CL_QUEUE_REFERENCE_COUNT);
 }
 
+void
+Queue::flush() const
+{
+    OPENCL_CHECK(clFlush(this->q));
+}
+
+void
+Queue::finish() const
+{
+    OPENCL_CHECK(clFinish(this->q));
+}
+
 template <typename T>
 T
 Queue::get_info(cl_context_info name) const

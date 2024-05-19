@@ -1,4 +1,5 @@
 #include "openclcpp-lite/platform.h"
+#include "openclcpp-lite/utils.h"
 
 namespace openclcpp_lite {
 
@@ -40,8 +41,9 @@ Platform::get_info_string(cl_platform_info info) const
     std::size_t sz;
     std::string str;
     OPENCL_CHECK(clGetPlatformInfo(this->id, info, 0, nullptr, &sz));
-    str.resize(sz + 1);
+    str.resize(sz);
     OPENCL_CHECK(clGetPlatformInfo(this->id, info, sz, str.data(), nullptr));
+    str = utils::rtrim_null(str);
     return str;
 }
 

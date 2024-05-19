@@ -26,6 +26,8 @@ error_message(cl_int ierr)
         { CL_INVALID_OPERATION, "Invalid operations" },
         { CL_INVALID_CONTEXT, "Invalid context" },
         { CL_INVALID_COMMAND_QUEUE, "Invalid commnad queue" },
+        { CL_INVALID_PROGRAM, "Invalid program" },
+        { CL_INVALID_PROGRAM_EXECUTABLE, "Invalid program executable" },
         { CL_DEVICE_NOT_AVAILABLE, "Device not available" },
         { CL_INVALID_BUFFER_SIZE, "Invalid buffer size" },
         { CL_INVALID_HOST_PTR, "Invalid host pointer" },
