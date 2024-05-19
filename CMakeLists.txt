@@ -40,13 +40,7 @@ if (OPENCLCPP_LITE_BUILD_TESTS)
     )
 endif ()
 
-# Install
-
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openclcpp-lite
-    FILES_MATCHING PATTERN "*.h"
-)
+add_subdirectory(src)
 
 # Tests
 

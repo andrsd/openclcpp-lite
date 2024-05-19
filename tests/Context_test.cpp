@@ -1,5 +1,5 @@
 #include "gmock/gmock.h"
-#include "openclcpp-lite/openclcpp-lite.h"
+#include "openclcpp-lite/context.h"
 
 namespace ocl = openclcpp_lite;
 
@@ -19,4 +19,13 @@ TEST(ContextTest, ref_cnt)
     EXPECT_EQ(ctx.reference_count(), 2);
     ctx.release();
     EXPECT_EQ(ctx.reference_count(), 1);
+}
+
+TEST(ContextTest, alloc_buffer)
+{
+    auto ctx = ocl::default_context();
+    auto b_f = ctx.alloc<float>(10);
+    auto b_d = ctx.alloc<double>(10);
+
+    EXPECT_THROW({ctx.alloc<int>(10);}, ocl::Exception);
 }

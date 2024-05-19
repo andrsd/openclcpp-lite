@@ -19,6 +19,7 @@ if(OPENCLCPP_LITE_CODE_COVERAGE)
         )
 
         set(CODE_COVERAGE_BINS
+            --object=${CMAKE_BINARY_DIR}/src/libopenclcpp-lite${CMAKE_SHARED_LIBRARY_SUFFIX}
             --object=${CMAKE_BINARY_DIR}/tests/openclcpp-lite-test
         )
 
@@ -35,7 +36,9 @@ if(OPENCLCPP_LITE_CODE_COVERAGE)
         add_custom_command(
             OUTPUT ${MERGED_PROFDATA}
             COMMAND ${LLVM_PROFDATA_PATH} merge -sparse ${CMAKE_BINARY_DIR}/tests/openclcpp-lite-test.profraw -o ${MERGED_PROFDATA}
-            DEPENDS openclcpp-lite-test
+            DEPENDS
+                openclcpp-lite
+                openclcpp-lite-test
         )
 
         add_custom_target(htmlcov DEPENDS ${CMAKE_BINARY_DIR}/htmlcov/index.html)

@@ -1,5 +1,6 @@
 #include "gmock/gmock.h"
-#include "openclcpp-lite/openclcpp-lite.h"
+#include "openclcpp-lite/context.h"
+#include "openclcpp-lite/queue.h"
 
 namespace ocl = openclcpp_lite;
 

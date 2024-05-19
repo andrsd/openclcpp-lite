@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    Buffer_test.cpp
     Context_test.cpp
     Error_test.cpp
     Exception_test.cpp
@@ -26,7 +27,7 @@ target_link_libraries(
     PUBLIC
         gtest_main
         gmock_main
-        OpenCL::OpenCL
+        openclcpp-lite
 )
 
 if (${fmt_FOUND})

@@ -1,5 +1,5 @@
 #include "gmock/gmock.h"
-#include "openclcpp-lite/openclcpp-lite.h"
+#include "openclcpp-lite/platform.h"
 
 namespace ocl = openclcpp_lite;
 

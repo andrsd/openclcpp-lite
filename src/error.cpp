@@ -1,20 +1,18 @@
-#pragma once
-
-#include "exception.h"
-#include "cl.h"
+#include "openclcpp-lite/error.h"
+#include "openclcpp-lite/exception.h"
+#include "openclcpp-lite/cl.h"
 #ifdef OPENCLCPP_LITE_WITH_FMT
     #include "fmt/printf.h"
 #else
     #include <stringstream>
 #endif
 #include <map>
-#include <string>
 
 namespace openclcpp_lite {
 
 namespace internal {
 
-inline std::string
+std::string
 error_message(cl_int ierr)
 {
     // clang-format off
@@ -28,32 +26,33 @@ error_message(cl_int ierr)
         { CL_INVALID_OPERATION, "Invalid operations" },
         { CL_INVALID_CONTEXT, "Invalid context" },
         { CL_INVALID_COMMAND_QUEUE, "Invalid commnad queue" },
-        { CL_DEVICE_NOT_AVAILABLE, "Device not available" }
+        { CL_DEVICE_NOT_AVAILABLE, "Device not available" },
+        { CL_INVALID_BUFFER_SIZE, "Invalid buffer size" },
+        { CL_INVALID_HOST_PTR, "Invalid host pointer" },
+        { CL_MEM_OBJECT_ALLOCATION_FAILURE, "Memory object allocation failure" }
     };
     // clang-format on
 
     auto it = error_msg.find(ierr);
-    if (it != error_msg.end()) {
+    if (it != error_msg.end())
         return it->second;
-    }
     else
         return "Unknown error";
 }
 
-inline void
+void
 check_error(cl_int ierr, const char * file, int line)
 {
     if (ierr != CL_SUCCESS) {
 #ifdef OPENCLCPP_LITE_WITH_FMT
-        std::string err = fmt::format("[ERROR] OpenCL error {} at {}:{}: {}",
-                                      ierr,
+        std::string err = fmt::format("OpenCL error at {}:{}: {}",
                                       file,
                                       line,
                                       error_message(ierr));
         throw Exception(err);
 #else
         std::stringstream ss;
-        ss << "[ERROR] OpenCL error " << ierr << " at " << file << ":" << line << ": "
+        ss << "OpenCL error at " << file << ":" << line << ": "
            << error_message(ierr);
         throw Exception(ss.str());
 #endif
@@ -61,7 +60,5 @@ check_error(cl_int ierr, const char * file, int line)
 }
 
 } // namespace internal
-
-#define OPENCL_CHECK(ierr) openclcpp_lite::internal::check_error(ierr, __FILE__, __LINE__)
 
 } // namespace openclcpp_lite
