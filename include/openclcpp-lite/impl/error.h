@@ -14,15 +14,20 @@ namespace openclcpp_lite {
 
 namespace internal {
 
-std::string
+inline std::string
 error_message(cl_int ierr)
 {
     // clang-format off
     static std::map<cl_int, std::string> error_msg = {
-        { CL_INVALID_CONTEXT, "Invalid context" },
         { CL_OUT_OF_RESOURCES, "Out of resources" },
         { CL_OUT_OF_HOST_MEMORY, "Out of host memory" },
-        { CL_INVALID_VALUE, "Invalid value" }
+        { CL_INVALID_VALUE, "Invalid value" },
+        { CL_INVALID_PLATFORM, "Invalid platform" },
+        { CL_INVALID_PROPERTY, "Invalid property" },
+        { CL_INVALID_DEVICE, "Invalid device" },
+        { CL_INVALID_OPERATION, "Invalid operations" },
+        { CL_INVALID_CONTEXT, "Invalid context" },
+        { CL_DEVICE_NOT_AVAILABLE, "Device not available" }
     };
     // clang-format on
 
