@@ -5,3 +5,4 @@
 #include "impl/platform.h"
 #include "impl/device.h"
 #include "impl/context.h"
+#include "impl/queue.h"

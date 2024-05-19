@@ -27,6 +27,7 @@ error_message(cl_int ierr)
         { CL_INVALID_DEVICE, "Invalid device" },
         { CL_INVALID_OPERATION, "Invalid operations" },
         { CL_INVALID_CONTEXT, "Invalid context" },
+        { CL_INVALID_COMMAND_QUEUE, "Invalid commnad queue" },
         { CL_DEVICE_NOT_AVAILABLE, "Device not available" }
     };
     // clang-format on

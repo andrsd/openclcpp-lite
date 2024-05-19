@@ -49,10 +49,14 @@ public:
         return devices;
     }
 
+    operator cl_context() const { return this->ctx; }
+
 public:
     static Context default_context();
 
 private:
+    Context(cl_context context) : ctx(context) {}
+
     template <typename T>
     T
     get_info(cl_context_info name) const
@@ -65,6 +69,8 @@ private:
     }
 
     cl_context ctx;
+
+    friend class Queue;
 };
 
 inline Context::Context(const Device & device)
