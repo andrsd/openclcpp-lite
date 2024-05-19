@@ -2,6 +2,7 @@
 
 #include "cl.h"
 #include "error.h"
+#include "device.h"
 #include <vector>
 
 namespace openclcpp_lite {
@@ -45,6 +46,9 @@ public:
         return get_info_string(CL_PLATFORM_PROFILE);
     }
 
+    /// List of devices available on a platform
+    std::vector<Device> devices(Device::Type type = Device::ALL) const;
+
     operator cl_platform_id() const { return this->id; }
 
 private:
@@ -82,6 +86,20 @@ inline std::vector<Platform>
 get_platforms()
 {
     return Platform::platforms();
+}
+
+inline std::vector<Device>
+Platform::devices(Device::Type type) const
+{
+    cl_uint num;
+    OPENCL_CHECK(clGetDeviceIDs(this->id, type, 0, nullptr, &num));
+    std::vector<cl_device_id> dev_ids;
+    dev_ids.resize(num);
+    OPENCL_CHECK(clGetDeviceIDs(this->id, type, num, dev_ids.data(), nullptr));
+    std::vector<Device> devs;
+    for (auto & id : dev_ids)
+        devs.emplace_back(Device(id));
+    return devs;
 }
 
 } // namespace openclcpp_lite
