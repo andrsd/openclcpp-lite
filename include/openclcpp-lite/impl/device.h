@@ -189,6 +189,7 @@ private:
     cl_device_id id;
 
     friend class Platform;
+    friend class Context;
 };
 
 } // namespace openclcpp_lite

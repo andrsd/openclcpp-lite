@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    Context_test.cpp
+    Error_test.cpp
     Exception_test.cpp
     Platform_test.cpp
 )
@@ -42,6 +44,6 @@ if(OPENCLCPP_LITE_CODE_COVERAGE)
     set_tests_properties(
         openclcpp-lite-test
         PROPERTIES
-            ENVIRONMENT LLVM_PROFILE_FILE=openclcpp-lite-test-1.profraw
+            ENVIRONMENT LLVM_PROFILE_FILE=openclcpp-lite-test.profraw
     )
 endif()
