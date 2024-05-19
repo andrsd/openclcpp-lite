@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    Exception_test.cpp
     Platform_test.cpp
 )
 
