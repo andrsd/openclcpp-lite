@@ -7,6 +7,7 @@ add_library(openclcpp-lite
         error.cpp
         exception.cpp
         kernel.cpp
+        memory.cpp
         platform.cpp
         program.cpp
         queue.cpp

@@ -2,6 +2,7 @@
 
 #include "openclcpp-lite/cl.h"
 #include "openclcpp-lite/error.h"
+#include "openclcpp-lite/memory.h"
 #include "openclcpp-lite/program.h"
 #include <string>
 
@@ -22,7 +23,7 @@ struct KernelArgumentHandler;
 // Enable for objects that are not subclasses of memory
 // Pointers, constants etc
 template <typename T>
-struct KernelArgumentHandler<T, typename std::enable_if<!std::is_base_of<Buffer, T>::value>::type> {
+struct KernelArgumentHandler<T, typename std::enable_if<!std::is_base_of<Memory, T>::value>::type> {
     static size_t
     size(const T &)
     {
@@ -39,7 +40,7 @@ struct KernelArgumentHandler<T, typename std::enable_if<!std::is_base_of<Buffer,
 // Enable for subclasses of memory where we want to get a reference to the cl_mem out
 // and pass that in for safety
 template <typename T>
-struct KernelArgumentHandler<T, typename std::enable_if<std::is_base_of<Buffer, T>::value>::type> {
+struct KernelArgumentHandler<T, typename std::enable_if<std::is_base_of<Memory, T>::value>::type> {
     static size_t
     size(const T &)
     {

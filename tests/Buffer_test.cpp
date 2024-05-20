@@ -83,6 +83,7 @@ TEST(BufferTest, map_buffer)
     auto d_a = ctx.alloc<int>(N);
     q.enqueue_write_buffer(d_a, true, 0, N * sizeof(int), h_a.data());
     auto * mapped_ints = q.enqueue_map_buffer<int>(d_a, true, ocl::READ, 0, N);
+    EXPECT_EQ(d_a.map_count(), 1);
     EXPECT_EQ(mapped_ints[0], 100);
     EXPECT_EQ(mapped_ints[1], 101);
     EXPECT_EQ(mapped_ints[2], 102);

@@ -91,6 +91,7 @@ private:
     cl_context ctx;
 
     friend class Queue;
+    friend class Memory;
     friend class Buffer;
     friend class Program;
 };
