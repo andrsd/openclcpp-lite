@@ -55,7 +55,7 @@ public:
     operator cl_kernel() const;
 
 private:
-    Kernel(cl_kernel kernel);
+    explicit Kernel(cl_kernel kernel);
 
     template <typename T>
     T

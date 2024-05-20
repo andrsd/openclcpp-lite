@@ -33,7 +33,7 @@ public:
     operator cl_platform_id() const { return this->id; }
 
 private:
-    Platform(cl_platform_id id);
+    explicit Platform(cl_platform_id id);
 
     template <typename T>
     T

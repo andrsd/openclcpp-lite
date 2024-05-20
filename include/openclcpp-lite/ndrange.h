@@ -11,7 +11,7 @@ public:
     NDRange();
 
     /// Create 1-dimensional range
-    NDRange(size_t size0);
+    explicit NDRange(size_t size0);
 
     /// Create 2-dimensional range
     NDRange(size_t size0, size_t size1);

@@ -102,7 +102,7 @@ public:
     operator cl_device_id() const { return this->id; }
 
 private:
-    Device(cl_device_id id);
+    explicit Device(cl_device_id id);
 
     template <typename T>
     T

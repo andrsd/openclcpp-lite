@@ -16,7 +16,7 @@ class NDRange;
 
 class Queue {
 public:
-    Queue(const Context & context, bool enable_profiling = false);
+    explicit Queue(const Context & context, bool enable_profiling = false);
 
     /// Increments the command_queue reference count
     void retain() const;
@@ -219,7 +219,7 @@ public:
     void finish() const;
 
 private:
-    Queue(cl_command_queue q);
+    explicit Queue(cl_command_queue q);
 
     /// Enqueue commands to read from a buffer object to host memory in blocking mode
     ///

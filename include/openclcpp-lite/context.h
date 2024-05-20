@@ -68,7 +68,7 @@ public:
     static Context default_context();
 
 private:
-    Context(cl_context context);
+    explicit Context(cl_context context);
 
     template <typename T>
     TBuffer<T>

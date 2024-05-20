@@ -38,7 +38,7 @@ public:
     operator cl_event() const;
 
 private:
-    Event(cl_event evt);
+    explicit Event(cl_event evt);
 
     template <typename T>
     T

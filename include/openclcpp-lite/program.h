@@ -52,7 +52,7 @@ public:
     static Program from_source(const Context & ctx, const std::vector<std::string> & lines);
 
 private:
-    Program(cl_program prg);
+    explicit Program(cl_program prg);
 
     template <typename T>
     T
