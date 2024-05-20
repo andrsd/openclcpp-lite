@@ -3,7 +3,6 @@
 #include "openclcpp-lite/queue.h"
 #include "openclcpp-lite/program.h"
 #include "openclcpp-lite/kernel.h"
-#include "openclcpp-lite/event.h"
 #include "openclcpp-lite/ndrange.h"
 
 namespace ocl = openclcpp_lite;
