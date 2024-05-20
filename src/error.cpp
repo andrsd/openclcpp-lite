@@ -47,7 +47,9 @@ error_message(cl_int ierr)
         { CL_DEVICE_NOT_AVAILABLE, "Device not available" },
         { CL_INVALID_BUFFER_SIZE, "Invalid buffer size" },
         { CL_INVALID_HOST_PTR, "Invalid host pointer" },
-        { CL_MEM_OBJECT_ALLOCATION_FAILURE, "Memory object allocation failure" }
+        { CL_MEM_OBJECT_ALLOCATION_FAILURE, "Memory object allocation failure" },
+        { CL_MAP_FAILURE, "Map failure" },
+        { CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST, "Execute status error for events in wait list" },
     };
     // clang-format on
 

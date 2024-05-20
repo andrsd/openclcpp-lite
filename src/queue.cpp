@@ -102,6 +102,28 @@ Queue::enqueue_copy_buffer(const Buffer & src,
                                      nullptr));
 }
 
+void *
+Queue::enqueue_map_buffer(const Buffer & buffer,
+                          bool blocking,
+                          MapFlags flags,
+                          size_t offset,
+                          size_t size) const
+{
+    cl_int err_code;
+    auto ret = clEnqueueMapBuffer(this->q,
+                                  buffer,
+                                  blocking ? CL_TRUE : CL_FALSE,
+                                  flags,
+                                  offset,
+                                  size,
+                                  0,
+                                  nullptr,
+                                  nullptr,
+                                  &err_code);
+    OPENCL_CHECK(err_code);
+    return ret;
+}
+
 template <typename... ARGS>
 void
 Queue::enqueue_kernel(const Kernel & kernel)

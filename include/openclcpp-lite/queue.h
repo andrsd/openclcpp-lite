@@ -2,6 +2,7 @@
 
 #include "openclcpp-lite/cl.h"
 #include "openclcpp-lite/templ.h"
+#include "openclcpp-lite/enums.h"
 #include "openclcpp-lite/error.h"
 
 namespace openclcpp_lite {
@@ -71,6 +72,42 @@ public:
                              size_t src_offset,
                              size_t dest_offset,
                              size_t size);
+
+    /// Enqueues a command to map a region of the buffer object given by `buffer` into the host
+    /// address space and returns a pointer to this mapped region.
+    ///
+    /// @param buffer Buffer to map
+    /// @param blocking Indicates if the map operation is blocking or non-blocking.
+    /// @param flags A bit-bield with the following supported values:
+    ///   - `READ` This flag specifies that the region being mapped in the memory object is being
+    ///      mapped for reading.
+    ///   - `WRITE` This flag specifies that the region being mapped in the memory object is being
+    ///      mapped for writing.
+    ///   - `WRITE_INVALIDATE_REGION` This flag specifies that the region being mapped in the memory
+    ///      object is being mapped for writing.
+    ///
+    ///   `READ` or `WRITE` and `WRITE_INVALIDATE_REGION` are mutually exclusive.
+    /// @param offset The offset in bytes of the region in the buffer object that is being mapped.
+    /// @param size The size of the region in the buffer object that is being mapped.
+    /// @return The returned pointer maps a region starting at `offset` and is at least `size` bytes
+    ///         in size. The result of a memory access outside this region is undefined.
+    void * enqueue_map_buffer(const Buffer & buffer,
+                              bool blocking,
+                              MapFlags flags,
+                              size_t offset,
+                              size_t size) const;
+
+    template <typename T>
+    T *
+    enqueue_map_buffer(const Buffer & buffer,
+                       bool blocking,
+                       MapFlags flags,
+                       size_t offset,
+                       size_t n) const
+    {
+        return static_cast<T *>(
+            enqueue_map_buffer(buffer, blocking, flags, offset * sizeof(T), n * sizeof(T)));
+    }
 
     template <typename... ARGS>
     void enqueue_kernel(const Kernel & kernel);
