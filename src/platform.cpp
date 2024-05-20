@@ -6,46 +6,34 @@ namespace openclcpp_lite {
 std::string
 Platform::name() const
 {
-    return get_info_string(CL_PLATFORM_NAME);
+    return get_info<std::string>(CL_PLATFORM_NAME);
 }
 
 std::string
 Platform::vendor() const
 {
-    return get_info_string(CL_PLATFORM_VENDOR);
+    return get_info<std::string>(CL_PLATFORM_VENDOR);
 }
 
 std::string
 Platform::version() const
 {
-    return get_info_string(CL_PLATFORM_VERSION);
+    return get_info<std::string>(CL_PLATFORM_VERSION);
 }
 
 std::string
 Platform::extensions() const
 {
-    return get_info_string(CL_PLATFORM_EXTENSIONS);
+    return get_info<std::string>(CL_PLATFORM_EXTENSIONS);
 }
 
 std::string
 Platform::profile() const
 {
-    return get_info_string(CL_PLATFORM_PROFILE);
+    return get_info<std::string>(CL_PLATFORM_PROFILE);
 }
 
 Platform::Platform(cl_platform_id id) : id(id) {}
-
-std::string
-Platform::get_info_string(cl_platform_info info) const
-{
-    std::size_t sz;
-    std::string str;
-    OPENCL_CHECK(clGetPlatformInfo(this->id, info, 0, nullptr, &sz));
-    str.resize(sz);
-    OPENCL_CHECK(clGetPlatformInfo(this->id, info, sz, str.data(), nullptr));
-    str = utils::rtrim_null(str);
-    return str;
-}
 
 std::vector<Platform>
 Platform::platforms()

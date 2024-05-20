@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/error.h"
 
 namespace openclcpp_lite {
@@ -44,7 +45,13 @@ public:
 
 private:
     template <typename T>
-    T get_info(cl_context_info name) const;
+    T
+    get_info(cl_command_queue_info name) const
+    {
+        T val;
+        get_info_helper(clGetCommandQueueInfo, this->q, name, val);
+        return val;
+    }
 
     cl_command_queue q;
 };

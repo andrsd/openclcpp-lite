@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/flags.h"
 #include "openclcpp-lite/enums.h"
 
@@ -41,7 +42,13 @@ public:
 
 private:
     template <typename T>
-    T get_info(cl_mem_info name) const;
+    T
+    get_info(cl_mem_info name) const
+    {
+        T val;
+        get_info_helper(clGetMemObjectInfo, this->mem, name, val);
+        return val;
+    }
 
     cl_mem mem;
 };

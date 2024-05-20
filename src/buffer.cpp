@@ -55,15 +55,4 @@ Buffer::offset() const
     return get_info<size_t>(CL_MEM_OFFSET);
 }
 
-template <typename T>
-T
-Buffer::get_info(cl_mem_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetMemObjectInfo(this->mem, name, 0, nullptr, &sz));
-    T val;
-    OPENCL_CHECK(clGetMemObjectInfo(this->mem, name, sizeof(T), &val, nullptr));
-    return val;
-}
-
 } // namespace openclcpp_lite

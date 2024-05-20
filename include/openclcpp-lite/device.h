@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/error.h"
 #include <vector>
 #include <string>
@@ -104,10 +105,13 @@ private:
     Device(cl_device_id id);
 
     template <typename T>
-    T get_info(cl_device_info name) const;
-
-    template <>
-    std::string get_info(cl_device_info name) const;
+    T
+    get_info(cl_device_info name) const
+    {
+        T val;
+        get_info_helper(clGetDeviceInfo, this->id, name, val);
+        return val;
+    }
 
     cl_device_id id;
 

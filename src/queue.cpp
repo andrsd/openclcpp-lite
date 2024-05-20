@@ -66,15 +66,4 @@ Queue::finish() const
     OPENCL_CHECK(clFinish(this->q));
 }
 
-template <typename T>
-T
-Queue::get_info(cl_context_info name) const
-{
-    size_t sz;
-    OPENCL_CHECK(clGetCommandQueueInfo(this->q, name, 0, nullptr, &sz));
-    T val;
-    OPENCL_CHECK(clGetCommandQueueInfo(this->q, name, sizeof(T), &val, nullptr));
-    return val;
-}
-
 } // namespace openclcpp_lite

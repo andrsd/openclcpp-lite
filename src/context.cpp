@@ -25,17 +25,6 @@ Context::Context(const std::vector<Device> & devices)
 
 Context::Context(cl_context context) : ctx(context) {}
 
-template <typename T>
-T
-Context::get_info(cl_context_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetContextInfo(this->ctx, name, 0, nullptr, &sz));
-    T val;
-    OPENCL_CHECK(clGetContextInfo(this->ctx, name, sizeof(T), &val, nullptr));
-    return val;
-}
-
 void
 Context::retain() const
 {

@@ -54,25 +54,14 @@ public:
 private:
     Program(cl_program prg);
 
-    template <typename TRET>
-    TRET get_info(cl_program_info name) const
-    {
-        if constexpr (is_std_vector<TRET>::value) {
-            using T = typename TRET::value_type;
-            return get_info_vector<T, std::allocator<T>>(name);
-        }
-        else
-            return get_info_scalar<TRET>(name);
-    }
-
     template <typename T>
-    T get_info_scalar(cl_program_info name) const;
-
-    template <>
-    std::string get_info_scalar(cl_program_info name) const;
-
-    template <typename T, typename A>
-    std::vector<T, A> get_info_vector(cl_program_info name) const;
+    T
+    get_info(cl_program_info name) const
+    {
+        T val;
+        get_info_helper(clGetProgramInfo, this->prg, name, val);
+        return val;
+    }
 
     cl_program prg;
 };

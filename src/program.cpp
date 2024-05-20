@@ -67,42 +67,6 @@ Program::operator cl_program() const
     return this->prg;
 }
 
-template <typename T>
-T
-Program::get_info_scalar(cl_program_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, 0, nullptr, &sz));
-    T val;
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, sizeof(T), &val, nullptr));
-    return val;
-}
-
-template <>
-std::string
-Program::get_info_scalar(cl_program_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, 0, nullptr, &sz));
-    std::string val;
-    val.resize(sz);
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, sz, &val, nullptr));
-    val = utils::rtrim_null(val);
-    return val;
-}
-
-template <typename T, typename A>
-std::vector<T, A>
-Program::get_info_vector(cl_program_info name) const
-{
-    std::size_t n;
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, 0, nullptr, &n));
-    std::vector<T, A> val;
-    val.resize(n);
-    OPENCL_CHECK(clGetProgramInfo(this->prg, name, sizeof(T) * n, val.data(), nullptr));
-    return val;
-}
-
 Program
 Program::from_source(const Context & ctx, const std::string & source)
 {

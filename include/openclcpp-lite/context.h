@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/enums.h"
 #include "openclcpp-lite/exception.h"
 #include "openclcpp-lite/platform.h"
@@ -72,7 +73,13 @@ private:
     }
 
     template <typename T>
-    T get_info(cl_context_info name) const;
+    T
+    get_info(cl_context_info name) const
+    {
+        T val;
+        get_info_helper(clGetContextInfo, this->ctx, name, val);
+        return val;
+    }
 
     cl_context ctx;
 

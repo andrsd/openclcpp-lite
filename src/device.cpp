@@ -96,28 +96,4 @@ Device::type() const
     return static_cast<Type>(t);
 }
 
-template <typename T>
-T
-Device::get_info(cl_device_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetDeviceInfo(this->id, name, 0, nullptr, &sz));
-    T val;
-    OPENCL_CHECK(clGetDeviceInfo(this->id, name, sizeof(T), &val, nullptr));
-    return val;
-}
-
-template <>
-std::string
-Device::get_info(cl_device_info name) const
-{
-    std::size_t sz;
-    OPENCL_CHECK(clGetDeviceInfo(this->id, name, 0, nullptr, &sz));
-    std::string val;
-    val.resize(sz);
-    OPENCL_CHECK(clGetDeviceInfo(this->id, name, sz, &val, nullptr));
-    val = utils::rtrim_null(val);
-    return val;
-}
-
 } // namespace openclcpp_lite
