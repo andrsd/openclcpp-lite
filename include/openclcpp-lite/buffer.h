@@ -40,6 +40,8 @@ public:
     /// This returns 0 if memobj is not a subbuffer object.
     size_t offset() const;
 
+    operator cl_mem() const;
+
 private:
     template <typename T>
     T

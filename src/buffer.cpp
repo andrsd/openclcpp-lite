@@ -55,4 +55,10 @@ Buffer::offset() const
     return get_info<size_t>(CL_MEM_OFFSET);
 }
 
+Buffer::operator cl_mem() const
+{
+    return this->mem;
+}
+
+
 } // namespace openclcpp_lite

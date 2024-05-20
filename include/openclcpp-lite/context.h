@@ -55,6 +55,13 @@ public:
         return alloc_helper<float>(n_entries);
     }
 
+    template <>
+    Buffer
+    alloc<int>(int n_entries) const
+    {
+        return alloc_helper<float>(n_entries);
+    }
+
     operator cl_context() const { return this->ctx; }
 
 public:

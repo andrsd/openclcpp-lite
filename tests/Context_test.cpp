@@ -27,5 +27,6 @@ TEST(ContextTest, alloc_buffer)
     auto b_f = ctx.alloc<float>(10);
     auto b_d = ctx.alloc<double>(10);
 
-    EXPECT_THROW({ctx.alloc<int>(10);}, ocl::Exception);
+    struct MyType {};
+    EXPECT_THROW({ctx.alloc<MyType>(10);}, ocl::Exception);
 }

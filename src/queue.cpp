@@ -1,5 +1,6 @@
 #include "openclcpp-lite/queue.h"
 #include "openclcpp-lite/context.h"
+#include "openclcpp-lite/buffer.h"
 
 namespace openclcpp_lite {
 
@@ -47,11 +48,65 @@ Queue::reference_count() const
     return get_info<cl_uint>(CL_QUEUE_REFERENCE_COUNT);
 }
 
-template<typename... ARGS>
 void
-Queue::enqueue_kernel(const Kernel &kernel)
+Queue::enqueue_read_buffer(const Buffer & buffer,
+                           bool blocking,
+                           size_t offset,
+                           size_t size,
+                           void * ptr) const
 {
-    //clEnqueueNDRangeKernel(this->q, kernel, );
+    OPENCL_CHECK(clEnqueueReadBuffer(this->q,
+                                     buffer,
+                                     blocking ? CL_TRUE : CL_FALSE,
+                                     offset,
+                                     size,
+                                     ptr,
+                                     0,
+                                     nullptr,
+                                     nullptr));
+}
+
+void
+Queue::enqueue_write_buffer(const Buffer & buffer,
+                            bool blocking,
+                            size_t offset,
+                            size_t size,
+                            const void * ptr) const
+{
+    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
+                                      buffer,
+                                      blocking ? CL_TRUE : CL_FALSE,
+                                      offset,
+                                      size,
+                                      ptr,
+                                      0,
+                                      nullptr,
+                                      nullptr));
+}
+
+void
+Queue::enqueue_copy_buffer(const Buffer & src,
+                           const Buffer & dest,
+                           size_t src_offset,
+                           size_t dest_offset,
+                           size_t size)
+{
+    OPENCL_CHECK(clEnqueueCopyBuffer(this->q,
+                                     src,
+                                     dest,
+                                     src_offset,
+                                     dest_offset,
+                                     size,
+                                     0,
+                                     nullptr,
+                                     nullptr));
+}
+
+template <typename... ARGS>
+void
+Queue::enqueue_kernel(const Kernel & kernel)
+{
+    // clEnqueueNDRangeKernel(this->q, kernel, );
 }
 
 void
