@@ -95,6 +95,7 @@ private:
     friend class Buffer;
     friend class Program;
     friend class Event;
+    friend class Kernel;
 };
 
 Context default_context();

@@ -35,7 +35,7 @@ public:
     /// Returns the number of kernels declared in program that can be created with clCreateKernel.
     /// This information is only available after a successful program executable has been built for
     /// at least one device in the list of devices associated with program.
-    size_t num_kernels() const;
+    size_t num_of_kernels() const;
 
     /// Returns a list of kernel names in program that can be created with `clCreateKernel`. This
     /// information is only available after a successful program executable has been built for at
@@ -64,6 +64,8 @@ private:
     }
 
     cl_program prg;
+
+    friend class Kernel;
 };
 
 } // namespace openclcpp_lite

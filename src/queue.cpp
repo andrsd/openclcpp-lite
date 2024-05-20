@@ -2,6 +2,8 @@
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
 #include "openclcpp-lite/event.h"
+#include "openclcpp-lite/ndrange.h"
+#include "openclcpp-lite/kernel.h"
 
 namespace openclcpp_lite {
 
@@ -182,11 +184,23 @@ Queue::enqueue_barrier(const std::vector<Event> & wait_list) const
     return Event(evt);
 }
 
-template <typename... ARGS>
-void
-Queue::enqueue_kernel(const Kernel & kernel)
+Event
+Queue::enqueue_kernel(const Kernel & kernel,
+                      const NDRange & global,
+                      const std::vector<Event> & wait_list)
 {
-    // clEnqueueNDRangeKernel(this->q, kernel, );
+    cl_event evt;
+    OPENCL_CHECK(
+        clEnqueueNDRangeKernel(this->q,
+                               kernel,
+                               global.dimensions(),
+                               nullptr,
+                               global,
+                               nullptr,
+                               wait_list.size(),
+                               wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                               &evt));
+    return Event(evt);
 }
 
 void

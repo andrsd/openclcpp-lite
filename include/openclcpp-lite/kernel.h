@@ -9,90 +9,58 @@
 namespace openclcpp_lite {
 
 class Program;
-class Buffer;
-
-struct LocalSpaceArg {
-    std::size_t size_;
-};
-
-namespace detail {
-
-template <typename T, class Enable = void>
-struct KernelArgumentHandler;
-
-// Enable for objects that are not subclasses of memory
-// Pointers, constants etc
-template <typename T>
-struct KernelArgumentHandler<T, typename std::enable_if<!std::is_base_of<Memory, T>::value>::type> {
-    static size_t
-    size(const T &)
-    {
-        return sizeof(T);
-    }
-
-    static const T *
-    ptr(const T & value)
-    {
-        return &value;
-    }
-};
-
-// Enable for subclasses of memory where we want to get a reference to the cl_mem out
-// and pass that in for safety
-template <typename T>
-struct KernelArgumentHandler<T, typename std::enable_if<std::is_base_of<Memory, T>::value>::type> {
-    static size_t
-    size(const T &)
-    {
-        return sizeof(cl_mem);
-    }
-
-    static const cl_mem *
-    ptr(const T & value)
-    {
-        return &(value());
-    }
-};
-
-// Specialization for DeviceCommandQueue defined later
-
-template <>
-struct KernelArgumentHandler<LocalSpaceArg, void> {
-    static size_t
-    size(const LocalSpaceArg & value)
-    {
-        return value.size_;
-    }
-
-    static const void *
-    ptr(const LocalSpaceArg &)
-    {
-        return nullptr;
-    }
-};
-
-} // namespace detail
+class Memory;
+class Context;
 
 class Kernel {
 public:
-    template <typename T>
-    typename std::enable_if<!std::is_pointer<T>::value, cl_int>::type
-    set_arg(cl_uint index, const T & value)
-    {
-        OPENCL_CHECK(clSetKernelArg(this->kern,
-                                    index,
-                                    detail::KernelArgumentHandler<T>::size(value),
-                                    detail::KernelArgumentHandler<T>::ptr(value)));
-    }
+    Kernel(const Program & program, const std::string & kernel_name);
 
-    void
-    set_arg(cl_uint index, size_t size, const void * arg)
-    {
-        OPENCL_CHECK(clSetKernelArg(this->kern, index, size, arg));
-    }
+    /// Return the kernel function name.
+    std::string function_name() const;
+
+    /// Return the number of arguments to kernel.
+    unsigned int num_of_args() const;
+
+    /// Return the kernel reference count.
+    unsigned int reference_count() const;
+
+    /// Return the context associated with kernel.
+    Context context() const;
+
+    /// Return the program object associated with kernel.
+    Program program() const;
+
+    /// Returns any attributes specified using the __attribute__ qualifier with the kernel function
+    /// declaration in the program source
+    std::vector<std::string> attributes() const;
+
+    /// Set the argument value for a specific argument of a kernel.
+    ///
+    /// @param index The argument index
+    /// @param value Memory object
+    void set_arg(cl_uint index, const Memory & value);
+
+    /// Set the argument value for a specific argument of a kernel.
+    ///
+    /// @param index The argument index
+    /// @param value A pointer to data that should be used as the argument value for argument
+    /// specified by arg_index
+    void set_arg(cl_uint index, size_t size, const void * arg);
+
+    operator cl_kernel() const;
 
 private:
     Kernel(cl_kernel kernel);
+
+    template <typename T>
+    T
+    get_info(cl_kernel_info name) const
+    {
+        T val;
+        get_info_helper(clGetKernelInfo, this->kern, name, val);
+        return val;
+    }
 
     cl_kernel kern;
 

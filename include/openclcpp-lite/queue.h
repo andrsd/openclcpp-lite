@@ -12,6 +12,7 @@ class Device;
 class Buffer;
 class Kernel;
 class Event;
+class NDRange;
 
 class Queue {
 public:
@@ -41,6 +42,8 @@ public:
     /// @param offset The offset in bytes in the buffer object to read from.
     /// @param size The size in bytes of data being read.
     /// @param ptr The pointer to buffer in host memory where data is to be read into.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
     void enqueue_read(const Buffer & buffer,
                       size_t offset,
                       size_t size,
@@ -53,6 +56,9 @@ public:
     /// @param offset The offset in bytes in the buffer object to read from.
     /// @param size The size in bytes of data being read.
     /// @param ptr The pointer to buffer in host memory where data is to be read into.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular kernel execution instance
     Event enqueue_iread(const Buffer & buffer,
                         size_t offset,
                         size_t size,
@@ -65,6 +71,8 @@ public:
     /// @param offset The offset in bytes in the buffer object to write to.
     /// @param size The size in bytes of data being written.
     /// @param ptr The pointer to buffer in host memory where data is to be written from.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
     void enqueue_write(const Buffer & buffer,
                        size_t offset,
                        size_t size,
@@ -77,6 +85,9 @@ public:
     /// @param offset The offset in bytes in the buffer object to write to.
     /// @param size The size in bytes of data being written.
     /// @param ptr The pointer to buffer in host memory where data is to be written from.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular kernel execution instance
     Event enqueue_iwrite(const Buffer & buffer,
                          size_t offset,
                          size_t size,
@@ -90,6 +101,9 @@ public:
     /// @param src_offset The offset where to begin copying data from `src`.
     /// @param dest_offset The offset where to begin copying data into `dst`.
     /// @param size Refers to the size in bytes to copy.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular kernel execution instance
     Event enqueue_copy(const Buffer & src,
                        const Buffer & dest,
                        size_t src_offset,
@@ -136,8 +150,16 @@ public:
     /// A synchronization point that enqueues a barrier operation.
     Event enqueue_barrier(const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
-    template <typename... ARGS>
-    void enqueue_kernel(const Kernel & kernel);
+    /// Enqueues a command to execute a kernel on a device.
+    ///
+    /// @param kernel Kernel to execute
+    /// @param global Global range
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular kernel execution instance
+    Event enqueue_kernel(const Kernel & kernel,
+                         const NDRange & global,
+                         const std::vector<Event> & wait_list = std::vector<Event>());
 
     /// Issues all previously queued OpenCL commands in a command-queue to the device associated
     /// with the command-queue.

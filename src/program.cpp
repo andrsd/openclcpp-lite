@@ -43,7 +43,7 @@ Program::devices() const
 }
 
 size_t
-Program::num_kernels() const
+Program::num_of_kernels() const
 {
     return get_info<size_t>(CL_PROGRAM_NUM_KERNELS);
 }

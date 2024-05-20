@@ -9,6 +9,7 @@ add_library(openclcpp-lite
         exception.cpp
         kernel.cpp
         memory.cpp
+        ndrange.cpp
         platform.cpp
         program.cpp
         queue.cpp

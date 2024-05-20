@@ -13,6 +13,7 @@ add_executable(${PROJECT_NAME}
     Event_test.cpp
     Exception_test.cpp
     Kernel_test.cpp
+    NDRange_test.cpp
     Platform_test.cpp
     Program_test.cpp
     Queue_test.cpp
