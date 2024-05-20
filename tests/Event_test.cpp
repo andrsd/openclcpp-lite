@@ -17,7 +17,7 @@ TEST(EventTest, wait_for_event)
     auto d_a = ctx.alloc<int>(N);
 
     ocl::Queue q(ctx);
-    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N * sizeof(int), h_a.data());
+    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N, h_a.data());
     ocl::wait_for_event(wr_evt1);
     EXPECT_EQ(wr_evt1.command_execution_status(), ocl::COMPLETE);
 }
@@ -37,8 +37,8 @@ TEST(EventTest, wait_for_events)
     auto d_b = ctx.alloc<int>(N);
 
     ocl::Queue q(ctx);
-    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N * sizeof(int), h_a.data());
-    auto wr_evt2 = q.enqueue_iwrite(d_b, 0, N * sizeof(int), h_b.data());
+    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N, h_a.data());
+    auto wr_evt2 = q.enqueue_iwrite(d_b, 0, N, h_b.data());
     ocl::wait_for_events({ wr_evt1, wr_evt2 });
     EXPECT_EQ(wr_evt1.command_execution_status(), ocl::COMPLETE);
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);

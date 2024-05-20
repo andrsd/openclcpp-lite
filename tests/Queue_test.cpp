@@ -25,7 +25,7 @@ TEST(QueueTest, ref_cnt)
     EXPECT_EQ(q.reference_count(), 1);
 }
 
-TEST(BufferTest, read_write_buffer)
+TEST(QueueTest, read_write_buffer)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -36,8 +36,8 @@ TEST(BufferTest, read_write_buffer)
     std::vector<int> h_b(N);
 
     ocl::Queue q(ctx);
-    q.enqueue_write(d_a, 0, N * sizeof(int), h_a.data());
-    q.enqueue_read(d_a, 0, N * sizeof(int), h_b.data());
+    q.enqueue_write(d_a, 0, N, h_a.data());
+    q.enqueue_read(d_a, 0, N, h_b.data());
 
     EXPECT_EQ(h_b[0], 100);
     EXPECT_EQ(h_b[1], 101);
@@ -46,7 +46,7 @@ TEST(BufferTest, read_write_buffer)
     EXPECT_EQ(h_b[4], 104);
 }
 
-TEST(BufferTest, copy_buffer)
+TEST(QueueTest, copy_buffer)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -58,9 +58,9 @@ TEST(BufferTest, copy_buffer)
     std::vector<int> h_b(N);
 
     ocl::Queue q(ctx);
-    q.enqueue_write(d_a, 0, N * sizeof(int), h_a.data());
-    q.enqueue_copy(d_a, d_b, 0, 0, N * sizeof(int));
-    q.enqueue_read(d_b, 0, N * sizeof(int), h_b.data());
+    q.enqueue_write(d_a, 0, N, h_a.data());
+    q.enqueue_copy(d_a, d_b, 0, 0, N);
+    q.enqueue_read(d_b, 0, N, h_b.data());
 
     EXPECT_EQ(h_b[0], 100);
     EXPECT_EQ(h_b[1], 101);
@@ -69,7 +69,7 @@ TEST(BufferTest, copy_buffer)
     EXPECT_EQ(h_b[4], 104);
 }
 
-TEST(BufferTest, map_buffer)
+TEST(QueueTest, map_buffer)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -78,8 +78,8 @@ TEST(BufferTest, map_buffer)
         h_a[i] = 100 + i;
     ocl::Queue q(ctx);
     auto d_a = ctx.alloc<int>(N);
-    q.enqueue_write(d_a, 0, N * sizeof(int), h_a.data());
-    auto * mapped_ints = q.enqueue_map_buffer<int>(d_a, true, ocl::READ, 0, N);
+    q.enqueue_write(d_a, 0, N, h_a.data());
+    auto * mapped_ints = q.enqueue_map_buffer(d_a, true, ocl::READ, 0, N);
     EXPECT_EQ(d_a.map_count(), 1);
     EXPECT_EQ(mapped_ints[0], 100);
     EXPECT_EQ(mapped_ints[1], 101);
@@ -88,7 +88,7 @@ TEST(BufferTest, map_buffer)
     EXPECT_EQ(mapped_ints[4], 104);
 }
 
-TEST(BufferTest, iread_iwrite_buffer)
+TEST(QueueTest, iread_iwrite_buffer)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -99,8 +99,8 @@ TEST(BufferTest, iread_iwrite_buffer)
     std::vector<int> h_b(N);
 
     ocl::Queue q(ctx);
-    auto wr_evt = q.enqueue_iwrite(d_a, 0, N * sizeof(int), h_a.data());
-    auto rd_evt = q.enqueue_iread(d_a, 0, N * sizeof(int), h_b.data(), { wr_evt });
+    auto wr_evt = q.enqueue_iwrite(d_a, 0, N, h_a.data());
+    auto rd_evt = q.enqueue_iread(d_a, 0, N, h_b.data(), { wr_evt });
     rd_evt.wait();
     EXPECT_EQ(rd_evt.command_execution_status(), ocl::COMPLETE);
 
@@ -111,7 +111,7 @@ TEST(BufferTest, iread_iwrite_buffer)
     EXPECT_EQ(h_b[4], 104);
 }
 
-TEST(BufferTest, async_copy_buffer)
+TEST(QueueTest, async_copy_buffer)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -123,9 +123,9 @@ TEST(BufferTest, async_copy_buffer)
     std::vector<int> h_b(N);
 
     ocl::Queue q(ctx);
-    auto wr_evt = q.enqueue_iwrite(d_a, 0, N * sizeof(int), h_a.data());
-    auto cp_evt = q.enqueue_copy(d_a, d_b, 0, 0, N * sizeof(int), { wr_evt });
-    auto rd_evt = q.enqueue_iread(d_b, 0, N * sizeof(int), h_b.data(), { cp_evt });
+    auto wr_evt = q.enqueue_iwrite(d_a, 0, N, h_a.data());
+    auto cp_evt = q.enqueue_copy(d_a, d_b, 0, 0, N, { wr_evt });
+    auto rd_evt = q.enqueue_iread(d_b, 0, N, h_b.data(), { cp_evt });
     rd_evt.wait();
     EXPECT_EQ(rd_evt.command_execution_status(), ocl::COMPLETE);
 
@@ -136,7 +136,7 @@ TEST(BufferTest, async_copy_buffer)
     EXPECT_EQ(h_b[4], 104);
 }
 
-TEST(EventTest, barrier)
+TEST(QueueTest, barrier)
 {
     const int N = 5;
     auto ctx = ocl::default_context();
@@ -151,8 +151,8 @@ TEST(EventTest, barrier)
     auto d_b = ctx.alloc<int>(N);
 
     ocl::Queue q(ctx);
-    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N * sizeof(int), h_a.data());
-    auto wr_evt2 = q.enqueue_iwrite(d_b, 0, N * sizeof(int), h_b.data());
+    auto wr_evt1 = q.enqueue_iwrite(d_a, 0, N, h_a.data());
+    auto wr_evt2 = q.enqueue_iwrite(d_b, 0, N, h_b.data());
     auto brr_evt = q.enqueue_barrier({ wr_evt1, wr_evt2 });
     brr_evt.wait();
     EXPECT_EQ(brr_evt.command_execution_status(), ocl::COMPLETE);

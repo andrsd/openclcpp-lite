@@ -63,10 +63,10 @@ TEST(KernelTest, execute)
     k.set_arg(1, d_b);
     k.set_arg(2, d_c);
 
-    q.enqueue_write(d_a, 0, N * sizeof(float), h_a.data());
-    q.enqueue_write(d_b, 0, N * sizeof(float), h_b.data());
+    q.enqueue_write(d_a, 0, N, h_a.data());
+    q.enqueue_write(d_b, 0, N, h_b.data());
     q.enqueue_kernel(k, ocl::NDRange(N));
-    q.enqueue_read(d_c, 0, N * sizeof(float), h_c.data());
+    q.enqueue_read(d_c, 0, N, h_c.data());
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
     }

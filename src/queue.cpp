@@ -54,11 +54,11 @@ Queue::reference_count() const
 }
 
 void
-Queue::enqueue_read(const Buffer & buffer,
-                    size_t offset,
-                    size_t size,
-                    void * ptr,
-                    const std::vector<Event> & wait_list) const
+Queue::enqueue_read_raw(const Buffer & buffer,
+                        size_t offset,
+                        size_t size,
+                        void * ptr,
+                        const std::vector<Event> & wait_list) const
 {
     OPENCL_CHECK(clEnqueueReadBuffer(this->q,
                                      buffer,
@@ -72,11 +72,11 @@ Queue::enqueue_read(const Buffer & buffer,
 }
 
 Event
-Queue::enqueue_iread(const Buffer & buffer,
-                     size_t offset,
-                     size_t size,
-                     void * ptr,
-                     const std::vector<Event> & wait_list) const
+Queue::enqueue_iread_raw(const Buffer & buffer,
+                         size_t offset,
+                         size_t size,
+                         void * ptr,
+                         const std::vector<Event> & wait_list) const
 {
     cl_event evt;
     OPENCL_CHECK(clEnqueueReadBuffer(this->q,
@@ -92,11 +92,11 @@ Queue::enqueue_iread(const Buffer & buffer,
 }
 
 void
-Queue::enqueue_write(const Buffer & buffer,
-                     size_t offset,
-                     size_t size,
-                     const void * ptr,
-                     const std::vector<Event> & wait_list) const
+Queue::enqueue_write_raw(const Buffer & buffer,
+                         size_t offset,
+                         size_t size,
+                         const void * ptr,
+                         const std::vector<Event> & wait_list) const
 {
     OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
                                       buffer,
@@ -110,11 +110,11 @@ Queue::enqueue_write(const Buffer & buffer,
 }
 
 Event
-Queue::enqueue_iwrite(const Buffer & buffer,
-                      size_t offset,
-                      size_t size,
-                      const void * ptr,
-                      const std::vector<Event> & wait_list) const
+Queue::enqueue_iwrite_raw(const Buffer & buffer,
+                          size_t offset,
+                          size_t size,
+                          const void * ptr,
+                          const std::vector<Event> & wait_list) const
 {
     cl_event evt;
     OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
@@ -130,12 +130,12 @@ Queue::enqueue_iwrite(const Buffer & buffer,
 }
 
 Event
-Queue::enqueue_copy(const Buffer & src,
-                    const Buffer & dest,
-                    size_t src_offset,
-                    size_t dest_offset,
-                    size_t size,
-                    const std::vector<Event> & wait_list)
+Queue::enqueue_copy_raw(const Buffer & src,
+                        const Buffer & dest,
+                        size_t src_offset,
+                        size_t dest_offset,
+                        size_t size,
+                        const std::vector<Event> & wait_list)
 {
     cl_event evt;
     OPENCL_CHECK(clEnqueueCopyBuffer(this->q,
@@ -151,11 +151,11 @@ Queue::enqueue_copy(const Buffer & src,
 }
 
 void *
-Queue::enqueue_map_buffer(const Buffer & buffer,
-                          bool blocking,
-                          MapFlags flags,
-                          size_t offset,
-                          size_t size) const
+Queue::enqueue_map_buffer_raw(const Buffer & buffer,
+                              bool blocking,
+                              MapFlags flags,
+                              size_t offset,
+                              size_t size) const
 {
     cl_int err_code;
     auto ret = clEnqueueMapBuffer(this->q,

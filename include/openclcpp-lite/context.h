@@ -35,31 +35,31 @@ public:
 
     /// Allocate
     template <typename T>
-    Buffer
+    TBuffer<T>
     alloc(int n_entries) const
     {
         throw Exception("Unsupported data type");
     }
 
     template <>
-    Buffer
+    TBuffer<double>
     alloc<double>(int n_entries) const
     {
         return alloc_helper<double>(n_entries);
     }
 
     template <>
-    Buffer
+    TBuffer<float>
     alloc<float>(int n_entries) const
     {
         return alloc_helper<float>(n_entries);
     }
 
     template <>
-    Buffer
+    TBuffer<int>
     alloc<int>(int n_entries) const
     {
-        return alloc_helper<float>(n_entries);
+        return alloc_helper<int>(n_entries);
     }
 
     operator cl_context() const { return this->ctx; }
@@ -71,11 +71,10 @@ private:
     Context(cl_context context);
 
     template <typename T>
-    Buffer
+    TBuffer<T>
     alloc_helper(int n_entries) const
     {
-        T * bfr = new T[n_entries];
-        Buffer b(*this, READ_WRITE | USE_HOST_PTR, sizeof(T) * n_entries, bfr);
+        TBuffer<T> b(*this, READ_WRITE, n_entries);
         return b;
     }
 
