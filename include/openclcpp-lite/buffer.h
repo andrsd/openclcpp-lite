@@ -13,7 +13,6 @@ class Context;
 class Buffer : public Memory {
 public:
     Buffer(const Context & context, MemoryFlags mem_flags, size_t size, void * host_ptr);
-
 };
 
 } // namespace openclcpp_lite

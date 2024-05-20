@@ -133,6 +133,9 @@ public:
             enqueue_map_buffer(buffer, blocking, flags, offset * sizeof(T), n * sizeof(T)));
     }
 
+    /// A synchronization point that enqueues a barrier operation.
+    Event enqueue_barrier(const std::vector<Event> & wait_list = std::vector<Event>()) const;
+
     template <typename... ARGS>
     void enqueue_kernel(const Kernel & kernel);
 

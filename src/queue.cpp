@@ -170,6 +170,18 @@ Queue::enqueue_map_buffer(const Buffer & buffer,
     return ret;
 }
 
+Event
+Queue::enqueue_barrier(const std::vector<Event> & wait_list) const
+{
+    cl_event evt;
+    OPENCL_CHECK(
+        clEnqueueBarrierWithWaitList(this->q,
+                                     wait_list.size(),
+                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                     &evt));
+    return Event(evt);
+}
+
 template <typename... ARGS>
 void
 Queue::enqueue_kernel(const Kernel & kernel)
