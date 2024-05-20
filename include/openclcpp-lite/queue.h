@@ -55,6 +55,15 @@ public:
         enqueue_read_raw(buffer, offset * sizeof(T), n * sizeof(T), ptr, wait_list);
     }
 
+    template <typename T>
+    void
+    enqueue_read(const TBuffer<T> & buffer,
+                 void * ptr,
+                 const std::vector<Event> & wait_list = std::vector<Event>()) const
+    {
+        enqueue_read_raw(buffer, 0, buffer.size(), ptr, wait_list);
+    }
+
     /// Enqueue commands to read from a buffer object to host memory in non-blocking mode
     ///
     /// @param buffer Buffer to read from
@@ -92,6 +101,15 @@ public:
                   const std::vector<Event> & wait_list = std::vector<Event>()) const
     {
         enqueue_write_raw(buffer, offset * sizeof(T), n * sizeof(T), ptr, wait_list);
+    }
+
+    template <typename T>
+    void
+    enqueue_write(const TBuffer<T> & buffer,
+                  const void * ptr,
+                  const std::vector<Event> & wait_list = std::vector<Event>()) const
+    {
+        enqueue_write_raw(buffer, 0, buffer.size(), ptr, wait_list);
     }
 
     /// Enqueue commands to write to a buffer object from host memory in non-blocking mode
@@ -132,6 +150,7 @@ public:
                  size_t n,
                  const std::vector<Event> & wait_list = std::vector<Event>())
     {
+        assert(src.size() == dest.size());
         return enqueue_copy_raw(src,
                                 dest,
                                 src_offset * sizeof(T),
@@ -168,6 +187,13 @@ public:
     {
         return static_cast<T *>(
             enqueue_map_buffer_raw(buffer, blocking, flags, offset * sizeof(T), n * sizeof(T)));
+    }
+
+    template <typename T>
+    T *
+    enqueue_map_buffer(const TBuffer<T> & buffer, bool blocking, MapFlags flags) const
+    {
+        return static_cast<T *>(enqueue_map_buffer_raw(buffer, blocking, flags, 0, buffer.size()));
     }
 
     /// A synchronization point that enqueues a barrier operation.

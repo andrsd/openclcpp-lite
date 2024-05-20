@@ -4,6 +4,7 @@
 #include "openclcpp-lite/error.h"
 #include "openclcpp-lite/memory.h"
 #include "openclcpp-lite/program.h"
+#include "openclcpp-lite/event.h"
 #include <string>
 
 namespace openclcpp_lite {
@@ -11,6 +12,9 @@ namespace openclcpp_lite {
 class Program;
 class Memory;
 class Context;
+
+template <typename... Ts>
+class KernelFunctor;
 
 class Kernel {
 public:
@@ -65,14 +69,13 @@ private:
     cl_kernel kern;
 
 public:
+    /// Create a kernel functor
     template <typename... Ts>
-    static Kernel
+    static KernelFunctor<Ts...>
     create(const Program & program, const std::string & kernel_name)
     {
-        cl_int err_code;
-        auto k = clCreateKernel(program, kernel_name.c_str(), &err_code);
-        OPENCL_CHECK(err_code);
-        return Kernel(k);
+        KernelFunctor<Ts...> fn(program, kernel_name);
+        return fn;
     }
 };
 
@@ -81,12 +84,14 @@ public:
 template <typename... Ts>
 class KernelFunctor {
 public:
-    KernelFunctor(Kernel kernel) : kern(kernel) {}
+    KernelFunctor(const Program & program, const std::string & name) : kern(program, name) {}
 
-    //    KernelFunctor(const Program & program, const std::string & name, cl_int * err = nullptr) :
-    //        kern(program, name.c_str(), err)
-    //    {
-    //    }
+    Kernel
+    operator()(Ts... ts)
+    {
+        set_args<0>(std::forward<Ts>(ts)...);
+        return this->kern;
+    }
 
 private:
     Kernel kern;
@@ -95,7 +100,7 @@ private:
     void
     set_args(T0 && t0, T1s &&... t1s)
     {
-        this->kern.setArg(INDEX, t0);
+        this->kern.set_arg(INDEX, t0);
         set_args<INDEX + 1, T1s...>(std::forward<T1s>(t1s)...);
     }
 
@@ -106,7 +111,7 @@ private:
         this->kern.set_arg(INDEX, t0);
     }
 
-    template <int INDEX>
+    template <int>
     void
     set_args()
     {

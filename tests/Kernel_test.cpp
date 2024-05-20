@@ -22,7 +22,6 @@ std::string src1 =
 TEST(KernelTest, create)
 {
     auto ctx = ocl::default_context();
-    ocl::Queue q(ctx);
 
     auto prg = ocl::Program::from_source(ctx, src1);
     prg.build();
@@ -67,6 +66,40 @@ TEST(KernelTest, execute)
     q.enqueue_write(d_b, 0, N, h_b.data());
     q.enqueue_kernel(k, ocl::NDRange(N));
     q.enqueue_read(d_c, 0, N, h_c.data());
+    for (auto & i : h_c) {
+        EXPECT_FLOAT_EQ(i, 101);
+    }
+}
+
+TEST(KernelTest, execute_functor)
+{
+    const int N = 10;
+    std::vector<float> h_a(N);
+    std::vector<float> h_b(N);
+    std::vector<float> h_c(N);
+
+    auto ctx = ocl::default_context();
+    ocl::Queue q(ctx);
+
+    auto prg = ocl::Program::from_source(ctx, src1);
+    prg.build();
+
+    for (int i = 0; i < N; i++) {
+        h_a[i] = i + 1;
+        h_b[i] = 100 - i;
+    }
+
+    auto d_a = ctx.alloc<float>(N);
+    auto d_b = ctx.alloc<float>(N);
+    auto d_c = ctx.alloc<float>(N);
+
+    using FloatBuffer = ocl::TBuffer<float>;
+    auto vec_add = ocl::Kernel::create<FloatBuffer, FloatBuffer, FloatBuffer>(prg, "vec_add");
+
+    q.enqueue_write(d_a, h_a.data());
+    q.enqueue_write(d_b, h_b.data());
+    q.enqueue_kernel(vec_add(d_a, d_b, d_c), ocl::NDRange(N));
+    q.enqueue_read(d_c, h_c.data());
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
     }
