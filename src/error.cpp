@@ -28,6 +28,22 @@ error_message(cl_int ierr)
         { CL_INVALID_COMMAND_QUEUE, "Invalid commnad queue" },
         { CL_INVALID_PROGRAM, "Invalid program" },
         { CL_INVALID_PROGRAM_EXECUTABLE, "Invalid program executable" },
+        { CL_INVALID_KERNEL, "Invalid kernel" },
+        { CL_INVALID_KERNEL_ARGS, "Invalid kernel arguments"},
+        { CL_INVALID_WORK_DIMENSION, "Invalid work dimension" },
+        { CL_INVALID_GLOBAL_WORK_SIZE, "Invalid global work size" },
+        { CL_INVALID_GLOBAL_OFFSET, "Invalid global offset" },
+        { CL_INVALID_WORK_GROUP_SIZE, "Invalid work group size" },
+        { CL_INVALID_WORK_ITEM_SIZE, "Invalid work item size" },
+        { CL_MISALIGNED_SUB_BUFFER_OFFSET, "Misaligne sub-buffer offset" },
+        { CL_INVALID_IMAGE_SIZE, "Invalid image size" },
+        // { CL_INVALID_IMAGE_FORMAT, "Invalid image format" },
+        { CL_INVALID_EVENT_WAIT_LIST, "Invalid event wait list" },
+        { CL_INVALID_ARG_INDEX, "Invalid argument index" },
+        { CL_INVALID_ARG_VALUE, "Invalid argument value" },
+        { CL_INVALID_MEM_OBJECT, "Invalid memory object" },
+        { CL_INVALID_SAMPLER, "Invalid sampler" },
+        { CL_INVALID_ARG_SIZE, "Invalid argument size" },
         { CL_DEVICE_NOT_AVAILABLE, "Device not available" },
         { CL_INVALID_BUFFER_SIZE, "Invalid buffer size" },
         { CL_INVALID_HOST_PTR, "Invalid host pointer" },
@@ -47,15 +63,11 @@ check_error(cl_int ierr, const char * file, int line)
 {
     if (ierr != CL_SUCCESS) {
 #ifdef OPENCLCPP_LITE_WITH_FMT
-        std::string err = fmt::format("OpenCL error at {}:{}: {}",
-                                      file,
-                                      line,
-                                      error_message(ierr));
+        std::string err = fmt::format("OpenCL error at {}:{}: {}", file, line, error_message(ierr));
         throw Exception(err);
 #else
         std::stringstream ss;
-        ss << "OpenCL error at " << file << ":" << line << ": "
-           << error_message(ierr);
+        ss << "OpenCL error at " << file << ":" << line << ": " << error_message(ierr);
         throw Exception(ss.str());
 #endif
     }

@@ -47,6 +47,13 @@ Queue::reference_count() const
     return get_info<cl_uint>(CL_QUEUE_REFERENCE_COUNT);
 }
 
+template<typename... ARGS>
+void
+Queue::enqueue_kernel(const Kernel &kernel)
+{
+    //clEnqueueNDRangeKernel(this->q, kernel, );
+}
+
 void
 Queue::flush() const
 {

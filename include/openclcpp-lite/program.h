@@ -45,6 +45,8 @@ public:
     /// Builds (compiles and links) a program executable from the program source or binary.
     void build() const;
 
+    operator cl_program() const;
+
 public:
     static Program from_source(const Context & ctx, const std::string & source);
     static Program from_source(const Context & ctx, const std::vector<std::string> & lines);

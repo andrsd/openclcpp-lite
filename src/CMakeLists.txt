@@ -6,6 +6,7 @@ add_library(openclcpp-lite
         enums.cpp
         error.cpp
         exception.cpp
+        kernel.cpp
         platform.cpp
         program.cpp
         queue.cpp

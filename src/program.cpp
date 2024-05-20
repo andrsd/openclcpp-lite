@@ -62,6 +62,11 @@ Program::build() const
     OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, nullptr, nullptr, nullptr));
 }
 
+Program::operator cl_program() const
+{
+    return this->prg;
+}
+
 template <typename T>
 T
 Program::get_info_scalar(cl_program_info name) const

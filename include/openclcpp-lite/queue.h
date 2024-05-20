@@ -7,6 +7,7 @@ namespace openclcpp_lite {
 
 class Context;
 class Device;
+class Kernel;
 
 class Queue {
 public:
@@ -29,6 +30,9 @@ public:
     /// The reference count returned should be considered immediately stale. It is unsuitable for
     /// general use in applications. This feature is provided for identifying memory leaks.
     unsigned int reference_count() const;
+
+    template<typename... ARGS>
+    void enqueue_kernel(const Kernel &kernel);
 
     /// Issues all previously queued OpenCL commands in a command-queue to the device associated
     /// with the command-queue.

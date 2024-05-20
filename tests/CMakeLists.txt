@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
     Context_test.cpp
     Error_test.cpp
     Exception_test.cpp
+    Kernel_test.cpp
     Platform_test.cpp
     Program_test.cpp
     Queue_test.cpp
