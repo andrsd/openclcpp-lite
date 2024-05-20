@@ -5,6 +5,7 @@ add_library(openclcpp-lite
         device.cpp
         enums.cpp
         error.cpp
+        event.cpp
         exception.cpp
         kernel.cpp
         memory.cpp

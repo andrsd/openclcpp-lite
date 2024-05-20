@@ -121,6 +121,8 @@ public:
     void finish() const;
 
 private:
+    Queue(cl_command_queue q);
+
     template <typename T>
     T
     get_info(cl_command_queue_info name) const
@@ -131,6 +133,8 @@ private:
     }
 
     cl_command_queue q;
+
+    friend class Event;
 };
 
 } // namespace openclcpp_lite

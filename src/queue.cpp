@@ -16,6 +16,8 @@ Queue::Queue(const Context & context, bool enable_profiling)
     OPENCL_CHECK(err_code);
 }
 
+Queue::Queue(cl_command_queue q) : q(q) {}
+
 void
 Queue::retain() const
 {

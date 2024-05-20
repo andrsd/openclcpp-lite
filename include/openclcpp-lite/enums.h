@@ -17,8 +17,7 @@ enum MemoryFlag {
     HOST_NO_ACCESS = CL_MEM_HOST_NO_ACCESS
 };
 
-struct MemoryFlags : public Flags<MemoryFlag>
-{
+struct MemoryFlags : public Flags<MemoryFlag> {
     MemoryFlags(const MemoryFlag & flag);
     MemoryFlags(const Flags<MemoryFlag> & flags);
     operator cl_mem_flags() const;
@@ -30,11 +29,18 @@ enum MapFlag {
     WRITE_INVALIDATE_REGION = CL_MAP_WRITE_INVALIDATE_REGION
 };
 
-struct MapFlags : public Flags<MapFlag>
-{
+struct MapFlags : public Flags<MapFlag> {
     MapFlags(const MapFlag & flag);
     MapFlags(const Flags<MapFlag> & flags);
     operator cl_map_flags() const;
+};
+
+enum CommandExecutionStatus {
+    QUEUED = CL_QUEUED,
+    SUBMITTED = CL_SUBMITTED,
+    RUNNING = CL_RUNNING,
+    COMPLETE = CL_COMPLETE,
+    ERROR
 };
 
 } // namespace openclcpp_lite
