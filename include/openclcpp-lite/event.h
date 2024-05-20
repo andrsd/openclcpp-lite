@@ -11,8 +11,6 @@ class Context;
 
 class Event {
 public:
-    Event();
-
     /// Increment the context reference count.
     void retain() const;
 
@@ -52,6 +50,8 @@ private:
     }
 
     cl_event evt;
+
+    friend class Queue;
 };
 
 /// Waits on the host thread for commands identified by event object to complete.

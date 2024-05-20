@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     Buffer_test.cpp
     Context_test.cpp
     Error_test.cpp
+    Event_test.cpp
     Exception_test.cpp
     Kernel_test.cpp
     Platform_test.cpp

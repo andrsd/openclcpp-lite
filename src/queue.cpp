@@ -1,6 +1,7 @@
 #include "openclcpp-lite/queue.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
+#include "openclcpp-lite/event.h"
 
 namespace openclcpp_lite {
 
@@ -51,57 +52,100 @@ Queue::reference_count() const
 }
 
 void
-Queue::enqueue_read_buffer(const Buffer & buffer,
-                           bool blocking,
-                           size_t offset,
-                           size_t size,
-                           void * ptr) const
+Queue::enqueue_read(const Buffer & buffer,
+                    size_t offset,
+                    size_t size,
+                    void * ptr,
+                    const std::vector<Event> & wait_list) const
 {
     OPENCL_CHECK(clEnqueueReadBuffer(this->q,
                                      buffer,
-                                     blocking ? CL_TRUE : CL_FALSE,
+                                     CL_TRUE,
                                      offset,
                                      size,
                                      ptr,
-                                     0,
-                                     nullptr,
+                                     wait_list.size(),
+                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
                                      nullptr));
 }
 
-void
-Queue::enqueue_write_buffer(const Buffer & buffer,
-                            bool blocking,
-                            size_t offset,
-                            size_t size,
-                            const void * ptr) const
+Event
+Queue::enqueue_iread(const Buffer & buffer,
+                     size_t offset,
+                     size_t size,
+                     void * ptr,
+                     const std::vector<Event> & wait_list) const
 {
-    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
-                                      buffer,
-                                      blocking ? CL_TRUE : CL_FALSE,
-                                      offset,
-                                      size,
-                                      ptr,
-                                      0,
-                                      nullptr,
-                                      nullptr));
+    cl_event evt;
+    OPENCL_CHECK(clEnqueueReadBuffer(this->q,
+                                     buffer,
+                                     CL_FALSE,
+                                     offset,
+                                     size,
+                                     ptr,
+                                     wait_list.size(),
+                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                     &evt));
+    return Event(evt);
 }
 
 void
-Queue::enqueue_copy_buffer(const Buffer & src,
-                           const Buffer & dest,
-                           size_t src_offset,
-                           size_t dest_offset,
-                           size_t size)
+Queue::enqueue_write(const Buffer & buffer,
+                     size_t offset,
+                     size_t size,
+                     const void * ptr,
+                     const std::vector<Event> & wait_list) const
 {
+    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
+                                      buffer,
+                                      CL_TRUE,
+                                      offset,
+                                      size,
+                                      ptr,
+                                      wait_list.size(),
+                                      wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                      nullptr));
+}
+
+Event
+Queue::enqueue_iwrite(const Buffer & buffer,
+                      size_t offset,
+                      size_t size,
+                      const void * ptr,
+                      const std::vector<Event> & wait_list) const
+{
+    cl_event evt;
+    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
+                                      buffer,
+                                      CL_FALSE,
+                                      offset,
+                                      size,
+                                      ptr,
+                                      wait_list.size(),
+                                      wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                      &evt));
+    return Event(evt);
+}
+
+Event
+Queue::enqueue_copy(const Buffer & src,
+                    const Buffer & dest,
+                    size_t src_offset,
+                    size_t dest_offset,
+                    size_t size,
+                    const std::vector<Event> & wait_list)
+{
+    cl_event evt;
     OPENCL_CHECK(clEnqueueCopyBuffer(this->q,
                                      src,
                                      dest,
                                      src_offset,
                                      dest_offset,
                                      size,
-                                     0,
-                                     nullptr,
-                                     nullptr));
+                                     wait_list.size(),
+                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                     &evt));
+    return Event(evt);
 }
 
 void *

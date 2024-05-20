@@ -5,8 +5,6 @@
 
 namespace openclcpp_lite {
 
-Event::Event() {}
-
 Event::Event(cl_event evt) : evt(evt) {}
 
 void
@@ -39,7 +37,7 @@ CommandExecutionStatus
 Event::command_execution_status() const
 {
     auto status = get_info<cl_int>(CL_EVENT_COMMAND_EXECUTION_STATUS);
-    if (status > 0)
+    if (status >= 0)
         return static_cast<CommandExecutionStatus>(status);
     else
         return ERROR;
@@ -69,13 +67,10 @@ wait_for_event(const Event & event)
 }
 
 void
-wait_for_events(const std::vector<Event> & event)
+wait_for_events(const std::vector<Event> & events)
 {
-    std::vector<cl_event> evts;
-    evts.reserve(event.size());
-    for (auto & e : event)
-        evts.emplace_back(e);
-    OPENCL_CHECK(clWaitForEvents(evts.size(), evts.data()));
+    OPENCL_CHECK(
+        clWaitForEvents(events.size(), events.empty() ? nullptr : (cl_event *) &events.front()));
 }
 
 } // namespace openclcpp_lite

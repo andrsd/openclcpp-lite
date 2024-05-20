@@ -11,6 +11,7 @@ class Context;
 class Device;
 class Buffer;
 class Kernel;
+class Event;
 
 class Queue {
 public:
@@ -34,31 +35,53 @@ public:
     /// general use in applications. This feature is provided for identifying memory leaks.
     unsigned int reference_count() const;
 
-    /// Enqueue commands to read from a buffer object to host memory.
+    /// Enqueue commands to read from a buffer object to host memory in blocking mode
     ///
     /// @param buffer Buffer to read from
-    /// @param blocking Indicates if the read operations are blocking or non-blocking.
     /// @param offset The offset in bytes in the buffer object to read from.
     /// @param size The size in bytes of data being read.
     /// @param ptr The pointer to buffer in host memory where data is to be read into.
-    void enqueue_read_buffer(const Buffer & buffer,
-                             bool blocking,
-                             size_t offset,
-                             size_t size,
-                             void * ptr) const;
+    void enqueue_read(const Buffer & buffer,
+                      size_t offset,
+                      size_t size,
+                      void * ptr,
+                      const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
-    /// Enqueue commands to write to a buffer object from host memory.
+    /// Enqueue commands to read from a buffer object to host memory in non-blocking mode
+    ///
+    /// @param buffer Buffer to read from
+    /// @param offset The offset in bytes in the buffer object to read from.
+    /// @param size The size in bytes of data being read.
+    /// @param ptr The pointer to buffer in host memory where data is to be read into.
+    Event enqueue_iread(const Buffer & buffer,
+                        size_t offset,
+                        size_t size,
+                        void * ptr,
+                        const std::vector<Event> & wait_list = std::vector<Event>()) const;
+
+    /// Enqueue commands to write to a buffer object from host memory blocking mode
     ///
     /// @param buffer Buffer to write into
-    /// @param blocking Indicates if the write operations are blocking or nonblocking.
     /// @param offset The offset in bytes in the buffer object to write to.
     /// @param size The size in bytes of data being written.
     /// @param ptr The pointer to buffer in host memory where data is to be written from.
-    void enqueue_write_buffer(const Buffer & buffer,
-                              bool blocking,
-                              size_t offset,
-                              size_t size,
-                              const void * ptr) const;
+    void enqueue_write(const Buffer & buffer,
+                       size_t offset,
+                       size_t size,
+                       const void * ptr,
+                       const std::vector<Event> & wait_list = std::vector<Event>()) const;
+
+    /// Enqueue commands to write to a buffer object from host memory in non-blocking mode
+    ///
+    /// @param buffer Buffer to write into
+    /// @param offset The offset in bytes in the buffer object to write to.
+    /// @param size The size in bytes of data being written.
+    /// @param ptr The pointer to buffer in host memory where data is to be written from.
+    Event enqueue_iwrite(const Buffer & buffer,
+                         size_t offset,
+                         size_t size,
+                         const void * ptr,
+                         const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
     /// Enqueues a command to copy from one buffer object to another.
     ///
@@ -67,11 +90,12 @@ public:
     /// @param src_offset The offset where to begin copying data from `src`.
     /// @param dest_offset The offset where to begin copying data into `dst`.
     /// @param size Refers to the size in bytes to copy.
-    void enqueue_copy_buffer(const Buffer & src,
-                             const Buffer & dest,
-                             size_t src_offset,
-                             size_t dest_offset,
-                             size_t size);
+    Event enqueue_copy(const Buffer & src,
+                       const Buffer & dest,
+                       size_t src_offset,
+                       size_t dest_offset,
+                       size_t size,
+                       const std::vector<Event> & wait_list = std::vector<Event>());
 
     /// Enqueues a command to map a region of the buffer object given by `buffer` into the host
     /// address space and returns a pointer to this mapped region.
