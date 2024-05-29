@@ -44,27 +44,6 @@ public:
         throw Exception("Unsupported data type");
     }
 
-    template <>
-    TBuffer<double>
-    alloc<double>(int n_entries) const
-    {
-        return alloc_helper<double>(n_entries);
-    }
-
-    template <>
-    TBuffer<float>
-    alloc<float>(int n_entries) const
-    {
-        return alloc_helper<float>(n_entries);
-    }
-
-    template <>
-    TBuffer<int>
-    alloc<int>(int n_entries) const
-    {
-        return alloc_helper<int>(n_entries);
-    }
-
     operator cl_context() const { return this->ctx; }
 
 public:
@@ -99,6 +78,27 @@ private:
     friend class Event;
     friend class Kernel;
 };
+
+template <>
+inline TBuffer<double>
+Context::alloc<double>(int n_entries) const
+{
+    return alloc_helper<double>(n_entries);
+}
+
+template <>
+inline TBuffer<float>
+Context::alloc<float>(int n_entries) const
+{
+    return alloc_helper<float>(n_entries);
+}
+
+template <>
+inline TBuffer<int>
+Context::alloc<int>(int n_entries) const
+{
+    return alloc_helper<int>(n_entries);
+}
 
 Context default_context();
 
