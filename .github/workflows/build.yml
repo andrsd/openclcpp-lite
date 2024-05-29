@@ -1,0 +1,59 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: "${{ matrix.os }}-${{ matrix.build }}"
+    defaults:
+      run:
+        shell: bash -el {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            build: Release
+          - os: ubuntu-22.04
+            build: Debug
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          auto-update-conda: false
+          channels: andrsd,defaults
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt install \
+            ocl-icd-opencl-dev
+          conda install \
+            cmake \
+            make \
+            clang \
+            clangxx \
+            libcxx \
+            fmt==9.* \
+            lcov
+
+      - name: Configure
+        run: |
+          cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
+            -DOPENCLCPP_LITE_BUILD_TESTS=YES \
+            -DOPENCLCPP_LITE_CODE_COVERAGE=YES
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build
