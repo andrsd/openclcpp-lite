@@ -1,37 +1,62 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include <array>
+#include <initializer_list>
 
 namespace openclcpp_lite {
 
-/// N-dimensional range, but really maximum of 3 dimensions are possible
+/// N-dimensional range
+template <int N>
 class NDRange {
 public:
     /// Empty range
-    NDRange();
+    NDRange() : dims(0)
+    {
+        for (int i = 0; i < N; i++)
+            this->sz[i] = 0;
+    }
 
-    /// Create 1-dimensional range
-    explicit NDRange(size_t size0);
+    /// Create N-dimensional range
+    ///
+    /// @param size Size of the range in each dimension
+    explicit NDRange(std::initializer_list<size_t> size) : dims(N)
+    {
+        for (auto it = size.begin(); it != size.end(); ++it) {
+            auto i = it - size.begin();
+            this->sz[i] = *it;
+        }
+    }
 
-    /// Create 2-dimensional range
-    NDRange(size_t size0, size_t size1);
+    operator const size_t *() const { return this->sz.data(); }
 
-    /// Create 3-dimensional range
-    NDRange(size_t size0, size_t size1, size_t size2);
-
-    operator const size_t *() const;
-
-    size_t dimensions() const;
+    size_t
+    dimensions() const
+    {
+        return this->dims;
+    }
 
     /// Runtime number of dimensions
-    size_t size() const;
+    size_t
+    size() const
+    {
+        return this->dims * sizeof(size_t);
+    }
 
-    size_t * get();
+    size_t *
+    get()
+    {
+        return this->sz.data();
+    }
 
-    const size_t * get() const;
+    const size_t *
+    get() const
+    {
+        return this->sz.data();
+    }
 
 private:
-    size_t sz[3];
+    std::array<size_t, N> sz;
     cl_uint dims;
 };
 
