@@ -1,0 +1,14 @@
+{
+    "src/*.cpp": [
+        "// SPDX-FileCopyrightText:",
+        "// SPDX-License-Identifier:"
+    ],
+    "include/openclcpp-lite/*.h": [
+        "// SPDX-FileCopyrightText:",
+        "// SPDX-License-Identifier:"
+    ],
+    "bin/**/*.{h,cpp}": [
+        "// SPDX-FileCopyrightText:",
+        "// SPDX-License-Identifier:"
+    ]
+}
