@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 David Andrs <andrsd@gmail.com>
+// SPDX-License-Identifier: MIT
+
 #include "openclcpp-lite/device.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
