@@ -42,6 +42,10 @@ endif ()
 
 add_subdirectory(src)
 
+# Binaries
+
+add_subdirectory(bin)
+
 # Tests
 
 if (OPENCLCPP_LITE_BUILD_TESTS)
