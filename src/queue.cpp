@@ -5,7 +5,7 @@
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
 #include "openclcpp-lite/event.h"
-#include "openclcpp-lite/ndrange.h"
+#include "openclcpp-lite/range.h"
 #include "openclcpp-lite/kernel.h"
 
 namespace openclcpp_lite {

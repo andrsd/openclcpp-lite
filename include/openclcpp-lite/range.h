@@ -10,11 +10,13 @@
 namespace openclcpp_lite {
 
 /// N-dimensional range
+///
+/// @tparam N Number of dimensions of the range
 template <int N>
-class NDRange {
+class Range {
 public:
     /// Empty range
-    NDRange() : dims(0)
+    Range() : dims(0)
     {
         for (int i = 0; i < N; i++)
             this->sz[i] = 0;
@@ -22,8 +24,8 @@ public:
 
     /// Create N-dimensional range
     ///
-    /// @param size Size of the range in each dimension
-    explicit NDRange(std::initializer_list<size_t> size) : dims(N)
+    /// @param size Sizes of the range in each dimension
+    explicit Range(std::initializer_list<size_t> size) : dims(N)
     {
         for (auto it = size.begin(); it != size.end(); ++it) {
             auto i = it - size.begin();

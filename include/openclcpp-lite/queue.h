@@ -16,7 +16,7 @@ class Context;
 class Device;
 class Kernel;
 template<int N>
-class NDRange;
+class Range;
 
 class Queue {
 public:
@@ -212,7 +212,7 @@ public:
     /// @return Event object that identifies this particular kernel execution instance
     template<int N>
     Event enqueue_kernel(const Kernel & kernel,
-                         const NDRange<N> & global,
+                         const Range<N> & global,
                          const std::vector<Event> & wait_list = std::vector<Event>())
     {
         cl_event evt;
