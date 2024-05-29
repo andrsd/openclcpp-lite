@@ -184,24 +184,6 @@ Queue::enqueue_barrier(const std::vector<Event> & wait_list) const
     return Event(evt);
 }
 
-Event
-Queue::enqueue_kernel(const Kernel & kernel,
-                      const NDRange & global,
-                      const std::vector<Event> & wait_list)
-{
-    cl_event evt;
-    OPENCL_CHECK(
-        clEnqueueNDRangeKernel(this->q,
-                               kernel,
-                               global.dimensions(),
-                               nullptr,
-                               global,
-                               nullptr,
-                               wait_list.size(),
-                               wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
-                               &evt));
-    return Event(evt);
-}
 
 void
 Queue::flush() const

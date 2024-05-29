@@ -63,7 +63,7 @@ TEST(KernelTest, execute)
 
     q.enqueue_write(d_a, 0, N, h_a.data());
     q.enqueue_write(d_b, 0, N, h_b.data());
-    q.enqueue_kernel(k, ocl::NDRange(N));
+    q.enqueue_kernel(k, ocl::NDRange<1>{N});
     q.enqueue_read(d_c, 0, N, h_c.data());
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
@@ -97,7 +97,7 @@ TEST(KernelTest, execute_functor)
 
     q.enqueue_write(d_a, h_a.data());
     q.enqueue_write(d_b, h_b.data());
-    q.enqueue_kernel(vec_add(d_a, d_b, d_c), ocl::NDRange(N));
+    q.enqueue_kernel(vec_add(d_a, d_b, d_c), ocl::NDRange<1>{N});
     q.enqueue_read(d_c, h_c.data());
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);

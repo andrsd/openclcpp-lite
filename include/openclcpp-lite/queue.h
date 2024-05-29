@@ -12,6 +12,7 @@ namespace openclcpp_lite {
 class Context;
 class Device;
 class Kernel;
+template<int N>
 class NDRange;
 
 class Queue {
@@ -206,9 +207,24 @@ public:
     /// @param wait_list Specify events that need to complete before this particular command can be
     ///        executed
     /// @return Event object that identifies this particular kernel execution instance
+    template<int N>
     Event enqueue_kernel(const Kernel & kernel,
-                         const NDRange & global,
-                         const std::vector<Event> & wait_list = std::vector<Event>());
+                         const NDRange<N> & global,
+                         const std::vector<Event> & wait_list = std::vector<Event>())
+    {
+        cl_event evt;
+        OPENCL_CHECK(
+            clEnqueueNDRangeKernel(this->q,
+                                   kernel,
+                                   global.dimensions(),
+                                   nullptr,
+                                   global,
+                                   nullptr,
+                                   wait_list.size(),
+                                   wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                   &evt));
+        return Event(evt);
+    }
 
     /// Issues all previously queued OpenCL commands in a command-queue to the device associated
     /// with the command-queue.
