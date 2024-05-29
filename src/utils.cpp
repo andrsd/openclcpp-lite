@@ -3,6 +3,21 @@
 namespace openclcpp_lite {
 namespace utils {
 
+std::string
+join(const std::string & joiner, const std::vector<std::string> & items)
+{
+    if (items.size() > 0) {
+        std::string str = items[0];
+        for (int i = 1; i < items.size(); i++) {
+            str += joiner;
+            str += items[i];
+        }
+        return str;
+    }
+    else
+        return "";
+}
+
 std::vector<std::string>
 split(const std::string & s, const std::string & delimiter)
 {
