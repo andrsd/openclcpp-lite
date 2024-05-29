@@ -13,8 +13,12 @@ namespace openclcpp_lite {
 class Context;
 class Device;
 
+/// OpenCL program
 class Program {
 public:
+    /// Create a program from a OpenCL object
+    explicit Program(cl_program prg);
+
     /// Increments the program reference count.
     void retain() const;
 
@@ -51,12 +55,27 @@ public:
     operator cl_program() const;
 
 public:
-    static Program from_source(const Context & ctx, const std::string & source);
-    static Program from_source(const Context & ctx, const std::vector<std::string> & lines);
+    /// Create a program from source in a default context
+    ///
+    /// @param source OpenCL source code
+    /// @return Program object
+    static Program from_source(const std::string & source);
+
+    /// Create a program from source
+    ///
+    /// @param context OpenCL context
+    /// @param source OpenCL source code
+    /// @return Program object
+    static Program from_source(const Context & context, const std::string & source);
+
+    /// Create a program from source
+    ///
+    /// @param context OpenCL context
+    /// @param lines OpenCL source code (as lines)
+    /// @return Program object
+    static Program from_source(const Context & context, const std::vector<std::string> & lines);
 
 private:
-    explicit Program(cl_program prg);
-
     template <typename T>
     T
     get_info(cl_program_info name) const
@@ -66,9 +85,8 @@ private:
         return val;
     }
 
+    /// Underlying OpenCL program
     cl_program prg;
-
-    friend class Kernel;
 };
 
 } // namespace openclcpp_lite

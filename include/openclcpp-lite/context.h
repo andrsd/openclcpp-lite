@@ -5,18 +5,28 @@
 
 #include "openclcpp-lite/cl.h"
 #include "openclcpp-lite/templ.h"
-#include "openclcpp-lite/enums.h"
-#include "openclcpp-lite/exception.h"
-#include "openclcpp-lite/platform.h"
 #include "openclcpp-lite/device.h"
-#include "openclcpp-lite/buffer.h"
 #include <vector>
+#include <mutex>
 
 namespace openclcpp_lite {
 
 class Context {
 public:
+    /// Create a null context
+    Context();
+
+    /// Create a context from a OpenCL context
+    explicit Context(cl_context context);
+
+    /// Create a context on a device
+    ///
+    /// @param device Device to create the context on
     explicit Context(const Device & device);
+
+    /// Create a context on devices
+    ///
+    /// @param devices Devices to create the context on
     explicit Context(const std::vector<Device> & devices);
 
     /// Increment the context reference count.
@@ -36,30 +46,9 @@ public:
     /// Devices attached to this context
     std::vector<Device> devices() const;
 
-    /// Allocate
-    template <typename T>
-    TBuffer<T>
-    alloc(int n_entries) const
-    {
-        throw Exception("Unsupported data type");
-    }
-
     operator cl_context() const { return this->ctx; }
 
-public:
-    static Context default_context();
-
 private:
-    explicit Context(cl_context context);
-
-    template <typename T>
-    TBuffer<T>
-    alloc_helper(int n_entries) const
-    {
-        TBuffer<T> b(*this, READ_WRITE, n_entries);
-        return b;
-    }
-
     template <typename T>
     T
     get_info(cl_context_info name) const
@@ -71,35 +60,12 @@ private:
 
     cl_context ctx;
 
-    friend class Queue;
-    friend class Memory;
-    friend class Buffer;
-    friend class Program;
-    friend class Event;
-    friend class Kernel;
+public:
+    static Context get_default();
+
+private:
+    static std::once_flag have_default;
+    static Context default_context;
 };
-
-template <>
-inline TBuffer<double>
-Context::alloc<double>(int n_entries) const
-{
-    return alloc_helper<double>(n_entries);
-}
-
-template <>
-inline TBuffer<float>
-Context::alloc<float>(int n_entries) const
-{
-    return alloc_helper<float>(n_entries);
-}
-
-template <>
-inline TBuffer<int>
-Context::alloc<int>(int n_entries) const
-{
-    return alloc_helper<int>(n_entries);
-}
-
-Context default_context();
 
 } // namespace openclcpp_lite

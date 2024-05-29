@@ -12,8 +12,12 @@ namespace openclcpp_lite {
 class Queue;
 class Context;
 
+/// OpenCL event
 class Event {
 public:
+    /// Create an event from OpenCL event
+    explicit Event(cl_event evt);
+
     /// Increment the context reference count.
     void retain() const;
 
@@ -41,8 +45,6 @@ public:
     operator cl_event() const;
 
 private:
-    explicit Event(cl_event evt);
-
     template <typename T>
     T
     get_info(cl_event_info name) const
@@ -52,9 +54,8 @@ private:
         return val;
     }
 
+    /// Underlying OpenCL event
     cl_event evt;
-
-    friend class Queue;
 };
 
 /// Waits on the host thread for commands identified by event object to complete.

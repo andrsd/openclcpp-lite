@@ -71,19 +71,32 @@ Program::operator cl_program() const
 }
 
 Program
-Program::from_source(const Context & ctx, const std::string & source)
+Program::from_source(const std::string & source)
 {
+    auto context = Context::get_default();
     const char * s = source.c_str();
     size_t len = source.length();
-    cl_int err_code;
-    auto p = clCreateProgramWithSource(ctx, 1, &s, &len, &err_code);
-    OPENCL_CHECK(err_code);
+    cl_int err;
+    auto p = clCreateProgramWithSource(context, 1, &s, &len, &err);
+    OPENCL_CHECK(err);
     Program prg(p);
     return prg;
 }
 
 Program
-Program::from_source(const Context & ctx, const std::vector<std::string> & lines)
+Program::from_source(const Context & context, const std::string & source)
+{
+    const char * s = source.c_str();
+    size_t len = source.length();
+    cl_int err;
+    auto p = clCreateProgramWithSource(context, 1, &s, &len, &err);
+    OPENCL_CHECK(err);
+    Program prg(p);
+    return prg;
+}
+
+Program
+Program::from_source(const Context & context, const std::vector<std::string> & lines)
 {
     size_t n = lines.size();
     std::vector<const char *> strs;
@@ -94,9 +107,9 @@ Program::from_source(const Context & ctx, const std::vector<std::string> & lines
         strs.emplace_back(s.c_str());
         lens.emplace_back(s.size());
     }
-    cl_int err_code;
-    auto p = clCreateProgramWithSource(ctx, 1, strs.data(), lens.data(), &err_code);
-    OPENCL_CHECK(err_code);
+    cl_int err;
+    auto p = clCreateProgramWithSource(context, 1, strs.data(), lens.data(), &err);
+    OPENCL_CHECK(err);
     Program prg(p);
     return prg;
 }

@@ -7,23 +7,28 @@
 
 namespace openclcpp_lite {
 
+std::once_flag Context::have_default;
+Context Context::default_context;
+
+Context::Context() : ctx(nullptr) {}
+
 Context::Context(const Device & device)
 {
-    cl_int err_code;
+    cl_int err;
     cl_device_id id = device;
-    this->ctx = clCreateContext(nullptr, 1, &id, nullptr, nullptr, &err_code);
-    OPENCL_CHECK(err_code);
+    this->ctx = clCreateContext(nullptr, 1, &id, nullptr, nullptr, &err);
+    OPENCL_CHECK(err);
 }
 
 Context::Context(const std::vector<Device> & devices)
 {
-    cl_int err_code;
+    cl_int err;
     std::vector<cl_device_id> ids;
     ids.reserve(devices.size());
     for (auto & d : devices)
         ids.emplace_back(d);
-    this->ctx = clCreateContext(nullptr, ids.size(), ids.data(), nullptr, nullptr, &err_code);
-    OPENCL_CHECK(err_code);
+    this->ctx = clCreateContext(nullptr, ids.size(), ids.data(), nullptr, nullptr, &err);
+    OPENCL_CHECK(err);
 }
 
 Context::Context(cl_context context) : ctx(context) {}
@@ -68,18 +73,14 @@ Context::devices() const
 }
 
 Context
-default_context()
+Context::get_default()
 {
-    auto platforms = Platform::platforms();
-    if (platforms.empty())
-        throw Exception("No OpenCL platofrms available");
-
-    auto devices = platforms[0].devices(Device::DEFAULT);
-    if (devices.empty())
-        throw Exception("No OpenCL devices available");
-
-    Context ctx(devices);
-    return ctx;
+    std::call_once(Context::have_default, []() {
+        cl_int err;
+        auto ctx = clCreateContextFromType(nullptr, CL_DEVICE_TYPE_DEFAULT, nullptr, nullptr, &err);
+        Context::default_context = Context(ctx);
+    });
+    return default_context;
 }
 
 } // namespace openclcpp_lite

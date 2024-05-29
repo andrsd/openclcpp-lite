@@ -10,6 +10,7 @@ namespace openclcpp_lite {
 
 class Context;
 
+/// OpenCL memory. Base class for Buffers and Images
 class Memory {
 public:
     /// Increments the memory object reference count.
@@ -19,7 +20,7 @@ public:
     void release() const;
 
     /// Return actual size of the data store associated with in bytes.
-    size_t size() const;
+    size_t byte_size() const;
 
     /// Map count. The map count returned should be considered immediately stale. It is unsuitable
     /// for general use in applications. This feature is provided for debugging.
@@ -51,6 +52,7 @@ protected:
         return val;
     }
 
+    /// Underlying OpenCL memory
     cl_mem mem;
 };
 

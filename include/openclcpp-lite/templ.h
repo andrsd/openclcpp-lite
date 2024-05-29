@@ -12,16 +12,20 @@
 namespace openclcpp_lite {
 
 template <typename>
-struct is_std_vector : std::false_type {};
+struct is_std_vector : std::false_type {
+};
 
 template <typename T, typename A>
-struct is_std_vector<std::vector<T, A>> : std::true_type {};
+struct is_std_vector<std::vector<T, A>> : std::true_type {
+};
 
 template <typename>
-struct is_std_string : std::false_type {};
+struct is_std_string : std::false_type {
+};
 
 template <>
-struct is_std_string<std::string> : std::true_type {};
+struct is_std_string<std::string> : std::true_type {
+};
 
 template <typename FN, typename OBJ, typename T>
 cl_int

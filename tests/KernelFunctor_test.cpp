@@ -3,6 +3,7 @@
 #include "openclcpp-lite/queue.h"
 #include "openclcpp-lite/program.h"
 #include "openclcpp-lite/kernel.h"
+#include "openclcpp-lite/kernel_functor.h"
 #include "openclcpp-lite/range.h"
 #include "openclcpp-lite/buffer.h"
 
@@ -19,23 +20,7 @@ std::string src1 =
 
 }
 
-TEST(KernelTest, create)
-{
-    auto ctx = ocl::Context::get_default();
-
-    auto prg = ocl::Program::from_source(ctx, src1);
-    prg.build();
-
-    ocl::Kernel k(prg, "vec_add");
-    EXPECT_EQ(k.reference_count(), 1);
-    EXPECT_EQ(k.function_name(), "vec_add");
-    EXPECT_EQ(k.num_of_args(), 3);
-    EXPECT_EQ(k.context(), ctx);
-    EXPECT_EQ(k.program(), prg);
-    EXPECT_EQ(k.attributes().size(), 0);
-}
-
-TEST(KernelTest, execute)
+TEST(KernelTest, execute_functor)
 {
     const int N = 10;
     std::vector<float> h_a(N);
@@ -54,18 +39,17 @@ TEST(KernelTest, execute)
     }
 
     ocl::Range<1> rng { N };
-    ocl::Buffer<float, 1> d_a { rng };
-    ocl::Buffer<float, 1> d_b { rng };
-    ocl::Buffer<float, 1> d_c { rng };
+    using FloatBuffer = ocl::Buffer<float, 1>;
 
-    ocl::Kernel k(prg, "vec_add");
-    k.set_arg(0, d_a);
-    k.set_arg(1, d_b);
-    k.set_arg(2, d_c);
+    FloatBuffer d_a{h_a.data(), rng };
+    FloatBuffer d_b{h_b.data(), rng};
+    FloatBuffer d_c { rng };
+
+    auto vec_add = ocl::Kernel::create<FloatBuffer, FloatBuffer, FloatBuffer>(prg, "vec_add");
 
     q.enqueue_write(d_a, rng, h_a.data());
     q.enqueue_write(d_b, rng, h_b.data());
-    q.enqueue_kernel(k, rng);
+    q.enqueue_kernel(vec_add(d_a, d_b, d_c), rng);
     q.enqueue_read(d_c, rng, h_c.data());
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
