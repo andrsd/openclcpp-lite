@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 David Andrs <andrsd@gmail.com>
+// SPDX-License-Identifier: MIT
+
 #include "openclcpp-lite/error.h"
 #include "openclcpp-lite/exception.h"
 #include "openclcpp-lite/cl.h"

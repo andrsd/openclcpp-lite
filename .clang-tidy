@@ -8,6 +8,7 @@ Checks: >
   hicpp-*
   misc-*
   modernize-*
+  -modernize-use-trailing-return-type
   mpi-*
   openmp-use-default-none
   performance-*

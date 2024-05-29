@@ -1,0 +1,72 @@
+name: qa
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cpp-linter:
+    name: c++ linter
+    defaults:
+      run:
+        shell: bash -el {0}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.9
+          auto-update-conda: false
+          channels: andrsd,defaults
+
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt install \
+            ocl-icd-opencl-dev
+          conda install \
+            cmake \
+            make \
+            clang \
+            clangxx \
+            libcxx \
+            fmt==9.1.0
+
+      - name: Configure
+        run: |
+          cmake -S . -B ${{ github.workspace }}/build \
+            -DOPENCLCPP_LITE_BUILD_TESTS=YES \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=on
+
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: file
+          tidy-checks: ''
+          version: 14
+          lines-changed-only: true
+          ignore: 'cmake|contrib|docs'
+          step-summary: true
+          database: build
+
+      - name: Result
+        if: steps.linter.outputs.checks-failed > 0
+        run: exit 1
+
+  check-spdx-tags:
+    name: check spdx tags
+    defaults:
+      run:
+        shell: bash -el {0}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: kt3k/license_checker@v1.0.6
