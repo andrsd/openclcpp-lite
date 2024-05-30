@@ -20,7 +20,7 @@ std::string src1 =
 
 }
 
-TEST(KernelTest, execute_functor)
+TEST(KernelFunctorTest, execute)
 {
     const int N = 10;
     std::vector<float> h_a(N);

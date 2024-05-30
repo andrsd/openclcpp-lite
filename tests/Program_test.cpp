@@ -23,6 +23,13 @@ std::vector<std::string> src2 = {
     "    C[i] = A[i] - B[i];"
     "}"
 };
+
+const char * src3[] = {
+    "__kernel void vec_sub(__global const int *A, __global const int *B, __global int *C) {",
+    "    int i = get_global_id(0);",
+    "    C[i] = A[i] - B[i];",
+    "}"
+};
 // clang-format on
 
 } // namespace
@@ -52,6 +59,15 @@ TEST(ProgramTest, from_lines)
     prg.build();
     EXPECT_EQ(prg.num_of_kernels(), 2);
     EXPECT_THAT(prg.kernel_names(), testing::UnorderedElementsAre("vec_add", "vec_sub"));
+}
+
+TEST(ProgramTest, from_const_char)
+{
+    auto ctx = ocl::Context::get_default();
+    auto prg = ocl::Program::from_source(ctx, 4, src3);
+    prg.build();
+    EXPECT_EQ(prg.num_of_kernels(), 1);
+    EXPECT_THAT(prg.kernel_names(), testing::UnorderedElementsAre("vec_sub"));
 }
 
 TEST(ProgramTest, ref_cnt)

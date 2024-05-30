@@ -73,7 +73,16 @@ public:
     /// @param context OpenCL context
     /// @param lines OpenCL source code (as lines)
     /// @return Program object
+    static Program from_source(const std::vector<std::string> & lines);
     static Program from_source(const Context & context, const std::vector<std::string> & lines);
+
+    /// Create a program from source
+    ///
+    /// @param n_lines Number of lines
+    /// @param lines Lines with code
+    /// @return Program object
+    static Program from_source(int n_lines, const char ** lines);
+    static Program from_source(const Context & context, unsigned int n_lines, const char ** lines);
 
 private:
     template <typename T>
