@@ -108,7 +108,7 @@ Program::from_source(const Context & context, const std::vector<std::string> & l
         lens.emplace_back(s.size());
     }
     cl_int err;
-    auto p = clCreateProgramWithSource(context, 1, strs.data(), lens.data(), &err);
+    auto p = clCreateProgramWithSource(context, n, strs.data(), lens.data(), &err);
     OPENCL_CHECK(err);
     Program prg(p);
     return prg;
