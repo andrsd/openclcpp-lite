@@ -134,4 +134,25 @@ Program::from_source(const Context & context, const std::vector<std::string> & l
     return prg;
 }
 
+Program
+Program::from_source(int n_lines, const char ** lines)
+{
+    auto context = Context::get_default();
+    cl_int err;
+    auto p = clCreateProgramWithSource(context, n_lines, lines, nullptr, &err);
+    OPENCL_CHECK(err);
+    Program prg(p);
+    return prg;
+}
+
+Program
+Program::from_source(const Context & context, unsigned int n_lines, const char ** lines)
+{
+    cl_int err;
+    auto p = clCreateProgramWithSource(context, n_lines, lines, nullptr, &err);
+    OPENCL_CHECK(err);
+    Program prg(p);
+    return prg;
+}
+
 } // namespace openclcpp_lite
