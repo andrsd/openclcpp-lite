@@ -1,6 +1,7 @@
 project(openclcpp-lite-test)
 
 include(GoogleTest)
+include(OpenCLProgram)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -20,10 +21,23 @@ add_executable(${PROJECT_NAME}
     Queue_test.cpp
 )
 
+if (CI_ENABLED)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE CI_ENABLED)
+else()
+    target_sources(${PROJECT_NAME} PRIVATE TestVectorProgram_test.cpp)
+
+    target_add_opencl_program(${PROJECT_NAME}
+        CLASS TestVectorProgram
+        FILE test_vector_program.cl
+    )
+endif()
+
+
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<INSTALL_INTERFACE:include/openclcpp-lite>
 )
 
