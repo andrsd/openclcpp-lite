@@ -3,8 +3,14 @@
 
 #include "openclcpp-lite/device.h"
 #include "openclcpp-lite/utils.h"
+#include "openclcpp-lite/context.h"
 
 namespace openclcpp_lite {
+
+std::once_flag Device::have_default;
+Device Device::default_device;
+
+Device::Device() : id(nullptr) {}
 
 Device::Device(cl_device_id id) : id(id) {}
 
@@ -279,6 +285,17 @@ Device::type() const
 {
     auto t = get_info<cl_device_type>(CL_DEVICE_TYPE);
     return static_cast<Type>(t);
+}
+
+Device
+Device::get_default()
+{
+    std::call_once(Device::have_default, []() {
+        auto context = Context::get_default();
+        auto dev = context.devices()[0];
+        Device::default_device = Device(dev);
+    });
+    return default_device;
 }
 
 } // namespace openclcpp_lite

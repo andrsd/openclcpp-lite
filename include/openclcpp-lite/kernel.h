@@ -19,8 +19,16 @@ class Context;
 template <typename... Ts>
 class KernelFunctor;
 
+/// OpenCL kernel
 class Kernel {
 public:
+    /// Create a kernel from an OpenCL kernel
+    explicit Kernel(cl_kernel kernel);
+
+    /// Create a kernel from a program and a kernel name
+    ///
+    /// @param program OpenCL program
+    /// @param kernel_name Kernel name
     Kernel(const Program & program, const std::string & kernel_name);
 
     /// Return the kernel function name.
@@ -58,8 +66,6 @@ public:
     operator cl_kernel() const;
 
 private:
-    explicit Kernel(cl_kernel kernel);
-
     template <typename T>
     T
     get_info(cl_kernel_info name) const
@@ -69,6 +75,7 @@ private:
         return val;
     }
 
+    /// Underlying OpenCL kernel
     cl_kernel kern;
 
 public:
@@ -79,45 +86,6 @@ public:
     {
         KernelFunctor<Ts...> fn(program, kernel_name);
         return fn;
-    }
-};
-
-//
-
-template <typename... Ts>
-class KernelFunctor {
-public:
-    KernelFunctor(const Program & program, const std::string & name) : kern(program, name) {}
-
-    Kernel
-    operator()(Ts... ts)
-    {
-        set_args<0>(std::forward<Ts>(ts)...);
-        return this->kern;
-    }
-
-private:
-    Kernel kern;
-
-    template <int INDEX, typename T0, typename... T1s>
-    void
-    set_args(T0 && t0, T1s &&... t1s)
-    {
-        this->kern.set_arg(INDEX, t0);
-        set_args<INDEX + 1, T1s...>(std::forward<T1s>(t1s)...);
-    }
-
-    template <int INDEX, typename T0>
-    void
-    set_args(T0 && t0)
-    {
-        this->kern.set_arg(INDEX, t0);
-    }
-
-    template <int>
-    void
-    set_args()
-    {
     }
 };
 

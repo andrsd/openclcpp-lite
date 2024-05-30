@@ -10,9 +10,9 @@ namespace openclcpp_lite {
 
 Kernel::Kernel(const Program & program, const std::string & kernel_name)
 {
-    cl_int err_code;
-    this->kern = clCreateKernel(program, kernel_name.c_str(), &err_code);
-    OPENCL_CHECK(err_code);
+    cl_int err;
+    this->kern = clCreateKernel(program, kernel_name.c_str(), &err);
+    OPENCL_CHECK(err);
 }
 
 Kernel::Kernel(cl_kernel kernel) : kern(kernel) {}

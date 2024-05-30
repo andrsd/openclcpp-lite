@@ -11,9 +11,16 @@
 
 namespace openclcpp_lite {
 
+/// OpenCL platform
 class Platform {
 public:
+    /// Get list of available platforms
+    ///
+    /// @return List of available platforms
     static std::vector<Platform> platforms();
+
+    /// Create a platform from a OpenCL platform
+    explicit Platform(cl_platform_id id);
 
     /// Platform name
     std::string name() const;
@@ -36,8 +43,6 @@ public:
     operator cl_platform_id() const { return this->id; }
 
 private:
-    explicit Platform(cl_platform_id id);
-
     template <typename T>
     T
     get_info(cl_platform_info name) const
@@ -47,6 +52,7 @@ private:
         return val;
     }
 
+    /// Underlying OpenCL platform
     cl_platform_id id;
 };
 

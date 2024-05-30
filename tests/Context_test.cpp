@@ -3,30 +3,20 @@
 
 namespace ocl = openclcpp_lite;
 
-TEST(ContextTest, default_contex)
+TEST(ContextTest, num_devices)
 {
-    auto ctx = ocl::default_context();
-    EXPECT_EQ(ctx.reference_count(), 1);
+    auto ctx = ocl::Context::get_default();
     auto devices = ctx.devices();
     auto n_devs = ctx.num_of_devices();
+    EXPECT_GE(n_devs, 1);
 }
 
 TEST(ContextTest, ref_cnt)
 {
-    auto ctx = ocl::default_context();
-    EXPECT_EQ(ctx.reference_count(), 1);
+    auto ctx = ocl::Context::get_default();
+    auto n_refs = ctx.reference_count();
     ctx.retain();
-    EXPECT_EQ(ctx.reference_count(), 2);
+    EXPECT_EQ(ctx.reference_count(), n_refs + 1);
     ctx.release();
-    EXPECT_EQ(ctx.reference_count(), 1);
-}
-
-TEST(ContextTest, alloc_buffer)
-{
-    auto ctx = ocl::default_context();
-    auto b_f = ctx.alloc<float>(10);
-    auto b_d = ctx.alloc<double>(10);
-
-    struct MyType {};
-    EXPECT_THROW({ctx.alloc<MyType>(10);}, ocl::Exception);
+    EXPECT_EQ(ctx.reference_count(), n_refs);
 }

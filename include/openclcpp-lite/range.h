@@ -15,7 +15,7 @@ namespace openclcpp_lite {
 template <int N>
 class Range {
 public:
-    /// Empty range
+    /// Create an empty range
     Range() : dims(0)
     {
         for (int i = 0; i < N; i++)
@@ -35,33 +35,45 @@ public:
 
     operator const size_t *() const { return this->sz.data(); }
 
+    /// Runtime number of dimensions
+    ///
+    /// @return Number of dimensions
     size_t
     dimensions() const
     {
         return this->dims;
     }
 
-    /// Runtime number of dimensions
+    /// Number of indices in the whole range
+    ///
+    /// @return Number of indices in the whole range
     size_t
     size() const
     {
-        return this->dims * sizeof(size_t);
+        if (this->dims == 0)
+            return 0;
+        else {
+            size_t s = 1;
+            for (int i = 0; i < this->dims; i++)
+                s *= this->sz[i];
+            return s;
+        }
     }
 
-    size_t *
-    get()
+    /// Number of indices in a specified dimension
+    ///
+    /// @param idx Dimension index
+    /// @return Number of indices in the dimension
+    size_t
+    size(int idx) const
     {
-        return this->sz.data();
-    }
-
-    const size_t *
-    get() const
-    {
-        return this->sz.data();
+        return this->sz[idx];
     }
 
 private:
+    /// Size of the range in each dimension
     std::array<size_t, N> sz;
+    /// Number of dimensions
     cl_uint dims;
 };
 

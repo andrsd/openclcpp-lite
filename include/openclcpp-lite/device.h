@@ -8,11 +8,11 @@
 #include "openclcpp-lite/error.h"
 #include <vector>
 #include <string>
+#include <mutex>
 
 namespace openclcpp_lite {
 
-class Platform;
-
+/// OpenCL device
 class Device {
 public:
     enum Type {
@@ -23,6 +23,12 @@ public:
         DEFAULT = CL_DEVICE_TYPE_DEFAULT,
         ALL = CL_DEVICE_TYPE_ALL
     };
+
+    /// Create an null device
+    Device();
+
+    /// Create a device from OpenCL device ID
+    explicit Device(cl_device_id id);
 
     /// The default compute device address space size specified as an unsigned integer value in
     /// bits. Currently supported values are 32 or 64 bits.
@@ -226,8 +232,6 @@ public:
     operator cl_device_id() const { return this->id; }
 
 private:
-    explicit Device(cl_device_id id);
-
     template <typename T>
     T
     get_info(cl_device_info name) const
@@ -239,10 +243,12 @@ private:
 
     cl_device_id id;
 
-    friend class Platform;
-    friend class Context;
-    friend class Queue;
-    friend class Program;
+public:
+    static Device get_default();
+
+private:
+    static std::once_flag have_default;
+    static Device default_device;
 };
 
 } // namespace openclcpp_lite

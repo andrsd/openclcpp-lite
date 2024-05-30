@@ -27,9 +27,17 @@ std::vector<std::string> src2 = {
 
 } // namespace
 
+TEST(ProgramTest, from_single_line_default_context)
+{
+    auto prg = ocl::Program::from_source(src1);
+    prg.build();
+    EXPECT_EQ(prg.num_of_kernels(), 1);
+    EXPECT_THAT(prg.kernel_names(), testing::UnorderedElementsAre("vector_add"));
+}
+
 TEST(ProgramTest, from_single_line)
 {
-    auto ctx = ocl::default_context();
+    auto ctx = ocl::Context::get_default();
     auto devs = ctx.devices();
     auto prg = ocl::Program::from_source(ctx, src1);
     prg.build();
@@ -39,7 +47,7 @@ TEST(ProgramTest, from_single_line)
 
 TEST(ProgramTest, from_lines)
 {
-    auto ctx = ocl::default_context();
+    auto ctx = ocl::Context::get_default();
     auto prg = ocl::Program::from_source(ctx, src2);
     prg.build();
     EXPECT_EQ(prg.num_of_kernels(), 2);
@@ -48,15 +56,16 @@ TEST(ProgramTest, from_lines)
 
 TEST(ProgramTest, ref_cnt)
 {
-    auto ctx = ocl::default_context();
+    auto ctx = ocl::Context::get_default();
     auto prg = ocl::Program::from_source(ctx, src2);
     prg.build();
-    EXPECT_EQ(prg.reference_count(), 1);
+    auto n_refs = prg.reference_count();
     prg.retain();
-    EXPECT_EQ(prg.reference_count(), 2);
+    EXPECT_EQ(prg.reference_count(), n_refs + 1);
     prg.release();
-    EXPECT_EQ(prg.reference_count(), 1);
+    EXPECT_EQ(prg.reference_count(), n_refs);
     EXPECT_EQ(prg.context(), ctx);
 
     auto dev = prg.devices();
+    EXPECT_GE(dev.size(), 1);
 }

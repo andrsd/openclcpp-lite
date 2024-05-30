@@ -19,7 +19,7 @@ Memory::release() const
 }
 
 size_t
-Memory::size() const
+Memory::byte_size() const
 {
     return get_info<size_t>(CL_MEM_SIZE);
 }
