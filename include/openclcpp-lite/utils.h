@@ -9,6 +9,12 @@
 namespace openclcpp_lite {
 namespace utils {
 
+/**
+ * Convert supplied string to lower case.
+ * @param name The string to convert upper case.
+ */
+std::string to_lower(const std::string & name);
+
 std::string join(const std::string & joiner, const std::vector<std::string> & items);
 
 std::vector<std::string> split(const std::string & s, const std::string & delimiter);

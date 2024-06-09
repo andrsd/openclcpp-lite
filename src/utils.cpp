@@ -2,9 +2,18 @@
 // SPDX-License-Identifier: MIT
 
 #include "openclcpp-lite/utils.h"
+#include <algorithm>
 
 namespace openclcpp_lite {
 namespace utils {
+
+std::string
+to_lower(const std::string & name)
+{
+    std::string lower(name);
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    return lower;
+}
 
 std::string
 join(const std::string & joiner, const std::vector<std::string> & items)
