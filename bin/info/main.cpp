@@ -124,7 +124,9 @@ print_platform_info(const ocl::Platform & platform)
     fmt::print("  vendor: {}\n", platform.vendor());
     fmt::print("  version: {}\n", platform.version());
     fmt::print("  profile: {}\n", platform.profile());
-    fmt::print("  extensions: {}\n", platform.extensions());
+    fmt::print("  extensions:\n");
+    for (auto & e : platform.extensions())
+        fmt::print("  - {}\n", e);
     fmt::print("  devices:\n");
     for (auto & d : platform.devices()) {
         print_device_info(d);

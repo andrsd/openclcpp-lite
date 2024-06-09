@@ -15,7 +15,9 @@ TEST(PlatformTest, get_platforms)
         std::cerr << "- name: " << name << std::endl;
         std::cerr << "  vendor: " << vendor << std::endl;
         std::cerr << "  version: " << version << std::endl;
-        std::cerr << "  extensions: " << exts << std::endl;
+        std::cerr << "  extensions: " << std::endl;
+        for (auto & e : exts)
+            std::cerr << "    - " << e << std::endl;
         std::cerr << "  profile: " << profile << std::endl;
     }
 }
