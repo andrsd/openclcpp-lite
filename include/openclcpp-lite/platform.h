@@ -35,7 +35,7 @@ public:
     std::string version() const;
 
     /// A space-separated list of extension names
-    std::string extensions() const;
+    std::vector<std::string> extensions() const;
 
     /// OpenCL profile string
     std::string profile() const;

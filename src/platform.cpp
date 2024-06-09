@@ -24,10 +24,11 @@ Platform::version() const
     return get_info<std::string>(CL_PLATFORM_VERSION);
 }
 
-std::string
+std::vector<std::string>
 Platform::extensions() const
 {
-    return get_info<std::string>(CL_PLATFORM_EXTENSIONS);
+    auto exts = get_info<std::string>(CL_PLATFORM_EXTENSIONS);
+    return utils::split(exts, " ");
 }
 
 std::string
