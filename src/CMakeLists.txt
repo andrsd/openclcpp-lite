@@ -37,8 +37,44 @@ endif()
 
 # Install
 
+configure_package_config_file(
+    ${PROJECT_SOURCE_DIR}/cmake/openclcpp-lite-config.cmake.in
+    openclcpp-lite-config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
+    NO_SET_AND_CHECK_MACRO
+)
+write_basic_package_version_file(
+    openclcpp-lite-config-version.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(
+    TARGETS openclcpp-lite
+    EXPORT OpenCLCppLiteTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openclcpp-lite
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
+)
+
+install(
+    EXPORT OpenCLCppLiteTargets
+    FILE openclcpp-lite-targets.cmake
+    NAMESPACE openclcpp-lite::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/openclcpp-lite-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/openclcpp-lite-config-version.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
 )
