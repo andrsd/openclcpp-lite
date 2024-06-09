@@ -65,6 +65,39 @@ Program::build() const
     OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, nullptr, nullptr, nullptr));
 }
 
+void
+Program::compile() const
+{
+    OPENCL_CHECK(
+        clCompileProgram(this->prg, 0, nullptr, nullptr, 0, nullptr, nullptr, nullptr, nullptr));
+}
+
+Program::BuildStatus
+Program::build_status(Device device) const
+{
+    return static_cast<BuildStatus>(
+        get_build_info<cl_build_status>(device, CL_PROGRAM_BUILD_STATUS));
+}
+
+std::string
+Program::build_options(Device device) const
+{
+    return get_build_info<std::string>(device, CL_PROGRAM_BUILD_OPTIONS);
+}
+
+std::string
+Program::build_log(Device device) const
+{
+    return get_build_info<std::string>(device, CL_PROGRAM_BUILD_LOG);
+}
+
+Program::BinaryType
+Program::binary_type(Device device) const
+{
+    return static_cast<BinaryType>(
+        get_build_info<cl_program_binary_type>(device, CL_PROGRAM_BINARY_TYPE));
+}
+
 Program::operator cl_program() const
 {
     return this->prg;
