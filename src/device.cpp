@@ -55,6 +55,7 @@ std::vector<std::string>
 Device::extensions() const
 {
     auto str = get_info<std::string>(CL_DEVICE_EXTENSIONS);
+    str = utils::rtrim(str);
     return utils::split(str, " ");
 }
 
