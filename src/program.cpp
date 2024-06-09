@@ -81,6 +81,28 @@ Program::compile(const std::vector<std::string> & options) const
                                   nullptr));
 }
 
+Program
+Program::link(const std::vector<Program> & programs, const std::vector<std::string> & options) const
+{
+    std::vector<cl_program> prgs;
+    for (auto & p : programs)
+        prgs.push_back(p);
+    auto ctx = Context::get_default();
+    auto opts = utils::join(" ", options);
+    cl_int err;
+    auto l = clLinkProgram(ctx,
+                           0,
+                           nullptr,
+                           opts.c_str(),
+                           prgs.size(),
+                           prgs.data(),
+                           nullptr,
+                           nullptr,
+                           &err);
+    OPENCL_CHECK(err);
+    return Program(l);
+}
+
 Program::BuildStatus
 Program::build_status(Device device) const
 {

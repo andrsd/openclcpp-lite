@@ -78,6 +78,10 @@ public:
     /// Compiles a program’s source
     void compile(const std::vector<std::string> & options = std::vector<std::string>()) const;
 
+    /// Links a set of compiled program objects
+    Program link(const std::vector<Program> & programs,
+                 const std::vector<std::string> & options = std::vector<std::string>()) const;
+
     /// Returns the build, compile or link status, whichever was performed last on program for
     /// device.
     BuildStatus build_status(Device device) const;
