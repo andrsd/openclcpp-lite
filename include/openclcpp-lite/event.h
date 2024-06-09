@@ -15,6 +15,22 @@ class Context;
 /// OpenCL event
 class Event {
 public:
+    struct ProfilingInfo {
+        /// Value that describes the current device time counter in nanoseconds when the command
+        /// was enqueued in a command-queue by the host.
+        uint64_t queued;
+        /// Value that describes the current device time counter in nanoseconds when the command
+        /// that has been enqueued is submitted by the host to the device associated with the
+        /// command-queue.
+        uint64_t submit;
+        /// Value that describes the current device time counter in nanoseconds when the command
+        /// starts execution on the device.
+        uint64_t start;
+        /// Value that describes the current device time counter in nanoseconds when the command
+        /// has finished execution on the device.
+        uint64_t end;
+    };
+
     /// Create an event from OpenCL event
     explicit Event(cl_event evt);
 
@@ -42,6 +58,9 @@ public:
     /// Waits on the host thread for commands identified by event object to complete.
     void wait() const;
 
+    /// Returns profiling information for the command associated with event if profiling is enabled.
+    ProfilingInfo profiling_info() const;
+
     operator cl_event() const;
 
 private:
@@ -51,6 +70,15 @@ private:
     {
         T val;
         get_info_helper(clGetEventInfo, this->evt, name, val);
+        return val;
+    }
+
+    template <typename T>
+    T
+    get_profiling_info(cl_profiling_info name) const
+    {
+        T val;
+        get_info_helper(clGetEventProfilingInfo, this->evt, name, val);
         return val;
     }
 
