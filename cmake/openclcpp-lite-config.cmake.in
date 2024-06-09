@@ -1,0 +1,19 @@
+set(OPENCLCPP_LITE_VERSION @PROJECT_VERSION@)
+
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/openclcpp-lite-targets.cmake")
+include(FindPackageHandleStandardArgs)
+include(CMakeFindDependencyMacro)
+
+find_dependency(OpenCL)
+find_dependency(fmt)
+
+find_library(OPENCLCPP_LITE_LIBRARY NAMES openclcpp-lite HINTS ${PACKAGE_PREFIX_DIR}/lib NO_DEFAULT_PATH)
+find_path(OPENCLCPP_LITE_INCLUDE_DIR cl.h HINTS ${PACKAGE_PREFIX_DIR}/include/openclcpp-lite)
+
+find_package_handle_standard_args(
+    openclcpp-lite
+    REQUIRED_VARS OPENCLCPP_LITE_LIBRARY OPENCLCPP_LITE_INCLUDE_DIR
+    VERSION_VAR OPENCLCPP_LITE_VERSION
+)
