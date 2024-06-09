@@ -72,4 +72,51 @@ get_info_helper(FN fn, OBJ obj, cl_uint name, TRET & val)
         return get_info_scalar(fn, obj, name, val);
 }
 
+//
+
+template <typename OBJ, typename T>
+cl_int
+get_build_info_scalar(OBJ obj, cl_device_id device_id, cl_uint name, T & val)
+{
+    OPENCL_CHECK(clGetProgramBuildInfo(obj, device_id, name, sizeof(T), &val, nullptr));
+    return CL_SUCCESS;
+}
+
+template <typename OBJ>
+cl_int
+get_build_info_string(OBJ obj, cl_device_id device_id, cl_uint name, std::string & val)
+{
+    std::size_t n;
+    OPENCL_CHECK(clGetProgramBuildInfo(obj, device_id, name, 0, nullptr, &n));
+    std::vector<char> str(n);
+    OPENCL_CHECK(clGetProgramBuildInfo(obj, device_id, name, n, str.data(), nullptr));
+    val.assign(begin(str), prev(end(str)));
+    return CL_SUCCESS;
+}
+
+template <typename OBJ, typename T, typename A>
+cl_int
+get_build_info_vector(OBJ obj, cl_device_id device_id, cl_uint name, std::vector<T, A> & val)
+{
+    std::size_t n_bytes;
+    OPENCL_CHECK(clGetProgramBuildInfo(obj, device_id, name, 0, nullptr, &n_bytes));
+    const size_t n = n_bytes / sizeof(T);
+    std::vector<T, A> data(n);
+    OPENCL_CHECK(clGetProgramBuildInfo(obj, device_id, name, n_bytes, data.data(), nullptr));
+    val = std::move(data);
+    return CL_SUCCESS;
+}
+
+template <typename OBJ, typename TRET>
+cl_int
+get_build_info_helper(OBJ obj, cl_device_id device_id, cl_uint name, TRET & val)
+{
+    if constexpr (is_std_vector<TRET>::value)
+        return get_build_info_vector(obj, device_id, name, val);
+    else if constexpr (is_std_string<TRET>::value)
+        return get_build_info_string(obj, device_id, name, val);
+    else
+        return get_build_info_scalar(obj, device_id, name, val);
+}
+
 } // namespace openclcpp_lite

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/device.h"
 #include "openclcpp-lite/templ.h"
 #include <string>
 #include <vector>
@@ -16,6 +17,28 @@ class Device;
 /// OpenCL program
 class Program {
 public:
+    enum class BuildStatus {
+        /// no build, compile or link has been performed
+        NONE = CL_BUILD_NONE,
+        /// build, compile or link generated an error
+        ERROR = CL_BUILD_ERROR,
+        /// build, compile or link was successful
+        SUCCESS = CL_BUILD_SUCCESS,
+        /// build, compile or link has not finished
+        IN_PROGRESS = CL_BUILD_IN_PROGRESS
+    };
+
+    enum class BinaryType {
+        ///
+        NONE = CL_PROGRAM_BINARY_TYPE_NONE,
+        ///
+        COMPILED_OBJECT = CL_PROGRAM_BINARY_TYPE_COMPILED_OBJECT,
+        ///
+        LIBRARY = CL_PROGRAM_BINARY_TYPE_LIBRARY,
+        ///
+        EXECUTABLE = CL_PROGRAM_BINARY_TYPE_EXECUTABLE
+    };
+
     /// Create a program from a OpenCL object
     explicit Program(cl_program prg);
 
@@ -51,6 +74,22 @@ public:
 
     /// Builds (compiles and links) a program executable from the program source or binary.
     void build() const;
+
+    /// Compiles a program’s source
+    void compile() const;
+
+    /// Returns the build, compile or link status, whichever was performed last on program for
+    /// device.
+    BuildStatus build_status(Device device) const;
+
+    /// Return the build, compile or link options specified by the options argument
+    std::string build_options(Device device) const;
+
+    /// Return the build, compile or link log
+    std::string build_log(Device device) const;
+
+    /// Return the program binary type
+    BinaryType binary_type(Device device) const;
 
     operator cl_program() const;
 
@@ -91,6 +130,15 @@ private:
     {
         T val;
         get_info_helper(clGetProgramInfo, this->prg, name, val);
+        return val;
+    }
+
+    template <typename T>
+    T
+    get_build_info(Device device, cl_program_build_info name) const
+    {
+        T val;
+        get_build_info_helper(this->prg, device, name, val);
         return val;
     }
 
