@@ -73,10 +73,10 @@ public:
     std::vector<std::string> kernel_names() const;
 
     /// Builds (compiles and links) a program executable from the program source or binary.
-    void build() const;
+    void build(const std::vector<std::string> & options = std::vector<std::string>()) const;
 
     /// Compiles a program’s source
-    void compile() const;
+    void compile(const std::vector<std::string> & options = std::vector<std::string>()) const;
 
     /// Returns the build, compile or link status, whichever was performed last on program for
     /// device.

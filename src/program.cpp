@@ -60,16 +60,25 @@ Program::kernel_names() const
 }
 
 void
-Program::build() const
+Program::build(const std::vector<std::string> & options) const
 {
-    OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, nullptr, nullptr, nullptr));
+    auto opts = utils::join(" ", options);
+    OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, opts.c_str(), nullptr, nullptr));
 }
 
 void
-Program::compile() const
+Program::compile(const std::vector<std::string> & options) const
 {
-    OPENCL_CHECK(
-        clCompileProgram(this->prg, 0, nullptr, nullptr, 0, nullptr, nullptr, nullptr, nullptr));
+    auto opts = utils::join(" ", options);
+    OPENCL_CHECK(clCompileProgram(this->prg,
+                                  0,
+                                  nullptr,
+                                  opts.c_str(),
+                                  0,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr));
 }
 
 Program::BuildStatus
