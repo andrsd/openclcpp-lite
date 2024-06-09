@@ -36,6 +36,8 @@ Platform::profile() const
     return get_info<std::string>(CL_PLATFORM_PROFILE);
 }
 
+Platform::Platform() {}
+
 Platform::Platform(cl_platform_id id) : id(id) {}
 
 std::vector<Platform>

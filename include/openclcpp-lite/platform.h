@@ -19,6 +19,9 @@ public:
     /// @return List of available platforms
     static std::vector<Platform> platforms();
 
+    /// Create empty platform
+    Platform();
+
     /// Create a platform from a OpenCL platform
     explicit Platform(cl_platform_id id);
 
