@@ -14,3 +14,9 @@ TEST(Utils, rtrim)
     EXPECT_EQ(ocl::utils::rtrim("asdf"), "asdf");
     EXPECT_EQ(ocl::utils::rtrim("as df "), "as df");
 }
+
+TEST(Utils, starts_with)
+{
+    EXPECT_TRUE(ocl::utils::starts_with("asdf", "asd"));
+    EXPECT_FALSE(ocl::utils::starts_with("asdf", "zx"));
+}

@@ -68,5 +68,11 @@ rtrim(const std::string & str)
     return buffer;
 }
 
+bool
+starts_with(const std::string & str, const std::string & prefix)
+{
+    return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
+}
+
 } // namespace utils
 } // namespace openclcpp_lite

@@ -24,5 +24,7 @@ std::string rtrim_null(const std::string & str);
 /// Trim whitespace characters from right
 std::string rtrim(const std::string & str);
 
+bool starts_with(const std::string & str, const std::string & start);
+
 } // namespace utils
 } // namespace openclcpp_lite
