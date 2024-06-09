@@ -21,5 +21,8 @@ std::vector<std::string> split(const std::string & s, const std::string & delimi
 
 std::string rtrim_null(const std::string & str);
 
+/// Trim whitespace characters from right
+std::string rtrim(const std::string & str);
+
 } // namespace utils
 } // namespace openclcpp_lite

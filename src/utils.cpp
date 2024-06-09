@@ -59,5 +59,14 @@ rtrim_null(const std::string & str)
     return buffer;
 }
 
+std::string
+rtrim(const std::string & str)
+{
+    std::string buffer = str;
+    while (buffer[buffer.length() - 1] == ' ')
+        buffer.erase(buffer.length() - 1);
+    return buffer;
+}
+
 } // namespace utils
 } // namespace openclcpp_lite
