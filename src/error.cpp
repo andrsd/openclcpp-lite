@@ -26,7 +26,7 @@ error_message(cl_int ierr)
         { CL_INVALID_PLATFORM, "Invalid platform" },
         { CL_INVALID_PROPERTY, "Invalid property" },
         { CL_INVALID_DEVICE, "Invalid device" },
-        { CL_INVALID_OPERATION, "Invalid operations" },
+        { CL_INVALID_OPERATION, "Invalid operation" },
         { CL_INVALID_CONTEXT, "Invalid context" },
         { CL_INVALID_COMMAND_QUEUE, "Invalid commnad queue" },
         { CL_INVALID_PROGRAM, "Invalid program" },
@@ -38,7 +38,10 @@ error_message(cl_int ierr)
         { CL_INVALID_GLOBAL_OFFSET, "Invalid global offset" },
         { CL_INVALID_WORK_GROUP_SIZE, "Invalid work group size" },
         { CL_INVALID_WORK_ITEM_SIZE, "Invalid work item size" },
-        { CL_MISALIGNED_SUB_BUFFER_OFFSET, "Misaligne sub-buffer offset" },
+        { CL_INVALID_BINARY, "Invalid binary "},
+        { CL_INVALID_BUILD_OPTIONS, "Invalid build options" },
+        { CL_COMPILER_NOT_AVAILABLE, "Compiler not available" },
+        { CL_MISALIGNED_SUB_BUFFER_OFFSET, "Misaligned sub-buffer offset" },
         { CL_INVALID_IMAGE_SIZE, "Invalid image size" },
         // { CL_INVALID_IMAGE_FORMAT, "Invalid image format" },
         { CL_INVALID_EVENT_WAIT_LIST, "Invalid event wait list" },
@@ -53,6 +56,7 @@ error_message(cl_int ierr)
         { CL_MEM_OBJECT_ALLOCATION_FAILURE, "Memory object allocation failure" },
         { CL_MAP_FAILURE, "Map failure" },
         { CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST, "Execute status error for events in wait list" },
+        { CL_BUILD_PROGRAM_FAILURE, "Build program failure" }
     };
     // clang-format on
 
