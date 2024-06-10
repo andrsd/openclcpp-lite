@@ -15,7 +15,7 @@ include(CodeCoverage)
 option(OPENCLCPP_LITE_BUILD_TESTS "Build tests" NO)
 
 find_package(OpenCL REQUIRED)
-find_package(fmt 9.0 QUIET)
+find_package(fmt 8.0 REQUIRED)
 
 if (OPENCLCPP_LITE_BUILD_TESTS)
     FetchContent_Declare(
