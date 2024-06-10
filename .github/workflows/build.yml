@@ -22,30 +22,28 @@ jobs:
             build: Release
           - os: ubuntu-22.04
             build: Debug
+          - os: macos-14
+            build: Release
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Set up miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          python-version: 3.9
-          auto-update-conda: false
-          channels: andrsd,defaults
-
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install dependencies (linux)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt install \
-            ocl-icd-opencl-dev
-          conda install \
+            ocl-icd-opencl-dev \
+            libfmt-dev \
+            lcov
+
+      - name: Install dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install \
             cmake \
-            make \
-            clang \
-            clangxx \
-            libcxx \
-            fmt==9.* \
+            fmt \
             lcov
 
       - name: Configure
