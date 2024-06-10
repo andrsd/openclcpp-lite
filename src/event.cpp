@@ -58,6 +58,17 @@ Event::wait() const
     OPENCL_CHECK(clWaitForEvents(1, &this->evt));
 }
 
+Event::ProfilingInfo
+Event::profiling_info() const
+{
+    ProfilingInfo info;
+    info.queued = get_profiling_info<cl_ulong>(CL_PROFILING_COMMAND_QUEUED);
+    info.submit = get_profiling_info<cl_ulong>(CL_PROFILING_COMMAND_SUBMIT);
+    info.start = get_profiling_info<cl_ulong>(CL_PROFILING_COMMAND_START);
+    info.end = get_profiling_info<cl_ulong>(CL_PROFILING_COMMAND_END);
+    return info;
+}
+
 Event::operator cl_event() const
 {
     return this->evt;

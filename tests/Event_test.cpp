@@ -45,3 +45,23 @@ TEST(EventTest, wait_for_events)
     EXPECT_EQ(wr_evt1.command_execution_status(), ocl::COMPLETE);
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
 }
+
+TEST(EventTest, profiling_info)
+{
+    auto ctx = ocl::Context::get_default();
+    const int N = 500;
+    std::vector<int> h_a(N);
+    for (int i = 0; i < N; i++)
+        h_a[i] = i;
+    ocl::Range<1> rng { N };
+    ocl::Buffer<int, 1> d_a { rng };
+
+    ocl::Queue q(ctx, true);
+    auto wr_evt = q.enqueue_iwrite(d_a, rng, h_a.data());
+    ocl::wait_for_events({ wr_evt });
+    auto info = wr_evt.profiling_info();
+    EXPECT_GT(info.queued, 0);
+    EXPECT_GT(info.submit, 0);
+    EXPECT_GT(info.start, 0);
+    EXPECT_GT(info.end, 0);
+}
