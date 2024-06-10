@@ -2,6 +2,7 @@
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
 #include "openclcpp-lite/queue.h"
+#include "openclcpp-lite/platform.h"
 
 namespace ocl = openclcpp_lite;
 

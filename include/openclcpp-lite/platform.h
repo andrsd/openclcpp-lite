@@ -57,6 +57,13 @@ private:
 
     /// Underlying OpenCL platform
     cl_platform_id id;
+
+public:
+    static Platform get_default();
+
+private:
+    static std::once_flag have_default;
+    static Platform default_platform;
 };
 
 std::vector<Platform> get_platforms();

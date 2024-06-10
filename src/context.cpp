@@ -4,6 +4,7 @@
 #include "openclcpp-lite/device.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/buffer.h"
+#include "openclcpp-lite/platform.h"
 
 namespace openclcpp_lite {
 
@@ -76,8 +77,19 @@ Context
 Context::get_default()
 {
     std::call_once(Context::have_default, []() {
+#if defined(__APPLE__) || defined(__MACOS)
+        cl_context_properties * properties = nullptr;
+#else
+        const Platform & p = Platform::get_default();
+        cl_platform_id default_platform = p;
+        cl_context_properties properties[3] = { CL_CONTEXT_PLATFORM,
+                                                (cl_context_properties) default_platform,
+                                                0 };
+#endif
         cl_int err;
-        auto ctx = clCreateContextFromType(nullptr, CL_DEVICE_TYPE_DEFAULT, nullptr, nullptr, &err);
+        auto ctx =
+            clCreateContextFromType(properties, CL_DEVICE_TYPE_DEFAULT, nullptr, nullptr, &err);
+        OPENCL_CHECK(err);
         Context::default_context = Context(ctx);
     });
     return default_context;
