@@ -7,7 +7,7 @@
 #ifdef OPENCLCPP_LITE_WITH_FMT
     #include "fmt/printf.h"
 #else
-    #include <stringstream>
+    #include <sstream>
 #endif
 #include <map>
 
