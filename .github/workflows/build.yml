@@ -45,6 +45,8 @@ jobs:
             cmake \
             fmt \
             lcov
+          pip install \
+            jinja2
 
       - name: Configure
         run: |
