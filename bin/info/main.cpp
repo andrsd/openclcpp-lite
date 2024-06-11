@@ -80,9 +80,10 @@ join(const std::string & joiner, const std::vector<T> & vals)
 }
 
 void
-print_device_info(const ocl::Device & dev)
+print_device_info(int id, const ocl::Device & dev)
 {
     fmt::print("      - name: {}\n", dev.name());
+    fmt::print("        id: {}\n", id);
     fmt::print("        type: {}\n", device_type_str(dev.type()));
     fmt::print("        OpenCL version: {}\n", dev.open_cl_version());
     if (verbose) {
@@ -139,10 +140,11 @@ print_device_info(const ocl::Device & dev)
 }
 
 void
-print_platform_info(const ocl::Platform & platform)
+print_platform_info(int id, const ocl::Platform & platform)
 {
     fmt::print("platforms:\n");
     fmt::print("  - name: {}\n", platform.name());
+    fmt::print("    id: {}\n", id);
     if (verbose) {
         fmt::print("    version: {}\n", platform.version());
         fmt::print("    vendor: {}\n", platform.vendor());
@@ -152,16 +154,21 @@ print_platform_info(const ocl::Platform & platform)
             fmt::print("      - {}\n", e);
     }
     fmt::print("    devices:\n");
-    for (auto & d : platform.devices())
-        print_device_info(d);
+    auto dev_id = 0;
+    for (auto & d : platform.devices()) {
+        print_device_info(dev_id, d);
+        dev_id++;
+    }
 }
 
 void
 print_info()
 {
     auto platforms = ocl::Platform::platforms();
+    auto id = 0;
     for (auto & p : platforms) {
-        print_platform_info(p);
+        print_platform_info(id, p);
+        id++;
     }
 }
 
