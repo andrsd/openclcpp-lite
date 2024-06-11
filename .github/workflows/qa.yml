@@ -52,7 +52,7 @@ jobs:
           tidy-checks: ''
           version: 14
           lines-changed-only: true
-          ignore: 'cmake|contrib|docs'
+          ignore: 'cmake|contrib|docs|*.cl.*'
           step-summary: true
           database: build
 
