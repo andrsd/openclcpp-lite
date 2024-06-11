@@ -55,3 +55,18 @@ if (OPENCLCPP_LITE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+# Install
+
+install(
+    FILES
+        "${PROJECT_SOURCE_DIR}/cmake/OpenCLProgram.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
+)
+
+install(
+    FILES
+        "${PROJECT_SOURCE_DIR}/python/program.h.jinja2"
+        "${PROJECT_SOURCE_DIR}/python/program.cpp.jinja2"
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openclcpp-lite/templates
+)

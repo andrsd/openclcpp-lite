@@ -45,11 +45,14 @@ jobs:
             cmake \
             fmt \
             lcov
+          pip install \
+            jinja2
 
       - name: Configure
         run: |
           cmake -S ${{ github.workspace }} -B ${{ github.workspace }}/build \
             -DCMAKE_BUILD_TYPE=${{ matrix.build }} \
+            -DCI_ENABLED=ON \
             -DOPENCLCPP_LITE_BUILD_TESTS=YES \
             -DOPENCLCPP_LITE_CODE_COVERAGE=YES
 

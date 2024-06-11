@@ -1,0 +1,29 @@
+#include "{{ header_file }}"
+#include "openclcpp-lite/context.h"
+#include <vector>
+#include <string>
+
+namespace ocl = openclcpp_lite;
+
+namespace {
+
+const char *src[] = {
+{% for l in src %}    "{{ l }}",
+{% endfor %}
+};
+
+}
+
+using namespace ocl;
+
+{{ class_name }}::{{ class_name }}() :
+    Program(from_source(sizeof(src) / sizeof(char *), src))
+{
+    build();
+}
+
+{{ class_name }}::{{ class_name }}(Context context) :
+    Program(from_source(context, sizeof(src) / sizeof(char *), src))
+{
+    build();
+}

@@ -15,7 +15,7 @@ namespace ocl = openclcpp_lite;
 
 enum Command { COMPILE, BUILD };
 
-ocl::Platform target_platform;
+ocl::Platform target_platform = ocl::Platform::get_default();
 ocl::Device target_device;
 Command command = BUILD;
 
@@ -82,13 +82,14 @@ int
 compile(const std::string & file_name)
 {
     auto src = read_file(file_name);
-    auto prg = ocl::Program::from_source(src);
+    auto dev = target_platform.devices()[0];
+    ocl::Context ctx(dev);
+    auto prg = ocl::Program::from_source(ctx, src);
     try {
         prg.compile(ocl_compiler_opts);
         return 0;
     }
     catch (ocl::Exception & e) {
-        auto dev = ocl::Device::get_default();
         auto status = prg.build_status(dev);
         if (status == ocl::Program::BuildStatus::ERROR) {
             auto log = prg.build_log(dev);
@@ -103,13 +104,14 @@ int
 build(const std::string & file_name)
 {
     auto src = read_file(file_name);
-    auto prg = ocl::Program::from_source(src);
+    auto dev = target_platform.devices()[0];
+    ocl::Context ctx(dev);
+    auto prg = ocl::Program::from_source(ctx, src);
     try {
         prg.build(ocl_compiler_opts);
         return 0;
     }
     catch (ocl::Exception & e) {
-        auto dev = ocl::Device::get_default();
         auto status = prg.build_status(dev);
         if (status == ocl::Program::BuildStatus::ERROR) {
             auto log = prg.build_log(dev);

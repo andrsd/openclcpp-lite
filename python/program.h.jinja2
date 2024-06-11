@@ -1,0 +1,11 @@
+#pragma once
+
+#include "openclcpp-lite/program.h"
+
+namespace ocl = openclcpp_lite;
+
+class {{ class_name }} : public ocl::Program {
+public:
+    {{ class_name }}();
+    explicit {{ class_name }}(ocl::Context context);
+};
