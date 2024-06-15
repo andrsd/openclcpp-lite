@@ -21,7 +21,10 @@ else()
         message(FATAL_ERROR "oclcppl-gen.py not found")
     endif()
 
-    find_path(OCLCPPL_LOC program.cpp.jinja2 share/openclcpp-lite/templates)
+    find_path(OCLCPPL_LOC program.cpp.jinja2
+        PATH_SUFFIXES
+            share/openclcpp-lite/templates
+    )
     if (${OCLCPPL_LOC} STREQUAL OCLCPPL_LOC-NOTFOUND)
         message(FATAL_ERROR "openclcpp-lite template loction not found")
     endif()
