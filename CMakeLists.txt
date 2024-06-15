@@ -70,3 +70,9 @@ install(
         "${PROJECT_SOURCE_DIR}/python/program.cpp.jinja2"
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openclcpp-lite/templates
 )
+
+install(
+    PROGRAMS
+        "${PROJECT_SOURCE_DIR}/python/oclcppl-gen.py"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
