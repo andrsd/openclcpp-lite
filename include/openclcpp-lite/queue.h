@@ -36,6 +36,13 @@ public:
     /// @param enable_profiling Enable profiling
     explicit Queue(const Context & context, bool enable_profiling = false);
 
+    /// Create a queue in a Context
+    ///
+    /// @param context OpenCL context of the queue
+    /// @param device OpenCL device of the queue
+    /// @param enable_profiling Enable profiling
+    Queue(const Context & context, const Device & device, bool enable_profiling = false);
+
     /// Increments the command_queue reference count
     void retain() const;
 
