@@ -27,6 +27,17 @@ Queue::Queue(const Context & context, bool enable_profiling)
     OPENCL_CHECK(err);
 }
 
+Queue::Queue(const Context & context, const Device & device, bool enable_profiling)
+{
+    cl_device_id device_id = device;
+    cl_int err;
+    cl_command_queue_properties props = 0;
+    if (enable_profiling)
+        props |= CL_QUEUE_PROFILING_ENABLE;
+    this->q = clCreateCommandQueue(context, device_id, props, &err);
+    OPENCL_CHECK(err);
+}
+
 Queue::Queue(cl_command_queue q) : q(q) {}
 
 void
