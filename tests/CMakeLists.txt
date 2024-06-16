@@ -29,6 +29,9 @@ else()
     target_add_opencl_program(${PROJECT_NAME}
         CLASS TestVectorProgram
         FILE test_vector_program.cl
+        HEADER test_vector_program.cl.h
+        SOURCE test_vector_program.cl.cpp
+        INCLUDE test_vector_program.cl.h
     )
 endif()
 

@@ -31,16 +31,12 @@ else()
 endif()
 
 function(target_add_opencl_program TARGET)
-    cmake_parse_arguments(OCLCPPL "" "CLASS;FILE" "DEPENDS" ${ARGN})
+    cmake_parse_arguments(OCLCPPL "" "CLASS;FILE;HEADER;SOURCE;INCLUDE" "DEPENDS" ${ARGN})
 
     if (NOT IS_ABSOLUTE ${OCLCPPL_FILE})
-        set(OCLCPPL_HEADER ${PROJECT_BINARY_DIR}/${OCLCPPL_FILE}.h)
-        set(OCLCPPL_SOURCE ${PROJECT_BINARY_DIR}/${OCLCPPL_FILE}.cpp)
-    else()
-        set(OCLCPPL_HEADER ${OCLCPPL_FILE}.h)
-        set(OCLCPPL_SOURCE ${OCLCPPL_FILE}.cpp)
+        set(OCLCPPL_HEADER ${PROJECT_BINARY_DIR}/${OCLCPPL_HEADER})
+        set(OCLCPPL_SOURCE ${PROJECT_BINARY_DIR}/${OCLCPPL_SOURCE})
     endif()
-    get_filename_component(OCLCPPL_CPP_HEADER ${OCLCPPL_HEADER} NAME)
 
     add_custom_command(
         OUTPUT
@@ -59,7 +55,7 @@ function(target_add_opencl_program TARGET)
             -l ${OCLCPPL_LOC}
             -s ${CMAKE_CURRENT_SOURCE_DIR}/${OCLCPPL_FILE}
             class_name="${OCLCPPL_CLASS}"
-            header_file="${OCLCPPL_CPP_HEADER}" > ${OCLCPPL_SOURCE}
+            header_file="${OCLCPPL_INCLUDE}" > ${OCLCPPL_SOURCE}
         DEPENDS
             ${OCLCPPL_FILE}
             ${OCLCPPL_DEPENDS}
