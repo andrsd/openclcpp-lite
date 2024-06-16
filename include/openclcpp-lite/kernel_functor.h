@@ -17,6 +17,9 @@ namespace openclcpp_lite {
 template <typename... ARGS>
 class KernelFunctor {
 public:
+    /// Empty kernel functor
+    KernelFunctor() {}
+
     /// Create a functor from a program and a kernel name
     ///
     /// @param program OpenCL program

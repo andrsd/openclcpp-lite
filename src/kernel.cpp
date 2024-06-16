@@ -8,6 +8,8 @@
 
 namespace openclcpp_lite {
 
+Kernel::Kernel() {}
+
 Kernel::Kernel(const Program & program, const std::string & kernel_name)
 {
     cl_int err;
