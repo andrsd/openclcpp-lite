@@ -1,9 +1,12 @@
 #include "{{ header_file }}"
-#include "openclcpp-lite/context.h"
 #include <vector>
 #include <string>
 
 namespace ocl = openclcpp_lite;
+
+{% if namespace is defined and namespace | length > 0 %}
+namespace {{ namespace }} {
+{% endif %}
 
 namespace {
 
@@ -27,3 +30,7 @@ using namespace ocl;
 {
     build();
 }
+
+{% if namespace is defined and namespace | length > 0 %}
+} // {{ namespace }}
+{% endif %}

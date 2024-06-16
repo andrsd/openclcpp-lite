@@ -31,7 +31,7 @@ else()
 endif()
 
 function(target_add_opencl_program TARGET)
-    cmake_parse_arguments(OCLCPPL "" "CLASS;FILE;HEADER;SOURCE;INCLUDE" "DEPENDS" ${ARGN})
+    cmake_parse_arguments(OCLCPPL "" "CLASS;FILE;HEADER;SOURCE;INCLUDE;NAMESPACE" "DEPENDS" ${ARGN})
 
     if (NOT IS_ABSOLUTE ${OCLCPPL_FILE})
         set(OCLCPPL_HEADER ${PROJECT_BINARY_DIR}/${OCLCPPL_HEADER})
@@ -48,12 +48,14 @@ function(target_add_opencl_program TARGET)
             ${Python3_EXECUTABLE} ${OCLCPPL_GEN}
             -t program.h.jinja2
             -l ${OCLCPPL_LOC}
+            namespace="${OCLCPPL_NAMESPACE}"
             class_name="${OCLCPPL_CLASS}" > ${OCLCPPL_HEADER}
         COMMAND
             ${Python3_EXECUTABLE} ${OCLCPPL_GEN}
             -t program.cpp.jinja2
             -l ${OCLCPPL_LOC}
             -s ${CMAKE_CURRENT_SOURCE_DIR}/${OCLCPPL_FILE}
+            namespace="${OCLCPPL_NAMESPACE}"
             class_name="${OCLCPPL_CLASS}"
             header_file="${OCLCPPL_INCLUDE}" > ${OCLCPPL_SOURCE}
         DEPENDS

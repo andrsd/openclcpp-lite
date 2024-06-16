@@ -1,11 +1,20 @@
 #pragma once
 
 #include "openclcpp-lite/program.h"
+#include "openclcpp-lite/context.h"
 
 namespace ocl = openclcpp_lite;
+
+{% if namespace is defined and namespace | length > 0 %}
+namespace {{ namespace }} {
+{% endif %}
 
 class {{ class_name }} : public ocl::Program {
 public:
     {{ class_name }}();
     explicit {{ class_name }}(ocl::Context context);
 };
+
+{% if namespace is defined and namespace | length > 0 %}
+} // {{ namespace }}
+{% endif %}
