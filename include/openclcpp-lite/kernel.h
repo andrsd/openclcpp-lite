@@ -22,6 +22,9 @@ class KernelFunctor;
 /// OpenCL kernel
 class Kernel {
 public:
+    /// Create empty kernel
+    Kernel();
+
     /// Create a kernel from an OpenCL kernel
     explicit Kernel(cl_kernel kernel);
 
