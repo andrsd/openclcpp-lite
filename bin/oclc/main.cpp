@@ -152,11 +152,13 @@ parse_command_line(int argc, char * argv[])
         else if (arg == "-D") {
             auto val = next_arg(i + 1, argc, argv);
             ocl_compiler_opts.push_back(arg);
+            ocl_compiler_opts.push_back(val);
             i++;
         }
         else if (arg == "-I") {
             auto val = next_arg(i + 1, argc, argv);
             ocl_compiler_opts.push_back(arg);
+            ocl_compiler_opts.push_back(val);
             i++;
         }
         // Math Intrinsics Options
