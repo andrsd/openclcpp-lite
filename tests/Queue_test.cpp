@@ -175,3 +175,26 @@ TEST(QueueTest, barrier)
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
 }
+
+TEST(QueueTest, marker)
+{
+    const int N = 5;
+    std::vector<int> h_a(N);
+    std::vector<int> h_b(N);
+    for (int i = 0; i < N; i++) {
+        h_a[i] = 100 + i;
+        h_b[i] = 100 - i;
+    }
+    ocl::Range<1> rng { N };
+    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int, 1> d_b { rng };
+    auto q = ocl::Queue::get_default();
+    auto wr_evt1 = q.enqueue_iwrite(d_a, rng, h_a.data());
+    auto wr_evt2 = q.enqueue_iwrite(d_b, rng, h_b.data());
+    auto mrk_evt = q.enqueue_marker({ wr_evt1, wr_evt2 });
+    mrk_evt.wait();
+
+    EXPECT_EQ(mrk_evt.command_execution_status(), ocl::COMPLETE);
+    EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
+    EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
+}

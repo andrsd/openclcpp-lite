@@ -211,6 +211,18 @@ Queue::enqueue_barrier(const std::vector<Event> & wait_list) const
     return Event(evt);
 }
 
+Event
+Queue::enqueue_marker(const std::vector<Event> & wait_list) const
+{
+    cl_event evt;
+    OPENCL_CHECK(
+        clEnqueueMarkerWithWaitList(this->q,
+                                    wait_list.size(),
+                                    wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                    &evt));
+    return Event(evt);
+}
+
 void
 Queue::flush() const
 {

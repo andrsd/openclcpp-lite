@@ -194,6 +194,14 @@ public:
     /// @return Event object the identified this barrier
     Event enqueue_barrier(const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
+    /// Enqueues a marker command which waits for either a list of events to complete, or all
+    /// previously enqueued commands to complete.
+    ///
+    /// @param wait_list Events that need to complete before this particular command can be
+    ///        executed.
+    /// @return Event object that identifies this particular marker
+    Event enqueue_marker(const std::vector<Event> & wait_list = std::vector<Event>()) const;
+
     /// Enqueues a command to execute a kernel on a device.
     ///
     /// @param kernel Kernel to execute
