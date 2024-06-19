@@ -81,6 +81,22 @@ Program::compile(const std::vector<std::string> & options) const
                                   nullptr));
 }
 
+void
+Program::compile(const Device & dev, const std::vector<std::string> & options) const
+{
+    cl_device_id device_id = dev;
+    auto opts = utils::join(" ", options);
+    OPENCL_CHECK(clCompileProgram(this->prg,
+                                  1,
+                                  &device_id,
+                                  opts.c_str(),
+                                  0,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr));
+}
+
 Program
 Program::link(const std::vector<Program> & programs, const std::vector<std::string> & options) const
 {

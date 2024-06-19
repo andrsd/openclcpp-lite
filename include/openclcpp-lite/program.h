@@ -76,7 +76,9 @@ public:
     void build(const std::vector<std::string> & options = std::vector<std::string>()) const;
 
     /// Compiles a program’s source
-    void compile(const std::vector<std::string> & options = std::vector<std::string>()) const;
+    void compile(const std::vector<std::string> & options) const;
+
+    void compile(const Device & dev, const std::vector<std::string> & options) const;
 
     /// Links a set of compiled program objects
     Program link(const std::vector<Program> & programs,
