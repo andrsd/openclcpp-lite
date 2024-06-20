@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/program.h"
+#include <future>
 
 namespace ocl = openclcpp_lite;
 
@@ -32,6 +33,22 @@ const char * src3[] = {
 };
 // clang-format on
 
+int done = false;
+
+void
+notify0(cl_program program, void * user_data)
+{
+    done = true;
+}
+
+int
+wait_thread(const std::atomic_bool & cancelled)
+{
+    while (!done && !cancelled)
+        usleep(1000);
+    return cancelled ? 1 : 0;
+}
+
 } // namespace
 
 TEST(ProgramTest, from_single_line_default_context)
@@ -59,6 +76,27 @@ TEST(ProgramTest, from_lines)
     prg.build();
     EXPECT_EQ(prg.num_of_kernels(), 2);
     EXPECT_THAT(prg.kernel_names(), testing::UnorderedElementsAre("vec_add", "vec_sub"));
+}
+
+TEST(ProgramTest, from_lines_w_callback)
+{
+    auto ctx = ocl::Context::get_default();
+    auto prg = ocl::Program::from_source(ctx, src2);
+
+    std::atomic_bool cancel = ATOMIC_VAR_INIT(false);
+    done = false;
+    auto fut = std::async(std::launch::async, wait_thread, std::ref(cancel));
+    prg.build({}, notify0, &done);
+    auto ret = fut.wait_for(std::chrono::seconds(1));
+    if (ret == std::future_status::ready) {
+        EXPECT_TRUE(done);
+        EXPECT_EQ(prg.num_of_kernels(), 2);
+        EXPECT_THAT(prg.kernel_names(), testing::UnorderedElementsAre("vec_add", "vec_sub"));
+    }
+    else {
+        cancel = true;
+        FAIL();
+    }
 }
 
 TEST(ProgramTest, from_const_char)

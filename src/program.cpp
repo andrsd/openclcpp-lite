@@ -60,10 +60,30 @@ Program::kernel_names() const
 }
 
 void
-Program::build(const std::vector<std::string> & options) const
+Program::build(const std::vector<std::string> & options,
+               void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+               void * user_data) const
 {
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, opts.c_str(), nullptr, nullptr));
+    OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, opts.c_str(), pfn_notify, user_data));
+}
+
+void
+Program::build(const std::vector<Device> & devices,
+               const std::vector<std::string> & options,
+               void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+               void * user_data) const
+{
+    std::vector<cl_device_id> ids;
+    for (auto & d : devices)
+        ids.push_back(d);
+    auto opts = utils::join(" ", options);
+    OPENCL_CHECK(clBuildProgram(this->prg,
+                                ids.size(),
+                                ids.size() == 0 ? nullptr : ids.data(),
+                                opts.c_str(),
+                                pfn_notify,
+                                user_data));
 }
 
 void

@@ -73,7 +73,26 @@ public:
     std::vector<std::string> kernel_names() const;
 
     /// Builds (compiles and links) a program executable from the program source or binary.
-    void build(const std::vector<std::string> & options = std::vector<std::string>()) const;
+    ///
+    /// @param options Build options to be used for building the program executable
+    /// @param pfn_notify A function pointer to a function which will be called when the program
+    ///        executable has been built (successfully or unsuccessfully).
+    /// @param user_data Passed as an argument when `pfn_notify` is called. Can be `nullptr`.
+    void build(const std::vector<std::string> & options = std::vector<std::string>(),
+               void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data) = nullptr,
+               void * user_data = nullptr) const;
+
+    /// Builds (compiles and links) a program executable from the program source or binary.
+    ///
+    /// @param devices List of devices associated with program
+    /// @param options Build options to be used for building the program executable
+    /// @param pfn_notify A function pointer to a function which will be called when the program
+    ///        executable has been built (successfully or unsuccessfully).
+    /// @param user_data Passed as an argument when `pfn_notify` is called. Can be `nullptr`.
+    void build(const std::vector<Device> & devices,
+               const std::vector<std::string> & options = std::vector<std::string>(),
+               void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data) = nullptr,
+               void * user_data = nullptr) const;
 
     /// Compiles a program’s source
     void compile(const std::vector<std::string> & options) const;
