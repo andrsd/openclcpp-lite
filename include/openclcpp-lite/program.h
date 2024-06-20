@@ -72,6 +72,13 @@ public:
     /// least one device in the list of devices associated with program.
     std::vector<std::string> kernel_names() const;
 
+    /// Returns an array that contains the size in bytes of the program binary
+    std::vector<size_t> binary_sizes() const;
+
+    /// Return the program binaries (could be an executable binary, compiled binary or library
+    /// binary) for all devices associated with program.
+    std::vector<std::vector<char>> binaries() const;
+
     /// Builds (compiles and links) a program executable from the program source or binary.
     ///
     /// @param options Build options to be used for building the program executable
