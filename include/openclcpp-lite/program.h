@@ -206,6 +206,16 @@ public:
     static Program from_source(int n_lines, const char ** lines);
     static Program from_source(const Context & context, unsigned int n_lines, const char ** lines);
 
+    /// Create a program from binary
+    ///
+    /// @param context
+    /// @param devices
+    /// @param binaries
+    /// @return `Program` object
+    static Program from_binary(const Context & context,
+                               const std::vector<Device> & devices,
+                               const std::vector<std::vector<char>> & binaries);
+
 private:
     template <typename T>
     T
