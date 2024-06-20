@@ -59,6 +59,32 @@ Program::kernel_names() const
     return utils::split(names, ";");
 }
 
+std::vector<size_t>
+Program::binary_sizes() const
+{
+    return get_info<std::vector<size_t>>(CL_PROGRAM_BINARY_SIZES);
+}
+
+std::vector<std::vector<char>>
+Program::binaries() const
+{
+    auto bin_size = binary_sizes();
+    auto n = bin_size.size();
+    std::vector<std::vector<char>> bins(n);
+    for (int i = 0; i < n; i++)
+        bins[i].resize(bin_size[i]);
+    std::vector<char *> bin_ptrs(n);
+    for (int i = 0; i < bin_size.size(); i++)
+        bin_ptrs[i] = bins[i].data();
+    auto err = clGetProgramInfo(this->prg,
+                                CL_PROGRAM_BINARIES,
+                                sizeof(char *) * n,
+                                bin_ptrs.data(),
+                                nullptr);
+    OPENCL_CHECK(err);
+    return bins;
+}
+
 void
 Program::build(const std::vector<std::string> & options,
                void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
