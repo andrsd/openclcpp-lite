@@ -87,7 +87,9 @@ Program::build(const std::vector<Device> & devices,
 }
 
 void
-Program::compile(const std::vector<std::string> & options) const
+Program::compile(const std::vector<std::string> & options,
+                 void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+                 void * user_data) const
 {
     auto opts = utils::join(" ", options);
     OPENCL_CHECK(clCompileProgram(this->prg,
@@ -97,13 +99,15 @@ Program::compile(const std::vector<std::string> & options) const
                                   0,
                                   nullptr,
                                   nullptr,
-                                  nullptr,
-                                  nullptr));
+                                  pfn_notify,
+                                  user_data));
 }
 
 void
 Program::compile(const std::vector<Device> & devices,
-                 const std::vector<std::string> & options) const
+                 const std::vector<std::string> & options,
+                 void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+                 void * user_data) const
 {
     std::vector<cl_device_id> ids;
     for (auto & d : devices)
@@ -116,8 +120,8 @@ Program::compile(const std::vector<Device> & devices,
                                   0,
                                   nullptr,
                                   nullptr,
-                                  nullptr,
-                                  nullptr));
+                                  pfn_notify,
+                                  user_data));
 }
 
 Program

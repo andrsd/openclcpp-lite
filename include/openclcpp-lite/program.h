@@ -94,11 +94,28 @@ public:
                void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data) = nullptr,
                void * user_data = nullptr) const;
 
-    /// Compiles a program’s source
-    void compile(const std::vector<std::string> & options) const;
+    /// Compiles a program’s source for all the devices  in the OpenCL context associated with
+    /// program
+    ///
+    /// @param options Compilation options to be used for building the program executable
+    /// @param pfn_notify A function pointer to a function which will be called when the program
+    ///        executable has been built (successfully or unsuccessfully).
+    /// @param user_data Passed as an argument when `pfn_notify` is called. Can be `nullptr`.
+    void compile(const std::vector<std::string> & options,
+                 void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data) = nullptr,
+                 void * user_data = nullptr) const;
 
+    /// Compiles a program’s source for a specific device(s) in the OpenCL context associated with
+    /// program
+    ///
+    /// @param options Compilation options to be used for building the program executable
+    /// @param pfn_notify A function pointer to a function which will be called when the program
+    ///        executable has been built (successfully or unsuccessfully).
+    /// @param user_data Passed as an argument when `pfn_notify` is called. Can be `nullptr`.
     void compile(const std::vector<Device> & devices,
-                 const std::vector<std::string> & options) const;
+                 const std::vector<std::string> & options,
+                 void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data) = nullptr,
+                 void * user_data = nullptr) const;
 
     /// Links a set of compiled program objects
     Program link(const std::vector<Program> & programs,
