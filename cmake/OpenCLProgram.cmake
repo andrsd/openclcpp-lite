@@ -28,7 +28,7 @@ else()
             share/openclcpp-lite/templates
     )
     if (${OCLCPPL_LOC} STREQUAL OCLCPPL_LOC-NOTFOUND)
-        message(FATAL_ERROR "openclcpp-lite template loction not found")
+        message(FATAL_ERROR "openclcpp-lite template location not found")
     endif()
 endif()
 
