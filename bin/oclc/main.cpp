@@ -108,7 +108,7 @@ build(const std::string & file_name)
     ocl::Context ctx(dev);
     auto prg = ocl::Program::from_source(ctx, src);
     try {
-        prg.build(ocl_compiler_opts);
+        prg.build({ dev }, ocl_compiler_opts);
         return 0;
     }
     catch (ocl::Exception & e) {
