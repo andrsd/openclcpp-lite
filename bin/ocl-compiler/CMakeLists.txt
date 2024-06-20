@@ -1,4 +1,4 @@
-project(oclc)
+project(ocl-compiler)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
@@ -11,7 +11,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE openclcpp-lite)
 
 install(
-    TARGETS oclc
+    TARGETS ocl-compiler
     EXPORT OpenCLCppLiteTargets
     RUNTIME DESTINATION bin
 )
