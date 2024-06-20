@@ -82,13 +82,16 @@ Program::compile(const std::vector<std::string> & options) const
 }
 
 void
-Program::compile(const Device & dev, const std::vector<std::string> & options) const
+Program::compile(const std::vector<Device> & devices,
+                 const std::vector<std::string> & options) const
 {
-    cl_device_id device_id = dev;
+    std::vector<cl_device_id> ids;
+    for (auto & d : devices)
+        ids.push_back(d);
     auto opts = utils::join(" ", options);
     OPENCL_CHECK(clCompileProgram(this->prg,
-                                  1,
-                                  &device_id,
+                                  ids.size(),
+                                  ids.empty() ? nullptr : ids.data(),
                                   opts.c_str(),
                                   0,
                                   nullptr,
