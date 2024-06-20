@@ -8,6 +8,8 @@
 
 namespace openclcpp_lite {
 
+Program::Program() {}
+
 Program::Program(cl_program prg) : prg(prg) {}
 
 void

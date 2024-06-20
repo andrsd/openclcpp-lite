@@ -39,6 +39,9 @@ public:
         EXECUTABLE = CL_PROGRAM_BINARY_TYPE_EXECUTABLE
     };
 
+    /// Create empty program
+    Program();
+
     /// Create a program from a OpenCL object
     explicit Program(cl_program prg);
 
