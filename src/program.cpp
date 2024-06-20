@@ -125,7 +125,10 @@ Program::compile(const std::vector<Device> & devices,
 }
 
 Program
-Program::link(const std::vector<Program> & programs, const std::vector<std::string> & options) const
+Program::link(const std::vector<std::string> & options,
+              const std::vector<Program> & programs,
+              void(CL_CALLBACK * pfn_notify)(cl_program, void *),
+              void * user_data) const
 {
     std::vector<cl_program> prgs;
     for (auto & p : programs)
@@ -139,8 +142,37 @@ Program::link(const std::vector<Program> & programs, const std::vector<std::stri
                            opts.c_str(),
                            prgs.size(),
                            prgs.data(),
-                           nullptr,
-                           nullptr,
+                           pfn_notify,
+                           user_data,
+                           &err);
+    OPENCL_CHECK(err);
+    return Program(l);
+}
+
+Program
+Program::link(const Context & context,
+              const std::vector<Device> & devices,
+              const std::vector<std::string> & options,
+              const std::vector<Program> & programs,
+              void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
+              void * user_data) const
+{
+    std::vector<cl_device_id> devs;
+    for (auto & d : devices)
+        devs.push_back(d);
+    std::vector<cl_program> prgs;
+    for (auto & p : programs)
+        prgs.push_back(p);
+    auto opts = utils::join(" ", options);
+    cl_int err;
+    auto l = clLinkProgram(context,
+                           devs.size(),
+                           devs.empty() ? nullptr : devs.data(),
+                           opts.c_str(),
+                           prgs.size(),
+                           prgs.data(),
+                           pfn_notify,
+                           user_data,
                            &err);
     OPENCL_CHECK(err);
     return Program(l);
