@@ -59,12 +59,6 @@ Kernel::attributes() const
 }
 
 void
-Kernel::set_arg(cl_uint index, const Memory & value)
-{
-    OPENCL_CHECK(clSetKernelArg(this->kern, index, sizeof(cl_mem), &value));
-}
-
-void
 Kernel::set_arg(cl_uint index, size_t size, const void * arg)
 {
     OPENCL_CHECK(clSetKernelArg(this->kern, index, size, arg));
