@@ -5,6 +5,7 @@
 #include "openclcpp-lite/error.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/utils.h"
+#include "openclcpp-lite/exception.h"
 
 namespace openclcpp_lite {
 
@@ -320,6 +321,36 @@ Program::from_source(const Context & context, unsigned int n_lines, const char *
     OPENCL_CHECK(err);
     Program prg(p);
     return prg;
+}
+
+Program
+Program::from_binary(const Context & context,
+                     const std::vector<Device> & devices,
+                     const std::vector<std::vector<char>> & binaries)
+{
+    if (devices.size() != binaries.size())
+        throw Exception("The number of devices ({}) must be equal to the number of binaries ({})",
+                        devices.size(),
+                        binaries.size());
+    std::vector<cl_device_id> dev_ids;
+    for (auto & dev : devices)
+        dev_ids.push_back(dev);
+    std::vector<size_t> sizes;
+    for (auto & bin : binaries)
+        sizes.push_back(bin.size());
+    std::vector<const unsigned char *> bins;
+    for (auto & bin : binaries)
+        bins.push_back(reinterpret_cast<const unsigned char *>(bin.data()));
+    cl_int err;
+    auto p = clCreateProgramWithBinary(context,
+                                       dev_ids.size(),
+                                       dev_ids.empty() ? nullptr : dev_ids.data(),
+                                       sizes.data(),
+                                       bins.data(),
+                                       nullptr,
+                                       &err);
+    OPENCL_CHECK(err);
+    return Program(p);
 }
 
 } // namespace openclcpp_lite
