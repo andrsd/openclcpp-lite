@@ -56,8 +56,13 @@ public:
     /// Set the argument value for a specific argument of a kernel.
     ///
     /// @param index The argument index
-    /// @param value Memory object
-    void set_arg(cl_uint index, const Memory & value);
+    /// @param value Argument
+    template <typename T>
+    void
+    set_arg(cl_uint index, const T & value)
+    {
+        OPENCL_CHECK(clSetKernelArg(this->kern, index, sizeof(T), &value));
+    }
 
     /// Set the argument value for a specific argument of a kernel.
     ///
@@ -91,5 +96,12 @@ public:
         return fn;
     }
 };
+
+template <>
+inline void
+Kernel::set_arg(cl_uint index, const Memory & value)
+{
+    OPENCL_CHECK(clSetKernelArg(this->kern, index, sizeof(cl_mem), &value));
+}
 
 } // namespace openclcpp_lite
