@@ -22,13 +22,11 @@ using namespace ocl;
 {{ class_name }}::{{ class_name }}() :
     Program(from_source(sizeof(src) / sizeof(char *), src))
 {
-    build();
 }
 
 {{ class_name }}::{{ class_name }}(Context context) :
     Program(from_source(context, sizeof(src) / sizeof(char *), src))
 {
-    build();
 }
 
 {% if namespace is defined and namespace | length > 0 %}

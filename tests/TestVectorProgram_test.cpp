@@ -10,6 +10,7 @@ namespace ocl = openclcpp_lite;
 TEST(TestVectorProgram, test)
 {
     TestVectorProgram prg;
+    prg.build();
     EXPECT_EQ(prg.num_of_kernels(), 2);
 
     const int N = 10;
