@@ -1,2 +1,2 @@
 add_subdirectory(ocl-info)
-add_subdirectory(oclc)
+add_subdirectory(ocl-compiler)

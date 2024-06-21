@@ -7,13 +7,13 @@
 # )
 
 if(CMAKE_PROJECT_NAME STREQUAL "openclcpp-lite")
-    set(OCLC oclc)
+    set(OCLC ocl-compiler)
     set(OCLCPPL_GEN ${CMAKE_SOURCE_DIR}/python/oclcppl-gen.py)
     set(OCLCPPL_LOC ${CMAKE_SOURCE_DIR}/python)
 else()
-    find_program(OCLC oclc)
+    find_program(OCLC ocl-compiler)
     if (${OCLC} STREQUAL OCLC-NOTFOUND)
-        message(FATAL_ERROR "oclc not found")
+        message(FATAL_ERROR "ocl-compiler not found")
     endif()
 
     find_program(OCLCPPL_GEN oclcppl-gen.py)
