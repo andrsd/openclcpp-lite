@@ -192,6 +192,27 @@ Queue::enqueue_map_buffer_raw(const Memory & buffer,
 }
 
 Event
+Queue::enqueue_fill_buffer_raw(const Memory & buffer,
+                               const void * pattern,
+                               size_t pattern_size,
+                               size_t offset,
+                               size_t size,
+                               const std::vector<Event> & wait_list) const
+{
+    cl_event evt;
+    OPENCL_CHECK(clEnqueueFillBuffer(this->q,
+                                     buffer,
+                                     pattern,
+                                     pattern_size,
+                                     offset,
+                                     size,
+                                     wait_list.size(),
+                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
+                                     &evt));
+    return Event(evt);
+}
+
+Event
 Queue::enqueue_unmap_mem_object(const Memory & mem, void * mapped_ptr) const
 {
     cl_event evt;

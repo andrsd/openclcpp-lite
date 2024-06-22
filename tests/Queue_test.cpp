@@ -198,3 +198,41 @@ TEST(QueueTest, marker)
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
     EXPECT_EQ(wr_evt2.command_execution_status(), ocl::COMPLETE);
 }
+
+TEST(QueueTest, fill_buffer_scalar)
+{
+    const int N = 3;
+    ocl::Range<1> rng { N };
+    ocl::Buffer<int, 1> d_a { rng };
+    auto q = ocl::Queue::get_default();
+    q.enqueue_fill_buffer(d_a, 1234, rng);
+
+    auto * vals = q.enqueue_map_buffer(d_a, true, ocl::READ, rng);
+    EXPECT_EQ(vals[0], 1234);
+    EXPECT_EQ(vals[1], 1234);
+    EXPECT_EQ(vals[2], 1234);
+}
+
+TEST(QueueTest, fill_buffer_pattern)
+{
+    struct Pattern {
+        float a;
+        float b;
+    };
+    Pattern pattern { 1., 2. };
+
+    const int N = 3;
+    ocl::Range<1> rng { N };
+    ocl::Buffer<Pattern, 1> d_a { rng };
+    auto q = ocl::Queue::get_default();
+    ocl::Range<1> fill_rng { 2 };
+    q.enqueue_fill_buffer(d_a, pattern, fill_rng);
+
+    auto * vals = q.enqueue_map_buffer(d_a, true, ocl::READ, rng);
+    EXPECT_EQ(vals[0].a, 1.);
+    EXPECT_EQ(vals[0].b, 2.);
+    EXPECT_EQ(vals[1].a, 1.);
+    EXPECT_EQ(vals[1].b, 2.);
+    EXPECT_EQ(vals[2].a, 0.);
+    EXPECT_EQ(vals[2].b, 0.);
+}
