@@ -188,13 +188,7 @@ Program
 Program::from_source(const std::string & source)
 {
     auto context = Context::get_default();
-    const char * s = source.c_str();
-    size_t len = source.length();
-    cl_int err;
-    auto p = clCreateProgramWithSource(context, 1, &s, &len, &err);
-    OPENCL_CHECK(err);
-    Program prg(p);
-    return prg;
+    return from_source(context, source);
 }
 
 Program
@@ -213,20 +207,7 @@ Program
 Program::from_source(const std::vector<std::string> & lines)
 {
     auto context = Context::get_default();
-    size_t n = lines.size();
-    std::vector<const char *> strs;
-    strs.reserve(n);
-    std::vector<size_t> lens;
-    lens.reserve(n);
-    for (auto & s : lines) {
-        strs.emplace_back(s.c_str());
-        lens.emplace_back(s.size());
-    }
-    cl_int err;
-    auto p = clCreateProgramWithSource(context, n, strs.data(), lens.data(), &err);
-    OPENCL_CHECK(err);
-    Program prg(p);
-    return prg;
+    return from_source(context, lines);
 }
 
 Program
@@ -252,11 +233,7 @@ Program
 Program::from_source(int n_lines, const char ** lines)
 {
     auto context = Context::get_default();
-    cl_int err;
-    auto p = clCreateProgramWithSource(context, n_lines, lines, nullptr, &err);
-    OPENCL_CHECK(err);
-    Program prg(p);
-    return prg;
+    return from_source(context, n_lines, lines);
 }
 
 Program
@@ -305,23 +282,8 @@ Program::link(const std::vector<std::string> & options,
               void(CL_CALLBACK * pfn_notify)(cl_program, void *),
               void * user_data)
 {
-    std::vector<cl_program> prgs;
-    for (auto & p : programs)
-        prgs.push_back(p);
     auto ctx = Context::get_default();
-    auto opts = utils::join(" ", options);
-    cl_int err;
-    auto l = clLinkProgram(ctx,
-                           0,
-                           nullptr,
-                           opts.c_str(),
-                           prgs.size(),
-                           prgs.data(),
-                           pfn_notify,
-                           user_data,
-                           &err);
-    OPENCL_CHECK(err);
-    return Program(l);
+    return link(ctx, {}, options, programs, pfn_notify, user_data);
 }
 
 Program
