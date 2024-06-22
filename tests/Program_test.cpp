@@ -131,8 +131,14 @@ TEST(ProgramTest, build_info)
     auto dev = platform.devices()[0];
     ocl::Context ctx({ dev });
     auto prg = ocl::Program::from_source(ctx, src2);
-    prg.build();
+    prg.build({ dev }, { "-D", "UNITTEST" });
     EXPECT_EQ(prg.build_status(dev), ocl::Program::BuildStatus::SUCCESS);
     auto nfo = prg.build_log(dev);
     EXPECT_EQ(nfo.size(), 0);
+    EXPECT_EQ(prg.build_options(dev), "-D UNITTEST");
+    EXPECT_EQ(prg.binary_type(dev), ocl::Program::BinaryType::EXECUTABLE);
+    auto sizes = prg.binary_sizes();
+    EXPECT_EQ(sizes.size(), 1);
+    auto bins = prg.binaries();
+    EXPECT_GT(bins[0].size(), 0);
 }
