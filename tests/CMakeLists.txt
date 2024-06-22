@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
     Platform_test.cpp
     Program_test.cpp
     Queue_test.cpp
+    Utils_test.cpp
 )
 
 if (CI_ENABLED)
