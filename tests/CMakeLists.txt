@@ -11,6 +11,7 @@ add_executable(${PROJECT_NAME}
     Atomics_test.cpp
     Buffer_test.cpp
     Context_test.cpp
+    Device_test.cpp
     Error_test.cpp
     Event_test.cpp
     Exception_test.cpp
