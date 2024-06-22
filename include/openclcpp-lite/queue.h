@@ -229,6 +229,32 @@ public:
         return Event(evt);
     }
 
+    /// Enqueues a command to fill a buffer object with a pattern
+    ///
+    /// @tparam T C++ type of the buffer being filled
+    /// @tparam U C++ type of the pattern
+    /// @tparam D Range dimension
+    /// @param buffer Buffer being filled
+    /// @param pattern Pattern to fill the buffer with
+    /// @param range Range
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular write command
+    template <typename T, typename U, int D>
+    Event
+    enqueue_fill_buffer(const Buffer<T, D> & buffer,
+                        const U & pattern,
+                        const Range<D> & range,
+                        const std::vector<Event> & wait_list = std::vector<Event>()) const
+    {
+        return enqueue_fill_buffer_raw(buffer,
+                                       &pattern,
+                                       sizeof(U),
+                                       0,
+                                       range.size() * sizeof(U),
+                                       wait_list);
+    }
+
     /// Issues all previously queued OpenCL commands in a command-queue to the device associated
     /// with the command-queue.
     void flush() const;
@@ -336,6 +362,26 @@ private:
                                   MapFlags flags,
                                   size_t offset,
                                   size_t size) const;
+
+    /// Enqueues a command to fill a buffer object with a pattern of a given pattern size.
+    ///
+    /// @param buffer A valid buffer object
+    /// @param pattern A pointer to the data pattern of size `pattern_size` in bytes
+    /// @param pattern_size Size of the `pattern` in bytes
+    /// @param offset The location in bytes of the region being filled in `buffer` and must be a
+    ///        multiple of `pattern_size`.
+    /// @param size The size in bytes of region being filled in `buffer` and must be a multiple of
+    ///        `pattern_size`.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular write command
+    Event
+    enqueue_fill_buffer_raw(const Memory & buffer,
+                            const void * pattern,
+                            size_t pattern_size,
+                            size_t offset,
+                            size_t size,
+                            const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
     template <typename T>
     T
