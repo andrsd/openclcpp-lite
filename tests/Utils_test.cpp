@@ -20,3 +20,10 @@ TEST(Utils, starts_with)
     EXPECT_TRUE(ocl::utils::starts_with("asdf", "asd"));
     EXPECT_FALSE(ocl::utils::starts_with("asdf", "zx"));
 }
+
+TEST(Utils, join)
+{
+    EXPECT_EQ(ocl::utils::join(" ", {}), "");
+    EXPECT_EQ(ocl::utils::join(", ", { "one" }), "one");
+    EXPECT_EQ(ocl::utils::join(", ", { "one", "two" }), "one, two");
+}
