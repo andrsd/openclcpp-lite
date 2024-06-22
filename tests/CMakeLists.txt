@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    Atomics_test.cpp
     Buffer_test.cpp
     Context_test.cpp
     Error_test.cpp
