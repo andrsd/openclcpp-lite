@@ -1,4 +1,5 @@
 #include "gmock/gmock.h"
+#include "openclcpp-lite/platform.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/program.h"
 #include <future>
@@ -122,4 +123,16 @@ TEST(ProgramTest, ref_cnt)
 
     auto dev = prg.devices();
     EXPECT_GE(dev.size(), 1);
+}
+
+TEST(ProgramTest, build_info)
+{
+    auto platform = ocl::Platform::get_default();
+    auto dev = platform.devices()[0];
+    ocl::Context ctx({ dev });
+    auto prg = ocl::Program::from_source(ctx, src2);
+    prg.build();
+    EXPECT_EQ(prg.build_status(dev), ocl::Program::BuildStatus::SUCCESS);
+    auto nfo = prg.build_log(dev);
+    EXPECT_EQ(nfo.size(), 0);
 }
