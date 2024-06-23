@@ -22,7 +22,7 @@ def load_file(file_name):
             line = f.readline()
             if not line:
                 break
-            lines.append(line.rstrip('\n'))
+            lines.append(line.replace('\n', '\\n'))
         f.close()
         return lines
 
