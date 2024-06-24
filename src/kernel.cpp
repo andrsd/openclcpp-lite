@@ -8,7 +8,7 @@
 
 namespace openclcpp_lite {
 
-Kernel::Kernel() {}
+Kernel::Kernel() : kern(nullptr) {}
 
 Kernel::Kernel(const Program & program, const std::string & kernel_name)
 {

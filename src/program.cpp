@@ -9,7 +9,7 @@
 
 namespace openclcpp_lite {
 
-Program::Program() {}
+Program::Program() : prg(nullptr) {}
 
 Program::Program(cl_program prg) : prg(prg) {}
 
