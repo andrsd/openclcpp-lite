@@ -34,6 +34,12 @@ public:
     /// @param kernel_name Kernel name
     Kernel(const Program & program, const std::string & kernel_name);
 
+    /// Increments the kernel object reference count
+    void retain() const;
+
+    /// Decrements the kernel reference count
+    void release() const;
+
     /// Return the kernel function name.
     std::string function_name() const;
 
