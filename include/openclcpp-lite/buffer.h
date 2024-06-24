@@ -26,6 +26,11 @@ public:
 template <typename T>
 class Buffer<T, 1> : public Memory {
 public:
+    /// Create a buffer from external memory buffer
+    ///
+    /// @param mem External memory buffer
+    Buffer(cl_mem mem) : Memory(mem) {}
+
     /// Create an uninitialized buffer in a default Context
     ///
     /// @param range Size of the buffer

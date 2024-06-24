@@ -13,6 +13,10 @@ class Context;
 /// OpenCL memory. Base class for Buffers and Images
 class Memory {
 public:
+    Memory() = default;
+
+    Memory(cl_mem mem);
+
     /// Increments the memory object reference count.
     void retain() const;
 
