@@ -6,6 +6,8 @@
 
 namespace openclcpp_lite {
 
+Memory::Memory(cl_mem mem) : mem(mem) {}
+
 void
 Memory::retain() const
 {
