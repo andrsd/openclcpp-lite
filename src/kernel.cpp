@@ -19,6 +19,18 @@ Kernel::Kernel(const Program & program, const std::string & kernel_name)
 
 Kernel::Kernel(cl_kernel kernel) : kern(kernel) {}
 
+void
+Kernel::retain() const
+{
+    OPENCL_CHECK(clRetainKernel(this->kern));
+}
+
+void
+Kernel::release() const
+{
+    OPENCL_CHECK(clReleaseKernel(this->kern));
+}
+
 std::string
 Kernel::function_name() const
 {
