@@ -4,6 +4,7 @@
 #pragma once
 
 #include "openclcpp-lite/cl.h"
+#include "openclcpp-lite/enums.h"
 #include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/error.h"
 #include <vector>
@@ -45,6 +46,9 @@ public:
     /// source. Is `true` if the compiler is available. This can be `false` for the embedded
     /// platform profile only.
     bool compiler_available() const;
+
+    /// Describes double precision floating-point capability of the OpenCL device.
+    FPConfigFlags double_fp_config() const;
 
     /// Is `true` if the device implements error correction for all accesses to compute device
     /// memory (global and constant). Is `false` if the device does not implement such error
