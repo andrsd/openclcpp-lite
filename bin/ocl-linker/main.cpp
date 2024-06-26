@@ -36,6 +36,55 @@ std::vector<std::string> options;
 std::vector<std::string> file_names;
 std::string output_file_name = "a.out";
 
+void
+print_help()
+{
+    fmt::print("OpenCL linker\n");
+    fmt::print("\n");
+    fmt::print("Usage: ocl-linker [options] <file>...\n");
+    fmt::print("\n");
+    // clang-format off
+    fmt::print(
+        "Options:\n"
+        "\n"
+        "* Linker Options\n"
+        "\n"
+        "  This specification defines a standard set of linker options that must be supported by\n"
+        "  the OpenCL C compiler when linking compiled programs online or offline. These linker\n"
+        "  options are categorized as library linking options and program linking options. These\n"
+        "  may be extended by a set of vendor- or platform-specific options.\n"
+        "\n"
+        "* Library Linking Options\n"
+        "\n"
+        "  The following options can be specified when creating a library of compiled binaries.\n"
+        "\n"
+        "  -create-library\n"
+        "\n"
+        "    Create a library of compiled binaries specified in input_programs argument to\n"
+        "    clLinkProgram.\n"
+        "\n"
+        "  -enable-link-options\n"
+        "\n"
+        "    Allows the linker to modify the library behavior based on one or more link options\n"
+        "    (described in Program Linking Options, below) when this library is linked with a\n"
+        "    program executable. This option must be specified with the –create-library option.\n"
+        "\n"
+        "* Program Linking Options\n"
+        "\n"
+        "  The following options can be specified when linking a program executable.\n"
+        "\n"
+        "  -cl-denorms-are-zero\n"
+        "  -cl-no-signed-zeroes\n"
+        "  -cl-unsafe-math-optimizations\n"
+        "  -cl-finite-math-only\n"
+        "  -cl-fast-relaxed-mat\n"
+        "\n"
+        "  The linker may apply these options to all compiled program objects specified to\n"
+        "  clLinkProgram. The linker may apply these options only to libraries which were created\n"
+        "  with the –enable-link-option.\n"
+    );
+}
+
 /// Set target platform
 ///
 /// @param platform_name Platform name (from `platform_name_map`) to select
@@ -203,7 +252,10 @@ main(int argc, char * argv[])
 {
     try {
         parse_command_line(argc, argv);
-        link();
+        if (file_names.empty())
+            print_help();
+        else
+            link();
     }
     catch (ocl::Exception & e) {
         fmt::print("{}\n", e.what());
