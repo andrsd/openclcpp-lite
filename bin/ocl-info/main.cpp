@@ -94,6 +94,27 @@ print_device_info(int id, const ocl::Device & dev)
         fmt::print("        driver version: {}\n", dev.driver_version());
         fmt::print("        address bits: {}\n", dev.address_bits());
         fmt::print("        compiler available: {}\n", dev.compiler_available());
+        fmt::print("        double fp config:");
+        auto fp_cfg = dev.double_fp_config();
+        if (fp_cfg.has_flags()) {
+            fmt::print("\n");
+            if (fp_cfg & ocl::DENORM)
+                fmt::print("          - denorm\n");
+            if (fp_cfg & ocl::INF_NAN)
+                fmt::print("          - inf-nan\n");
+            if (fp_cfg & ocl::ROUND_TO_NEAREST)
+                fmt::print("          - round-to-nearest\n");
+            if (fp_cfg & ocl::ROUND_TO_ZERO)
+                fmt::print("          - round-to-zero\n");
+            if (fp_cfg & ocl::ROUND_TO_INF)
+                fmt::print("          - round-to-inf\n");
+            if (fp_cfg & ocl::FMA)
+                fmt::print("          - fma\n");
+            if (fp_cfg & ocl::SOFT_FLOAT)
+                fmt::print("          - soft-float\n");
+        }
+        else
+            fmt::print(" none\n");
         fmt::print("        global mem size: {}\n", human_size(dev.global_mem_size()));
         fmt::print("        global mem cache size: {}\n", human_size(dev.global_mem_cache_size()));
         fmt::print("        global mem cache line size: {}\n",
