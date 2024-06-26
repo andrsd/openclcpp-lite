@@ -11,6 +11,7 @@ TEST(DeviceTest, test)
     dev.available();
     dev.built_in_kernels();
     dev.compiler_available();
+    dev.double_fp_config();
     dev.endian_little();
     dev.error_correction_support();
     dev.extensions();

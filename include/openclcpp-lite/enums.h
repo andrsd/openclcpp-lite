@@ -8,6 +8,22 @@
 
 namespace openclcpp_lite {
 
+enum FPConfig {
+    DENORM = CL_FP_DENORM,
+    INF_NAN = CL_FP_INF_NAN,
+    ROUND_TO_NEAREST = CL_FP_ROUND_TO_NEAREST,
+    ROUND_TO_ZERO = CL_FP_ROUND_TO_ZERO,
+    ROUND_TO_INF = CL_FP_ROUND_TO_INF,
+    FMA = CL_FP_FMA,
+    SOFT_FLOAT = CL_FP_SOFT_FLOAT
+};
+
+struct FPConfigFlags : public Flags<FPConfig> {
+    FPConfigFlags(const FPConfigFlags & flag);
+    FPConfigFlags(const Flags<FPConfig> & flags);
+    operator cl_device_fp_config() const;
+};
+
 enum MemoryFlag {
     READ_WRITE = CL_MEM_READ_WRITE,
     WRITE_ONLY = CL_MEM_WRITE_ONLY,

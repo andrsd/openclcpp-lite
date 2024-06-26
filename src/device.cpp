@@ -39,6 +39,13 @@ Device::compiler_available() const
     return get_info<cl_bool>(CL_DEVICE_COMPILER_AVAILABLE);
 }
 
+FPConfigFlags
+Device::double_fp_config() const
+{
+    auto info = get_info<cl_device_fp_config>(CL_DEVICE_DOUBLE_FP_CONFIG);
+    return FPConfigFlags(info);
+}
+
 bool
 Device::endian_little() const
 {

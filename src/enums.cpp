@@ -5,6 +5,15 @@
 
 namespace openclcpp_lite {
 
+FPConfigFlags::FPConfigFlags(const FPConfigFlags & flag) : Flags<FPConfig>(flag) {}
+
+FPConfigFlags::FPConfigFlags(const Flags<FPConfig> & flags) : Flags<FPConfig>(flags) {}
+
+FPConfigFlags::operator cl_device_fp_config() const
+{
+    return this->mask;
+}
+
 MemoryFlags::MemoryFlags(const MemoryFlag & flag) : Flags<MemoryFlag>(flag) {}
 
 MemoryFlags::MemoryFlags(const Flags<MemoryFlag> & flags) : Flags<MemoryFlag>(flags) {}
