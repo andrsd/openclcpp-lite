@@ -139,7 +139,7 @@ public:
     enqueue_copy(const Buffer<T, D> & src,
                  const Buffer<T, D> & dest,
                  const Range<D> & range,
-                 const std::vector<Event> & wait_list = std::vector<Event>())
+                 const std::vector<Event> & wait_list = std::vector<Event>()) const
     {
         assert(src.byte_size() == dest.byte_size());
         return enqueue_copy_raw(src,
@@ -213,7 +213,7 @@ public:
     Event
     enqueue_kernel(const Kernel & kernel,
                    const Range<N> & global,
-                   const std::vector<Event> & wait_list = std::vector<Event>())
+                   const std::vector<Event> & wait_list = std::vector<Event>()) const
     {
         cl_event evt;
         OPENCL_CHECK(
@@ -337,7 +337,7 @@ private:
                            size_t src_offset,
                            size_t dest_offset,
                            size_t size,
-                           const std::vector<Event> & wait_list = std::vector<Event>());
+                           const std::vector<Event> & wait_list = std::vector<Event>()) const;
 
     /// Enqueues a command to map a region of the buffer object given by `buffer` into the host
     /// address space and returns a pointer to this mapped region.
