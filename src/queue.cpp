@@ -154,7 +154,7 @@ Queue::enqueue_copy_raw(const Memory & src,
                         size_t src_offset,
                         size_t dest_offset,
                         size_t size,
-                        const std::vector<Event> & wait_list)
+                        const std::vector<Event> & wait_list) const
 {
     cl_event evt;
     OPENCL_CHECK(clEnqueueCopyBuffer(this->q,
