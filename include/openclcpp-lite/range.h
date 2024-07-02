@@ -53,8 +53,8 @@ public:
         if (this->dims == 0)
             return 0;
         else {
-            size_t s = 1;
-            for (int i = 0; i < this->dims; i++)
+            size_t s = this->sz[0];
+            for (int i = 1; i < this->dims; i++)
                 s *= this->sz[i];
             return s;
         }
