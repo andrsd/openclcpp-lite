@@ -110,5 +110,14 @@ read_file_bin(const std::string & file_name)
     }
 }
 
+void
+write_file_bin(const std::string & file_name, const std::vector<char> & bin)
+{
+    std::ofstream ofs;
+    ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
+    ofs.write(bin.data(), bin.size());
+    ofs.close();
+}
+
 } // namespace utils
 } // namespace openclcpp_lite

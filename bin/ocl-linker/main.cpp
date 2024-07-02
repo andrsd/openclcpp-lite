@@ -111,19 +111,6 @@ set_target_device(const std::string & device_name)
 {
 }
 
-/// Write binary
-///
-/// @param file_name Output file name
-/// @param bin Binary blob to write
-void
-write_file(const std::string & file_name, const std::vector<char> & bin)
-{
-    std::ofstream ofs;
-    ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
-    ofs.write(bin.data(), bin.size());
-    ofs.close();
-}
-
 int
 link()
 {
@@ -141,7 +128,7 @@ link()
     try {
         prg = ocl::Program::link(ctx, { dev }, options, objs);
         auto bins = prg.binaries();
-        write_file(output_file_name, bins[0]);
+        ocl::utils::write_file_bin(output_file_name, bins[0]);
         return 0;
     }
     catch (ocl::Exception & e) {

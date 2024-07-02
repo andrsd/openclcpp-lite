@@ -40,5 +40,11 @@ std::string read_file_text(const std::string & file_name);
 /// @return Content of the file
 std::vector<char> read_file_bin(const std::string & file_name);
 
+/// Write binary
+///
+/// @param file_name Output file name
+/// @param bin Binary blob to write
+void write_file_bin(const std::string & file_name, const std::vector<char> & bin);
+
 } // namespace utils
 } // namespace openclcpp_lite

@@ -260,19 +260,6 @@ create_output_file_name(const std::string & name)
     return str.substr(0, str.find_last_of(".")) + ".o";
 }
 
-/// Write binary
-///
-/// @param file_name Output file name
-/// @param bin Binary blob to write
-void
-write_file(const std::string & file_name, const std::vector<char> & bin)
-{
-    std::ofstream ofs;
-    ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
-    ofs.write(bin.data(), bin.size());
-    ofs.close();
-}
-
 /// Compile single file and write into a file
 ///
 /// @param input Input file name
@@ -288,7 +275,7 @@ compile_file(const std::string & input, const std::string & output)
     try {
         prg.compile(ocl_compiler_opts);
         auto bins = prg.binaries();
-        write_file(output, bins[0]);
+        ocl::utils::write_file_bin(output, bins[0]);
         return 0;
     }
     catch (ocl::Exception & e) {
@@ -325,7 +312,7 @@ build()
     try {
         prg.build({ dev }, ocl_compiler_opts);
         auto bins = prg.binaries();
-        write_file("a.out", bins[0]);
+        ocl::utils::write_file_bin("a.out", bins[0]);
         return 0;
     }
     catch (ocl::Exception & e) {
