@@ -4,6 +4,7 @@
 #include "openclcpp-lite/platform.h"
 #include "openclcpp-lite/device.h"
 #include "openclcpp-lite/utils.h"
+#include "openclcpp-lite/exception.h"
 #include "fmt/printf.h"
 #include "cxxopts/cxxopts.hpp"
 
@@ -207,6 +208,10 @@ main(int argc, char * argv[])
         return 0;
     }
     catch (cxxopts::exceptions::exception & e) {
+        fmt::print("{}\n", e.what());
+        return 1;
+    }
+    catch (ocl::Exception & e) {
         fmt::print("{}\n", e.what());
         return 1;
     }
