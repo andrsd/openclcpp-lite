@@ -260,23 +260,6 @@ create_output_file_name(const std::string & name)
     return str.substr(0, str.find_last_of(".")) + ".o";
 }
 
-/// Read a file into a string
-///
-/// @param file_name Name of the file to read
-/// @return Content of the file
-std::string
-read_file(const std::string & file_name)
-{
-    std::string src;
-    std::ifstream ifs;
-    ifs.open(file_name, std::ifstream::in);
-    char ch;
-    while (ifs.get(ch))
-        src += ch;
-    ifs.close();
-    return src;
-}
-
 /// Write binary
 ///
 /// @param file_name Output file name
@@ -298,7 +281,7 @@ write_file(const std::string & file_name, const std::vector<char> & bin)
 int
 compile_file(const std::string & input, const std::string & output)
 {
-    auto src = read_file(input);
+    auto src = ocl::utils::read_file_text(input);
     auto dev = target_platform.devices()[0];
     ocl::Context ctx(dev);
     auto prg = ocl::Program::from_source(ctx, src);
@@ -335,7 +318,7 @@ int
 build()
 {
     const std::string & file_name = file_names[0];
-    auto src = read_file(file_name);
+    auto src = ocl::utils::read_file_text(file_name);
     auto dev = target_platform.devices()[0];
     ocl::Context ctx(dev);
     auto prg = ocl::Program::from_source(ctx, src);

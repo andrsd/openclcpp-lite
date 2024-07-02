@@ -111,36 +111,6 @@ set_target_device(const std::string & device_name)
 {
 }
 
-/// Read a file into a string
-///
-/// @param file_name Name of the file to read
-/// @return Content of the file
-std::string
-read_file(const std::string & file_name)
-{
-    std::string src;
-    std::ifstream ifs;
-    ifs.open(file_name, std::ifstream::in);
-    char ch;
-    while (ifs.get(ch))
-        src += ch;
-    ifs.close();
-    return src;
-}
-
-std::vector<char>
-load_file(const std::string & file_name)
-{
-    std::vector<char> obj;
-    std::ifstream ifs;
-    ifs.open(file_name, std::ifstream::in);
-    char ch;
-    while (ifs.get(ch))
-        obj.push_back(ch);
-    ifs.close();
-    return obj;
-}
-
 /// Write binary
 ///
 /// @param file_name Output file name
@@ -163,7 +133,7 @@ link()
     std::vector<ocl::Program> objs;
     for (auto & fn : file_names) {
         std::vector<std::vector<char>> bins(1);
-        bins[0] = load_file(fn);
+        bins[0] = ocl::utils::read_file_bin(fn);
         objs.emplace_back(ocl::Program::from_binary(ctx, { dev }, bins));
     }
 
