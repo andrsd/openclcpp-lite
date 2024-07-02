@@ -85,8 +85,15 @@ error_message(cl_int ierr)
     auto it = error_msg.find(ierr);
     if (it != error_msg.end())
         return it->second;
-    else
-        return "Unknown error";
+    else {
+#ifdef OPENCLCPP_LITE_WITH_FMT
+        return fmt::format("Unknown error {}", ierr);
+#else
+        std::stringstream ss;
+        ss << "Unknown error " << ierr;
+        return ss.str();
+#endif
+    }
 }
 
 void
