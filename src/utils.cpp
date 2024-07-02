@@ -74,5 +74,50 @@ starts_with(const std::string & str, const std::string & prefix)
     return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
 }
 
+std::string
+read_file_text(const std::string & file_name)
+{
+    try {
+        std::string src;
+        std::ifstream ifs;
+        ifs.open(file_name, std::ifstream::in);
+        char ch;
+        while (ifs.get(ch))
+            src += ch;
+        ifs.close();
+        return src;
+    }
+    catch (std::exception & e) {
+        throw Exception("Failed to read a file: {}", e.what());
+    }
+}
+
+std::vector<char>
+read_file_bin(const std::string & file_name)
+{
+    try {
+        std::vector<char> obj;
+        std::ifstream ifs;
+        ifs.open(file_name, std::ifstream::in | std::ifstream::binary);
+        char ch;
+        while (ifs.get(ch))
+            obj.push_back(ch);
+        ifs.close();
+        return obj;
+    }
+    catch (std::exception & e) {
+        throw Exception("Failed to read a file: {}", e.what());
+    }
+}
+
+void
+write_file_bin(const std::string & file_name, const std::vector<char> & bin)
+{
+    std::ofstream ofs;
+    ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
+    ofs.write(bin.data(), bin.size());
+    ofs.close();
+}
+
 } // namespace utils
 } // namespace openclcpp_lite

@@ -3,8 +3,10 @@
 
 #pragma once
 
+#include "openclcpp-lite/exception.h"
 #include <vector>
 #include <string>
+#include <fstream>
 
 namespace openclcpp_lite {
 namespace utils {
@@ -25,6 +27,24 @@ std::string rtrim_null(const std::string & str);
 std::string rtrim(const std::string & str);
 
 bool starts_with(const std::string & str, const std::string & start);
+
+/// Read a text file into a `string`
+///
+/// @param file_name File name
+/// @return Content of the file
+std::string read_file_text(const std::string & file_name);
+
+/// Read a binary file into a vector of `char`s
+///
+/// @param file_name File name
+/// @return Content of the file
+std::vector<char> read_file_bin(const std::string & file_name);
+
+/// Write binary
+///
+/// @param file_name Output file name
+/// @param bin Binary blob to write
+void write_file_bin(const std::string & file_name, const std::vector<char> & bin);
 
 } // namespace utils
 } // namespace openclcpp_lite
