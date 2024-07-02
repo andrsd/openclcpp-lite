@@ -81,6 +81,9 @@ read_file_text(const std::string & file_name)
         std::string src;
         std::ifstream ifs;
         ifs.open(file_name, std::ifstream::in);
+        if (!ifs.is_open())
+            throw Exception("Failed to open a file for reading: {}", file_name);
+
         char ch;
         while (ifs.get(ch))
             src += ch;
@@ -99,6 +102,9 @@ read_file_bin(const std::string & file_name)
         std::vector<char> obj;
         std::ifstream ifs;
         ifs.open(file_name, std::ifstream::in | std::ifstream::binary);
+        if (!ifs.is_open())
+            throw Exception("Failed to open a file for reading: {}", file_name);
+
         char ch;
         while (ifs.get(ch))
             obj.push_back(ch);
@@ -115,8 +121,16 @@ write_file_bin(const std::string & file_name, const std::vector<char> & bin)
 {
     std::ofstream ofs;
     ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
-    ofs.write(bin.data(), bin.size());
-    ofs.close();
+    if (!ofs.is_open())
+        throw Exception("Failed to open a file for writing: {}", file_name);
+
+    try {
+        ofs.write(bin.data(), bin.size());
+        ofs.close();
+    }
+    catch (std::exception & e) {
+        throw Exception("Failed to write a file: {}", e.what());
+    }
 }
 
 } // namespace utils
