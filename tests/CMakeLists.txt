@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     Platform_test.cpp
     Program_test.cpp
     Queue_test.cpp
+    Template_test.cpp
     Utils_test.cpp
 )
 
