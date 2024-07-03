@@ -12,6 +12,7 @@ add_library(openclcpp-lite
         platform.cpp
         program.cpp
         queue.cpp
+        template.cpp
         utils.cpp
 )
 
