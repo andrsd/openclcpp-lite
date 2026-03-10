@@ -56,6 +56,8 @@ target_link_libraries(
         openclcpp-lite
 )
 
+target_compile_features(${PROJECT_NAME} public cxx_std_17)
+
 if (${fmt_FOUND})
     target_compile_definitions(${PROJECT_NAME} PUBLIC OPENCLCPP_LITE_WITH_FMT)
     target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)

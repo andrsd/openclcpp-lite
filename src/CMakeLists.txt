@@ -31,6 +31,8 @@ target_link_libraries(
         OpenCL::OpenCL
 )
 
+target_compile_features(openclcpp-lite public cxx_std_17)
+
 if (${fmt_FOUND})
     target_compile_definitions(openclcpp-lite PUBLIC OPENCLCPP_LITE_WITH_FMT)
     target_link_libraries(openclcpp-lite PUBLIC fmt::fmt)
