@@ -20,7 +20,7 @@ target_link_libraries(
         openclcpp-lite
 )
 
-target_compile_features(ocl-linker PUBLIC cxx_std_17)
+target_compile_features(ocl-linker PUBLIC cxx_std_20)
 
 install(
     TARGETS ocl-linker

@@ -57,7 +57,7 @@ target_link_libraries(
         GTest::gmock_main
 )
 
-target_compile_features(openclcpp-lite-test public cxx_std_17)
+target_compile_features(openclcpp-lite-test PUBLIC cxx_std_20)
 
 if (${fmt_FOUND})
     target_compile_definitions(openclcpp-lite-test PUBLIC OPENCLCPP_LITE_WITH_FMT)
