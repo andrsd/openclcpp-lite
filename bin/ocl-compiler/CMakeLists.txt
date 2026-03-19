@@ -1,19 +1,29 @@
 project(ocl-compiler)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(ocl-compiler)
 
-target_include_directories(${PROJECT_NAME}
+target_sources(
+    ocl-compiler
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
+        main.cpp
+)
+
+target_include_directories(
+    ocl-compiler
+    PRIVATE
         ${CMAKE_SOURCE_DIR}/contrib
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE openclcpp-lite)
+target_link_libraries(
+    ocl-compiler
+    PRIVATE
+        openclcpp-lite
+)
 
-target_compile_features(${PROJECT_NAME} public cxx_std_17)
+target_compile_features(ocl-compiler PUBLIC cxx_std_17)
 
 install(
     TARGETS ocl-compiler
-    EXPORT OpenCLCppLiteTargets
+    EXPORT openclcpp-lite-targets
     RUNTIME DESTINATION bin
 )

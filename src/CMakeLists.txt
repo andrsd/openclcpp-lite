@@ -1,5 +1,8 @@
-add_library(openclcpp-lite
-    SHARED
+add_library(openclcpp-lite SHARED)
+
+target_sources(
+    openclcpp-lite
+    PRIVATE
         buffer.cpp
         context.cpp
         device.cpp
@@ -22,7 +25,7 @@ target_include_directories(
     openclcpp-lite
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include/openclcpp-lite>
+        $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(
@@ -31,7 +34,7 @@ target_link_libraries(
         OpenCL::OpenCL
 )
 
-target_compile_features(openclcpp-lite public cxx_std_17)
+target_compile_features(openclcpp-lite PUBLIC cxx_std_17)
 
 if (${fmt_FOUND})
     target_compile_definitions(openclcpp-lite PUBLIC OPENCLCPP_LITE_WITH_FMT)
@@ -41,7 +44,7 @@ endif()
 # Install
 
 configure_package_config_file(
-    ${PROJECT_SOURCE_DIR}/cmake/openclcpp-lite-config.cmake.in
+    ${CMAKE_SOURCE_DIR}/cmake/openclcpp-lite-config.cmake.in
     openclcpp-lite-config.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
     NO_SET_AND_CHECK_MACRO
@@ -54,12 +57,7 @@ write_basic_package_version_file(
 
 install(
     TARGETS openclcpp-lite
-    EXPORT OpenCLCppLiteTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    EXPORT openclcpp-lite-targets
 )
 
 install(
@@ -69,7 +67,7 @@ install(
 )
 
 install(
-    EXPORT OpenCLCppLiteTargets
+    EXPORT openclcpp-lite-targets
     FILE openclcpp-lite-targets.cmake
     NAMESPACE openclcpp-lite::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite

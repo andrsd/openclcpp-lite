@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION VERSION 3.16)
+cmake_minimum_required(VERSION 3.23)
 
-project(openclcpp-lite VERSION 1.0.0 LANGUAGES CXX)
+project(openclcpp-lite
+    VERSION 1.0.0
+    LANGUAGES CXX
+)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-include(FetchContent)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 include(CodeCoverage)
@@ -12,30 +14,7 @@ include(CodeCoverage)
 option(OPENCLCPP_LITE_BUILD_TESTS "Build tests" NO)
 
 find_package(OpenCL REQUIRED)
-find_package(fmt 8.0 REQUIRED)
-
-if (OPENCLCPP_LITE_BUILD_TESTS)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG v1.14.0
-    )
-    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-    mark_as_advanced(FORCE
-        BUILD_GMOCK
-        INSTALL_GTEST
-        FETCHCONTENT_SOURCE_DIR_GOOGLETEST
-        FETCHCONTENT_UPDATES_DISCONNECTED_GOOGLETEST
-    )
-
-    FetchContent_MakeAvailable(googletest)
-    mark_as_advanced(FORCE
-        FETCHCONTENT_BASE_DIR
-        FETCHCONTENT_FULLY_DISCONNECTED
-        FETCHCONTENT_QUIET
-        FETCHCONTENT_UPDATES_DISCONNECTED
-    )
-endif ()
+find_package(fmt 11.0 REQUIRED)
 
 add_subdirectory(src)
 
@@ -57,19 +36,19 @@ endif()
 
 install(
     FILES
-        "${PROJECT_SOURCE_DIR}/cmake/OpenCLProgram.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenCLProgram.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openclcpp-lite
 )
 
 install(
     FILES
-        "${PROJECT_SOURCE_DIR}/python/program.h.jinja2"
-        "${PROJECT_SOURCE_DIR}/python/program.cpp.jinja2"
+        "${CMAKE_CURRENT_SOURCE_DIR}/python/program.h.jinja2"
+        "${CMAKE_CURRENT_SOURCE_DIR}/python/program.cpp.jinja2"
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openclcpp-lite/templates
 )
 
 install(
     PROGRAMS
-        "${PROJECT_SOURCE_DIR}/python/oclcppl-gen.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/python/oclcppl-gen.py"
     DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
