@@ -67,7 +67,7 @@ public:
     void
     set_arg(cl_uint index, const T & value)
     {
-        OPENCL_CHECK(clSetKernelArg(this->kern, index, sizeof(T), &value));
+        OPENCL_CHECK(clSetKernelArg(this->kern_, index, sizeof(T), &value));
     }
 
     /// Set the argument value for a specific argument of a kernel.
@@ -85,12 +85,12 @@ private:
     get_info(cl_kernel_info name) const
     {
         T val;
-        get_info_helper(clGetKernelInfo, this->kern, name, val);
+        get_info_helper(clGetKernelInfo, this->kern_, name, val);
         return val;
     }
 
     /// Underlying OpenCL kernel
-    cl_kernel kern;
+    cl_kernel kern_;
 
 public:
     /// Create a kernel functor
@@ -107,7 +107,7 @@ template <>
 inline void
 Kernel::set_arg(cl_uint index, const Memory & value)
 {
-    OPENCL_CHECK(clSetKernelArg(this->kern, index, sizeof(cl_mem), &value));
+    OPENCL_CHECK(clSetKernelArg(this->kern_, index, sizeof(cl_mem), &value));
 }
 
 } // namespace openclcpp_lite

@@ -9,27 +9,30 @@ FPConfigFlags::FPConfigFlags(const FPConfigFlags & flag) : Flags<FPConfig>(flag)
 
 FPConfigFlags::FPConfigFlags(const Flags<FPConfig> & flags) : Flags<FPConfig>(flags) {}
 
-FPConfigFlags::operator cl_device_fp_config() const
+FPConfigFlags::
+operator cl_device_fp_config() const
 {
-    return this->mask;
+    return this->mask_;
 }
 
 MemoryFlags::MemoryFlags(const MemoryFlag & flag) : Flags<MemoryFlag>(flag) {}
 
 MemoryFlags::MemoryFlags(const Flags<MemoryFlag> & flags) : Flags<MemoryFlag>(flags) {}
 
-MemoryFlags::operator cl_mem_flags() const
+MemoryFlags::
+operator cl_mem_flags() const
 {
-    return this->mask;
+    return this->mask_;
 }
 
 MapFlags::MapFlags(const MapFlag & flag) : Flags<MapFlag>(flag) {}
 
 MapFlags::MapFlags(const Flags<MapFlag> & flags) : Flags<MapFlag>(flags) {}
 
-MapFlags::operator cl_map_flags() const
+MapFlags::
+operator cl_map_flags() const
 {
-    return this->mask;
+    return this->mask_;
 }
 
 } // namespace openclcpp_lite

@@ -8,8 +8,8 @@
 
 namespace openclcpp_lite {
 
-std::once_flag Device::have_default;
-Device Device::default_device;
+std::once_flag Device::have_default_;
+Device Device::default_device_;
 
 Device::Device() : id_(nullptr) {}
 
@@ -305,12 +305,12 @@ Device::type() const
 Device
 Device::get_default()
 {
-    std::call_once(Device::have_default, []() {
+    std::call_once(Device::have_default_, []() {
         auto context = Context::get_default();
         auto dev = context.devices()[0];
-        Device::default_device = Device(dev);
+        Device::default_device_ = Device(dev);
     });
-    return default_device;
+    return default_device_;
 }
 
 } // namespace openclcpp_lite

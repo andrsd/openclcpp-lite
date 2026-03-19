@@ -31,14 +31,14 @@ public:
 
     typedef ENUM enum_type;
 
-    constexpr inline Flags() noexcept : mask(0) {}
+    constexpr inline Flags() noexcept : mask_(0) {}
 
-    constexpr inline Flags(ENUM flag) noexcept : mask((unsigned int) (flag)) {}
+    constexpr inline Flags(ENUM flag) noexcept : mask_((unsigned int) (flag)) {}
 
-    constexpr inline Flags(unsigned int flags) noexcept : mask(flags) {}
+    constexpr inline Flags(unsigned int flags) noexcept : mask_(flags) {}
 
     constexpr inline Flags(std::initializer_list<ENUM> flags) noexcept :
-        mask(initializer_list_helper(flags.begin(), flags.end()))
+        mask_(initializer_list_helper(flags.begin(), flags.end()))
     {
     }
 
@@ -48,7 +48,7 @@ public:
     constexpr bool
     has_flags() const noexcept
     {
-        return this->mask != 0;
+        return this->mask_ != 0;
     }
 
     /// Set a flag
@@ -58,7 +58,7 @@ public:
     constexpr Flags &
     operator|=(ENUM rhs) noexcept
     {
-        this->mask |= rhs;
+        this->mask_ |= rhs;
         return *this;
     }
 
@@ -69,7 +69,7 @@ public:
     constexpr Flags
     operator|(ENUM rhs) const noexcept
     {
-        Flags<ENUM> flags(this->mask);
+        Flags<ENUM> flags(this->mask_);
         flags |= rhs;
         return flags;
     }
@@ -81,7 +81,7 @@ public:
     constexpr bool
     operator&(ENUM flag)
     {
-        return (this->mask & flag);
+        return (this->mask_ & flag);
     }
 
 private:
@@ -95,7 +95,7 @@ private:
 
 protected:
     /// Bit mask iwth flags
-    unsigned int mask;
+    unsigned int mask_;
 };
 
 template <typename ENUM>

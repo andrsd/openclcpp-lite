@@ -9,20 +9,20 @@
 
 namespace openclcpp_lite {
 
-Program::Program() : prg(nullptr) {}
+Program::Program() : prg_(nullptr) {}
 
-Program::Program(cl_program prg) : prg(prg) {}
+Program::Program(cl_program prg) : prg_(prg) {}
 
 void
 Program::retain() const
 {
-    OPENCL_CHECK(clRetainProgram(this->prg));
+    OPENCL_CHECK(clRetainProgram(this->prg_));
 }
 
 void
 Program::release() const
 {
-    OPENCL_CHECK(clReleaseProgram(this->prg));
+    OPENCL_CHECK(clReleaseProgram(this->prg_));
 }
 
 unsigned int
@@ -79,7 +79,7 @@ Program::binaries() const
     std::vector<char *> bin_ptrs(n);
     for (int i = 0; i < bin_size.size(); i++)
         bin_ptrs[i] = bins[i].data();
-    auto err = clGetProgramInfo(this->prg,
+    auto err = clGetProgramInfo(this->prg_,
                                 CL_PROGRAM_BINARIES,
                                 sizeof(char *) * n,
                                 bin_ptrs.data(),
@@ -94,7 +94,7 @@ Program::build(const std::vector<std::string> & options,
                void * user_data) const
 {
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clBuildProgram(this->prg, 0, nullptr, opts.c_str(), pfn_notify, user_data));
+    OPENCL_CHECK(clBuildProgram(this->prg_, 0, nullptr, opts.c_str(), pfn_notify, user_data));
 }
 
 void
@@ -107,7 +107,7 @@ Program::build(const std::vector<Device> & devices,
     for (auto & d : devices)
         ids.push_back(d);
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clBuildProgram(this->prg,
+    OPENCL_CHECK(clBuildProgram(this->prg_,
                                 ids.size(),
                                 ids.size() == 0 ? nullptr : ids.data(),
                                 opts.c_str(),
@@ -121,7 +121,7 @@ Program::compile(const std::vector<std::string> & options,
                  void * user_data) const
 {
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clCompileProgram(this->prg,
+    OPENCL_CHECK(clCompileProgram(this->prg_,
                                   0,
                                   nullptr,
                                   opts.c_str(),
@@ -142,7 +142,7 @@ Program::compile(const std::vector<Device> & devices,
     for (auto & d : devices)
         ids.push_back(d);
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clCompileProgram(this->prg,
+    OPENCL_CHECK(clCompileProgram(this->prg_,
                                   ids.size(),
                                   ids.empty() ? nullptr : ids.data(),
                                   opts.c_str(),
@@ -179,9 +179,10 @@ Program::binary_type(Device device) const
         get_build_info<cl_program_binary_type>(device, CL_PROGRAM_BINARY_TYPE));
 }
 
-Program::operator cl_program() const
+Program::
+operator cl_program() const
 {
-    return this->prg;
+    return this->prg_;
 }
 
 Program

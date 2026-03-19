@@ -8,27 +8,27 @@
 
 namespace openclcpp_lite {
 
-Kernel::Kernel() : kern(nullptr) {}
+Kernel::Kernel() : kern_(nullptr) {}
 
 Kernel::Kernel(const Program & program, const std::string & kernel_name)
 {
     cl_int err;
-    this->kern = clCreateKernel(program, kernel_name.c_str(), &err);
+    this->kern_ = clCreateKernel(program, kernel_name.c_str(), &err);
     OPENCL_CHECK(err);
 }
 
-Kernel::Kernel(cl_kernel kernel) : kern(kernel) {}
+Kernel::Kernel(cl_kernel kernel) : kern_(kernel) {}
 
 void
 Kernel::retain() const
 {
-    OPENCL_CHECK(clRetainKernel(this->kern));
+    OPENCL_CHECK(clRetainKernel(this->kern_));
 }
 
 void
 Kernel::release() const
 {
-    OPENCL_CHECK(clReleaseKernel(this->kern));
+    OPENCL_CHECK(clReleaseKernel(this->kern_));
 }
 
 std::string
@@ -73,12 +73,13 @@ Kernel::attributes() const
 void
 Kernel::set_arg(cl_uint index, size_t size, const void * arg)
 {
-    OPENCL_CHECK(clSetKernelArg(this->kern, index, size, arg));
+    OPENCL_CHECK(clSetKernelArg(this->kern_, index, size, arg));
 }
 
-Kernel::operator cl_kernel() const
+Kernel::
+operator cl_kernel() const
 {
-    return this->kern;
+    return this->kern_;
 }
 
 } // namespace openclcpp_lite

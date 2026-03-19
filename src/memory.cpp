@@ -6,18 +6,18 @@
 
 namespace openclcpp_lite {
 
-Memory::Memory(cl_mem mem) : mem(mem) {}
+Memory::Memory(cl_mem mem) : mem_(mem) {}
 
 void
 Memory::retain() const
 {
-    OPENCL_CHECK(clRetainMemObject(this->mem));
+    OPENCL_CHECK(clRetainMemObject(this->mem_));
 }
 
 void
 Memory::release() const
 {
-    OPENCL_CHECK(clReleaseMemObject(this->mem));
+    OPENCL_CHECK(clReleaseMemObject(this->mem_));
 }
 
 size_t
@@ -51,9 +51,10 @@ Memory::offset() const
     return get_info<size_t>(CL_MEM_OFFSET);
 }
 
-Memory::operator cl_mem() const
+Memory::
+operator cl_mem() const
 {
-    return this->mem;
+    return this->mem_;
 }
 
 } // namespace openclcpp_lite

@@ -8,16 +8,16 @@
 
 namespace openclcpp_lite {
 
-std::once_flag Context::have_default;
-Context Context::default_context;
+std::once_flag Context::have_default_;
+Context Context::default_context_;
 
-Context::Context() : ctx(nullptr) {}
+Context::Context() : ctx_(nullptr) {}
 
 Context::Context(const Device & device)
 {
     cl_int err;
     cl_device_id id = device;
-    this->ctx = clCreateContext(nullptr, 1, &id, nullptr, nullptr, &err);
+    this->ctx_ = clCreateContext(nullptr, 1, &id, nullptr, nullptr, &err);
     OPENCL_CHECK(err);
 }
 
@@ -28,22 +28,22 @@ Context::Context(const std::vector<Device> & devices)
     ids.reserve(devices.size());
     for (auto & d : devices)
         ids.emplace_back(d);
-    this->ctx = clCreateContext(nullptr, ids.size(), ids.data(), nullptr, nullptr, &err);
+    this->ctx_ = clCreateContext(nullptr, ids.size(), ids.data(), nullptr, nullptr, &err);
     OPENCL_CHECK(err);
 }
 
-Context::Context(cl_context context) : ctx(context) {}
+Context::Context(cl_context context) : ctx_(context) {}
 
 void
 Context::retain() const
 {
-    OPENCL_CHECK(clRetainContext(this->ctx));
+    OPENCL_CHECK(clRetainContext(this->ctx_));
 }
 
 void
 Context::release() const
 {
-    OPENCL_CHECK(clReleaseContext(this->ctx));
+    OPENCL_CHECK(clReleaseContext(this->ctx_));
 }
 
 unsigned int
@@ -63,10 +63,10 @@ std::vector<Device>
 Context::devices() const
 {
     std::size_t sz;
-    OPENCL_CHECK(clGetContextInfo(this->ctx, CL_CONTEXT_DEVICES, 0, nullptr, &sz));
+    OPENCL_CHECK(clGetContextInfo(this->ctx_, CL_CONTEXT_DEVICES, 0, nullptr, &sz));
     std::vector<cl_device_id> ids;
     ids.resize(sz);
-    OPENCL_CHECK(clGetContextInfo(this->ctx, CL_CONTEXT_DEVICES, sz, ids.data(), nullptr));
+    OPENCL_CHECK(clGetContextInfo(this->ctx_, CL_CONTEXT_DEVICES, sz, ids.data(), nullptr));
     std::vector<Device> devices;
     for (auto & id : ids)
         devices.emplace_back(Device(id));
@@ -76,7 +76,7 @@ Context::devices() const
 Context
 Context::get_default()
 {
-    std::call_once(Context::have_default, []() {
+    std::call_once(Context::have_default_, []() {
 #if defined(__APPLE__) || defined(__MACOS)
         cl_context_properties * properties = nullptr;
 #else
@@ -90,9 +90,9 @@ Context::get_default()
         auto ctx =
             clCreateContextFromType(properties, CL_DEVICE_TYPE_DEFAULT, nullptr, nullptr, &err);
         OPENCL_CHECK(err);
-        Context::default_context = Context(ctx);
+        Context::default_context_ = Context(ctx);
     });
-    return default_context;
+    return default_context_;
 }
 
 } // namespace openclcpp_lite

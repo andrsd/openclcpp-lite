@@ -46,7 +46,7 @@ public:
     /// Devices attached to this context
     std::vector<Device> devices() const;
 
-    operator cl_context() const { return this->ctx; }
+    operator cl_context() const { return this->ctx_; }
 
 private:
     template <typename T>
@@ -54,18 +54,18 @@ private:
     get_info(cl_context_info name) const
     {
         T val;
-        get_info_helper(clGetContextInfo, this->ctx, name, val);
+        get_info_helper(clGetContextInfo, this->ctx_, name, val);
         return val;
     }
 
-    cl_context ctx;
+    cl_context ctx_;
 
 public:
     static Context get_default();
 
 private:
-    static std::once_flag have_default;
-    static Context default_context;
+    static std::once_flag have_default_;
+    static Context default_context_;
 };
 
 } // namespace openclcpp_lite

@@ -69,7 +69,7 @@ private:
     get_info(cl_event_info name) const
     {
         T val;
-        get_info_helper(clGetEventInfo, this->evt, name, val);
+        get_info_helper(clGetEventInfo, this->evt_, name, val);
         return val;
     }
 
@@ -78,12 +78,12 @@ private:
     get_profiling_info(cl_profiling_info name) const
     {
         T val;
-        get_info_helper(clGetEventProfilingInfo, this->evt, name, val);
+        get_info_helper(clGetEventProfilingInfo, this->evt_, name, val);
         return val;
     }
 
     /// Underlying OpenCL event
-    cl_event evt;
+    cl_event evt_;
 };
 
 /// Waits on the host thread for commands identified by event object to complete.

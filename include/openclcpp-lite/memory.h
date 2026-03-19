@@ -52,12 +52,12 @@ protected:
     get_info(cl_mem_info name) const
     {
         T val;
-        get_info_helper(clGetMemObjectInfo, this->mem, name, val);
+        get_info_helper(clGetMemObjectInfo, this->mem_, name, val);
         return val;
     }
 
     /// Underlying OpenCL memory
-    cl_mem mem;
+    cl_mem mem_;
 };
 
 } // namespace openclcpp_lite

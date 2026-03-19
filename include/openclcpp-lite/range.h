@@ -16,24 +16,24 @@ template <int N>
 class Range {
 public:
     /// Create an empty range
-    Range() : dims(0)
+    Range() : dims_(0)
     {
         for (int i = 0; i < N; i++)
-            this->sz[i] = 0;
+            this->sz_[i] = 0;
     }
 
     /// Create N-dimensional range
     ///
     /// @param size Sizes of the range in each dimension
-    explicit Range(std::initializer_list<size_t> size) : dims(N)
+    explicit Range(std::initializer_list<size_t> size) : dims_(N)
     {
         for (auto it = size.begin(); it != size.end(); ++it) {
             auto i = it - size.begin();
-            this->sz[i] = *it;
+            this->sz_[i] = *it;
         }
     }
 
-    operator const size_t *() const { return this->sz.data(); }
+    operator const size_t *() const { return this->sz_.data(); }
 
     /// Runtime number of dimensions
     ///
@@ -41,7 +41,7 @@ public:
     size_t
     dimensions() const
     {
-        return this->dims;
+        return this->dims_;
     }
 
     /// Number of indices in the whole range
@@ -50,12 +50,12 @@ public:
     size_t
     size() const
     {
-        if (this->dims == 0)
+        if (this->dims_ == 0)
             return 0;
         else {
-            size_t s = this->sz[0];
-            for (int i = 1; i < this->dims; i++)
-                s *= this->sz[i];
+            size_t s = this->sz_[0];
+            for (int i = 1; i < this->dims_; i++)
+                s *= this->sz_[i];
             return s;
         }
     }
@@ -67,14 +67,14 @@ public:
     size_t
     size(int idx) const
     {
-        return this->sz[idx];
+        return this->sz_[idx];
     }
 
 private:
     /// Size of the range in each dimension
-    std::array<size_t, N> sz;
+    std::array<size_t, N> sz_;
     /// Number of dimensions
-    cl_uint dims;
+    cl_uint dims_;
 };
 
 } // namespace openclcpp_lite

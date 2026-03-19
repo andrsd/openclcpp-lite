@@ -29,7 +29,7 @@ public:
         set(const std::string & name, const T & value)
         {
             std::string val = std::to_string(value);
-            this->subst.insert(std::make_pair(name, val));
+            this->subst_.insert(std::make_pair(name, val));
         }
 
         /// Get parameter value
@@ -40,7 +40,7 @@ public:
         get(const std::string & name) const
         {
             try {
-                return this->subst.at(name);
+                return this->subst_.at(name);
             }
             catch (std::exception & e) {
                 throw Exception("No variable named '{}'", name);
@@ -48,7 +48,7 @@ public:
         }
 
     private:
-        std::map<std::string, std::string> subst;
+        std::map<std::string, std::string> subst_;
     };
 
 private:
@@ -88,12 +88,12 @@ private:
         char read_char();
         int peek_char();
 
-        std::istringstream sstr;
-        Mode mode;
+        std::istringstream sstr_;
+        Mode mode_;
         /// Flag indicating if token is cached
-        bool have_token;
+        bool have_token_;
         /// Cached token
-        Token curr;
+        Token curr_;
     };
 
     /// Create a template
@@ -108,7 +108,7 @@ private:
     std::string subst(const Params & params);
 
     /// Lexer for reading tokens
-    Lexer lexer;
+    Lexer lexer_;
 
 public:
     /// Use template and substitute variables
@@ -127,7 +127,7 @@ template <>
 void
 Template::Params::set(const std::string & name, const std::string & value)
 {
-    this->subst.insert(std::make_pair(name, value));
+    this->subst_.insert(std::make_pair(name, value));
 }
 
 /// Set string parameter
@@ -138,7 +138,7 @@ template <>
 void
 Template::Params::set(const std::string & name, char * const & value)
 {
-    this->subst.insert(std::make_pair(name, std::string(value)));
+    this->subst_.insert(std::make_pair(name, std::string(value)));
 }
 
 } // namespace openclcpp_lite

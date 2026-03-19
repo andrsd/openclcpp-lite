@@ -217,7 +217,7 @@ public:
     {
         cl_event evt;
         OPENCL_CHECK(
-            clEnqueueNDRangeKernel(this->q,
+            clEnqueueNDRangeKernel(this->q_,
                                    kernel,
                                    global.dimensions(),
                                    nullptr,
@@ -388,12 +388,12 @@ private:
     get_info(cl_command_queue_info name) const
     {
         T val;
-        get_info_helper(clGetCommandQueueInfo, this->q, name, val);
+        get_info_helper(clGetCommandQueueInfo, this->q_, name, val);
         return val;
     }
 
     /// Underlying OpenCL queue
-    cl_command_queue q;
+    cl_command_queue q_;
 
 public:
     /// Get the default queue
@@ -402,8 +402,8 @@ public:
     static Queue get_default();
 
 private:
-    static std::once_flag have_default;
-    static Queue default_queue;
+    static std::once_flag have_default_;
+    static Queue default_queue_;
 };
 
 } // namespace openclcpp_lite

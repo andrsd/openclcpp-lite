@@ -12,37 +12,39 @@ Template::Params::Params() {}
 
 // lexer
 
-Template::Lexer::Lexer(const std::string & source) : sstr(source), mode(Text), have_token(false) {}
+Template::Lexer::Lexer(const std::string & source) : sstr_(source), mode_(Text), have_token_(false)
+{
+}
 
 Template::Token
 Template::Lexer::peek()
 {
-    if (!this->have_token) {
-        this->curr = read_token();
-        this->have_token = true;
+    if (!this->have_token_) {
+        this->curr_ = read_token();
+        this->have_token_ = true;
     }
-    return this->curr;
+    return this->curr_;
 }
 
 Template::Token
 Template::Lexer::read()
 {
     peek();
-    this->have_token = false;
-    return this->curr;
+    this->have_token_ = false;
+    return this->curr_;
 }
 
 void
 Template::Lexer::set_mode(Mode mode)
 {
-    this->mode = mode;
+    this->mode_ = mode;
 }
 
 Template::Token
 Template::Lexer::read_token()
 {
     while (true) {
-        if (this->sstr.peek() == EOF) {
+        if (this->sstr_.peek() == EOF) {
             Token t = { Token::End, "" };
             return t;
         }
@@ -76,7 +78,7 @@ Template::Lexer::read_token()
             }
         }
         else if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') {
-            if (this->mode == Var)
+            if (this->mode_ == Var)
                 continue;
             else {
                 str_tok += ch;
@@ -85,7 +87,7 @@ Template::Lexer::read_token()
             }
         }
         else {
-            if (this->mode == Var) {
+            if (this->mode_ == Var) {
                 str_tok += ch;
                 ch = peek_char();
                 while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != EOF) {
@@ -108,7 +110,7 @@ char
 Template::Lexer::read_char()
 {
     char ch;
-    this->sstr.read(&ch, sizeof(ch));
+    this->sstr_.read(&ch, sizeof(ch));
     if (ch == EOF)
         throw Exception("Reached end of template");
     return ch;
@@ -117,29 +119,29 @@ Template::Lexer::read_char()
 int
 Template::Lexer::peek_char()
 {
-    auto ch = this->sstr.peek();
+    auto ch = this->sstr_.peek();
     return ch;
 }
 
 // template
 
-Template::Template(const std::string & templ) : lexer(templ) {}
+Template::Template(const std::string & templ) : lexer_(templ) {}
 
 std::string
 Template::subst(const Params & params)
 {
     std::string s;
-    Token token = this->lexer.peek();
+    Token token = this->lexer_.peek();
     while (token.type != Token::End) {
-        token = this->lexer.read();
+        token = this->lexer_.read();
         if (token.type == Token::OpenVar) {
-            this->lexer.set_mode(Lexer::Var);
-            auto var_token = this->lexer.read();
-            auto next = this->lexer.peek();
+            this->lexer_.set_mode(Lexer::Var);
+            auto var_token = this->lexer_.read();
+            auto next = this->lexer_.peek();
             if (var_token.type == Token::Variable && next.type == Token::CloseVar) {
-                this->lexer.read();
+                this->lexer_.read();
                 s += params.get(var_token.val);
-                this->lexer.set_mode(Lexer::Text);
+                this->lexer_.set_mode(Lexer::Text);
             }
             else
                 throw Exception("Malformed template");
@@ -147,7 +149,7 @@ Template::subst(const Params & params)
         else {
             s += token.val;
         }
-        token = this->lexer.peek();
+        token = this->lexer_.peek();
     }
     return s;
 }

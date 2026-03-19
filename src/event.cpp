@@ -8,18 +8,18 @@
 
 namespace openclcpp_lite {
 
-Event::Event(cl_event evt) : evt(evt) {}
+Event::Event(cl_event evt) : evt_(evt) {}
 
 void
 Event::retain() const
 {
-    OPENCL_CHECK(clRetainEvent(this->evt));
+    OPENCL_CHECK(clRetainEvent(this->evt_));
 }
 
 void
 Event::release() const
 {
-    OPENCL_CHECK(clReleaseEvent(this->evt));
+    OPENCL_CHECK(clReleaseEvent(this->evt_));
 }
 
 Queue
@@ -55,7 +55,7 @@ Event::reference_count() const
 void
 Event::wait() const
 {
-    OPENCL_CHECK(clWaitForEvents(1, &this->evt));
+    OPENCL_CHECK(clWaitForEvents(1, &this->evt_));
 }
 
 Event::ProfilingInfo
@@ -69,9 +69,10 @@ Event::profiling_info() const
     return info;
 }
 
-Event::operator cl_event() const
+Event::
+operator cl_event() const
 {
-    return this->evt;
+    return this->evt_;
 }
 
 void

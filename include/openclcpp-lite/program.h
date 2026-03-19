@@ -223,7 +223,7 @@ private:
     get_info(cl_program_info name) const
     {
         T val;
-        get_info_helper(clGetProgramInfo, this->prg, name, val);
+        get_info_helper(clGetProgramInfo, this->prg_, name, val);
         return val;
     }
 
@@ -232,12 +232,12 @@ private:
     get_build_info(Device device, cl_program_build_info name) const
     {
         T val;
-        get_build_info_helper(this->prg, device, name, val);
+        get_build_info_helper(this->prg_, device, name, val);
         return val;
     }
 
     /// Underlying OpenCL program
-    cl_program prg;
+    cl_program prg_;
 };
 
 } // namespace openclcpp_lite

@@ -25,7 +25,7 @@ public:
     /// @param program OpenCL program
     /// @param kernel_name Kernel name
     KernelFunctor(const Program & program, const std::string & kernel_name) :
-        kern(program, kernel_name)
+        kern_(program, kernel_name)
     {
     }
 
@@ -38,18 +38,18 @@ public:
     operator()(ARGS... args)
     {
         set_args<0>(std::forward<ARGS>(args)...);
-        return this->kern;
+        return this->kern_;
     }
 
 private:
     /// OpenCL kernel
-    Kernel kern;
+    Kernel kern_;
 
     template <int INDEX, typename T0, typename... T1S>
     void
     set_args(T0 && t0, T1S &&... t1s)
     {
-        this->kern.set_arg(INDEX, t0);
+        this->kern_.set_arg(INDEX, t0);
         set_args<INDEX + 1, T1S...>(std::forward<T1S>(t1s)...);
     }
 
@@ -57,7 +57,7 @@ private:
     void
     set_args(T0 && t0)
     {
-        this->kern.set_arg(INDEX, t0);
+        this->kern_.set_arg(INDEX, t0);
     }
 
     template <int>

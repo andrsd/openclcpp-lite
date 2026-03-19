@@ -10,10 +10,10 @@
 
 namespace openclcpp_lite {
 
-std::once_flag Queue::have_default;
-Queue Queue::default_queue;
+std::once_flag Queue::have_default_;
+Queue Queue::default_queue_;
 
-Queue::Queue() : q(nullptr) {}
+Queue::Queue() : q_(nullptr) {}
 
 Queue::Queue(const Context & context, bool enable_profiling)
 {
@@ -23,7 +23,7 @@ Queue::Queue(const Context & context, bool enable_profiling)
     cl_command_queue_properties props = 0;
     if (enable_profiling)
         props |= CL_QUEUE_PROFILING_ENABLE;
-    this->q = clCreateCommandQueue(context, device_id, props, &err);
+    this->q_ = clCreateCommandQueue(context, device_id, props, &err);
     OPENCL_CHECK(err);
 }
 
@@ -34,22 +34,22 @@ Queue::Queue(const Context & context, const Device & device, bool enable_profili
     cl_command_queue_properties props = 0;
     if (enable_profiling)
         props |= CL_QUEUE_PROFILING_ENABLE;
-    this->q = clCreateCommandQueue(context, device_id, props, &err);
+    this->q_ = clCreateCommandQueue(context, device_id, props, &err);
     OPENCL_CHECK(err);
 }
 
-Queue::Queue(cl_command_queue q) : q(q) {}
+Queue::Queue(cl_command_queue q) : q_(q) {}
 
 void
 Queue::retain() const
 {
-    OPENCL_CHECK(clRetainCommandQueue(this->q));
+    OPENCL_CHECK(clRetainCommandQueue(this->q_));
 }
 
 void
 Queue::release() const
 {
-    OPENCL_CHECK(clReleaseCommandQueue(this->q));
+    OPENCL_CHECK(clReleaseCommandQueue(this->q_));
 }
 
 Context
@@ -79,7 +79,7 @@ Queue::enqueue_read_raw(const Memory & buffer,
                         void * ptr,
                         const std::vector<Event> & wait_list) const
 {
-    OPENCL_CHECK(clEnqueueReadBuffer(this->q,
+    OPENCL_CHECK(clEnqueueReadBuffer(this->q_,
                                      buffer,
                                      CL_TRUE,
                                      offset,
@@ -98,7 +98,7 @@ Queue::enqueue_iread_raw(const Memory & buffer,
                          const std::vector<Event> & wait_list) const
 {
     cl_event evt;
-    OPENCL_CHECK(clEnqueueReadBuffer(this->q,
+    OPENCL_CHECK(clEnqueueReadBuffer(this->q_,
                                      buffer,
                                      CL_FALSE,
                                      offset,
@@ -117,7 +117,7 @@ Queue::enqueue_write_raw(const Memory & buffer,
                          const void * ptr,
                          const std::vector<Event> & wait_list) const
 {
-    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
+    OPENCL_CHECK(clEnqueueWriteBuffer(this->q_,
                                       buffer,
                                       CL_TRUE,
                                       offset,
@@ -136,7 +136,7 @@ Queue::enqueue_iwrite_raw(const Memory & buffer,
                           const std::vector<Event> & wait_list) const
 {
     cl_event evt;
-    OPENCL_CHECK(clEnqueueWriteBuffer(this->q,
+    OPENCL_CHECK(clEnqueueWriteBuffer(this->q_,
                                       buffer,
                                       CL_FALSE,
                                       offset,
@@ -157,7 +157,7 @@ Queue::enqueue_copy_raw(const Memory & src,
                         const std::vector<Event> & wait_list) const
 {
     cl_event evt;
-    OPENCL_CHECK(clEnqueueCopyBuffer(this->q,
+    OPENCL_CHECK(clEnqueueCopyBuffer(this->q_,
                                      src,
                                      dest,
                                      src_offset,
@@ -177,7 +177,7 @@ Queue::enqueue_map_buffer_raw(const Memory & buffer,
                               size_t size) const
 {
     cl_int err;
-    auto ret = clEnqueueMapBuffer(this->q,
+    auto ret = clEnqueueMapBuffer(this->q_,
                                   buffer,
                                   blocking ? CL_TRUE : CL_FALSE,
                                   flags,
@@ -200,7 +200,7 @@ Queue::enqueue_fill_buffer_raw(const Memory & buffer,
                                const std::vector<Event> & wait_list) const
 {
     cl_event evt;
-    OPENCL_CHECK(clEnqueueFillBuffer(this->q,
+    OPENCL_CHECK(clEnqueueFillBuffer(this->q_,
                                      buffer,
                                      pattern,
                                      pattern_size,
@@ -216,7 +216,7 @@ Event
 Queue::enqueue_unmap_mem_object(const Memory & mem, void * mapped_ptr) const
 {
     cl_event evt;
-    OPENCL_CHECK(clEnqueueUnmapMemObject(this->q, mem, mapped_ptr, 0, nullptr, &evt));
+    OPENCL_CHECK(clEnqueueUnmapMemObject(this->q_, mem, mapped_ptr, 0, nullptr, &evt));
     return Event { evt };
 }
 
@@ -225,7 +225,7 @@ Queue::enqueue_barrier(const std::vector<Event> & wait_list) const
 {
     cl_event evt;
     OPENCL_CHECK(
-        clEnqueueBarrierWithWaitList(this->q,
+        clEnqueueBarrierWithWaitList(this->q_,
                                      wait_list.size(),
                                      wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
                                      &evt));
@@ -237,7 +237,7 @@ Queue::enqueue_marker(const std::vector<Event> & wait_list) const
 {
     cl_event evt;
     OPENCL_CHECK(
-        clEnqueueMarkerWithWaitList(this->q,
+        clEnqueueMarkerWithWaitList(this->q_,
                                     wait_list.size(),
                                     wait_list.empty() ? nullptr : (cl_event *) &wait_list.front(),
                                     &evt));
@@ -247,26 +247,26 @@ Queue::enqueue_marker(const std::vector<Event> & wait_list) const
 void
 Queue::flush() const
 {
-    OPENCL_CHECK(clFlush(this->q));
+    OPENCL_CHECK(clFlush(this->q_));
 }
 
 void
 Queue::finish() const
 {
-    OPENCL_CHECK(clFinish(this->q));
+    OPENCL_CHECK(clFinish(this->q_));
 }
 
 Queue
 Queue::get_default()
 {
-    std::call_once(Queue::have_default, []() {
+    std::call_once(Queue::have_default_, []() {
         auto ctx = Context::get_default();
         auto device = Device::get_default();
         cl_int err;
         auto q = clCreateCommandQueue(ctx, device, 0, &err);
-        default_queue = Queue(q);
+        default_queue_ = Queue(q);
     });
-    return default_queue;
+    return default_queue_;
 }
 
 } // namespace openclcpp_lite

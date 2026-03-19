@@ -7,8 +7,8 @@
 
 namespace openclcpp_lite {
 
-std::once_flag Platform::have_default;
-Platform Platform::default_platform;
+std::once_flag Platform::have_default_;
+Platform Platform::default_platform_;
 
 std::string
 Platform::name() const
@@ -68,13 +68,13 @@ get_platforms()
 Platform
 Platform::get_default()
 {
-    std::call_once(Platform::have_default, []() {
+    std::call_once(Platform::have_default_, []() {
         auto pp = platforms();
         if (pp.size() == 0)
             throw Exception("No OpenCL platforms available");
-        Platform::default_platform = pp[0];
+        Platform::default_platform_ = pp[0];
     });
-    return default_platform;
+    return default_platform_;
 }
 
 std::vector<Device>

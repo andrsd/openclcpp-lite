@@ -255,8 +255,8 @@ public:
     static Device get_default();
 
 private:
-    static std::once_flag have_default;
-    static Device default_device;
+    static std::once_flag have_default_;
+    static Device default_device_;
 };
 
 } // namespace openclcpp_lite

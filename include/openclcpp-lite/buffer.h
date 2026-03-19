@@ -39,7 +39,7 @@ public:
     {
         auto ctx = Context::get_default();
         cl_int err;
-        this->mem = clCreateBuffer(ctx, mem_flags, sizeof(T) * range.size(), nullptr, &err);
+        this->mem_ = clCreateBuffer(ctx, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
     }
 
@@ -51,7 +51,7 @@ public:
     Buffer(const Context & context, const Range<1> & range, MemoryFlags mem_flags = READ_WRITE)
     {
         cl_int err;
-        this->mem = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
+        this->mem_ = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
     }
 
@@ -64,7 +64,7 @@ public:
     {
         auto ctx = Context::get_default();
         cl_int err;
-        this->mem = clCreateBuffer(ctx, mem_flags, sizeof(T) * range.size(), nullptr, &err);
+        this->mem_ = clCreateBuffer(ctx, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
         auto q = Queue::get_default();
         auto * dst = q.enqueue_map_buffer<T, 1>(*this, true, WRITE, range);
@@ -85,7 +85,7 @@ public:
            MemoryFlags mem_flags = READ_WRITE)
     {
         cl_int err;
-        this->mem = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
+        this->mem_ = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
         auto q = Queue::get_default();
         auto * dst = q.enqueue_map_buffer<T, 1>(*this, true, WRITE, range);

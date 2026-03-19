@@ -62,8 +62,8 @@ public:
     static Platform get_default();
 
 private:
-    static std::once_flag have_default;
-    static Platform default_platform;
+    static std::once_flag have_default_;
+    static Platform default_platform_;
 };
 
 std::vector<Platform> get_platforms();
