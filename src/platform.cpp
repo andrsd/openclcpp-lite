@@ -43,7 +43,7 @@ Platform::profile() const
 
 Platform::Platform() {}
 
-Platform::Platform(cl_platform_id id) : id(id) {}
+Platform::Platform(cl_platform_id id) : id_(id) {}
 
 std::vector<Platform>
 Platform::platforms()
@@ -81,10 +81,10 @@ std::vector<Device>
 Platform::devices(Device::Type type) const
 {
     cl_uint num;
-    OPENCL_CHECK(clGetDeviceIDs(this->id, type, 0, nullptr, &num));
+    OPENCL_CHECK(clGetDeviceIDs(this->id_, type, 0, nullptr, &num));
     std::vector<cl_device_id> dev_ids;
     dev_ids.resize(num);
-    OPENCL_CHECK(clGetDeviceIDs(this->id, type, num, dev_ids.data(), nullptr));
+    OPENCL_CHECK(clGetDeviceIDs(this->id_, type, num, dev_ids.data(), nullptr));
     std::vector<Device> devs;
     for (auto & id : dev_ids)
         devs.emplace_back(Device(id));

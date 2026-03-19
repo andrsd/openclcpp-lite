@@ -43,7 +43,7 @@ public:
     /// List of devices available on a platform
     std::vector<Device> devices(Device::Type type = Device::ALL) const;
 
-    operator cl_platform_id() const { return this->id; }
+    operator cl_platform_id() const { return this->id_; }
 
 private:
     template <typename T>
@@ -51,12 +51,12 @@ private:
     get_info(cl_platform_info name) const
     {
         T val;
-        get_info_helper(clGetPlatformInfo, this->id, name, val);
+        get_info_helper(clGetPlatformInfo, this->id_, name, val);
         return val;
     }
 
     /// Underlying OpenCL platform
-    cl_platform_id id;
+    cl_platform_id id_;
 
 public:
     static Platform get_default();

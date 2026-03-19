@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "openclcpp-lite/device.h"
+#include "openclcpp-lite/platform.h"
 #include "openclcpp-lite/utils.h"
 #include "openclcpp-lite/context.h"
 
@@ -10,9 +11,15 @@ namespace openclcpp_lite {
 std::once_flag Device::have_default;
 Device Device::default_device;
 
-Device::Device() : id(nullptr) {}
+Device::Device() : id_(nullptr) {}
 
-Device::Device(cl_device_id id) : id(id) {}
+Device::Device(cl_device_id id) : id_(id) {}
+
+Platform
+Device::platform() const
+{
+    return Platform(get_info<cl_platform_id>(CL_DEVICE_PLATFORM));
+}
 
 cl_uint
 Device::address_bits() const

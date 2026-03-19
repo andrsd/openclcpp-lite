@@ -13,6 +13,8 @@
 
 namespace openclcpp_lite {
 
+class Platform;
+
 /// OpenCL device
 class Device {
 public:
@@ -30,6 +32,8 @@ public:
 
     /// Create a device from OpenCL device ID
     explicit Device(cl_device_id id);
+
+    Platform platform() const;
 
     /// The default compute device address space size specified as an unsigned integer value in
     /// bits. Currently supported values are 32 or 64 bits.
@@ -233,7 +237,7 @@ public:
     /// `GPU`, `ACCELERATOR`, `DEFAULT`, a combination of the above types, or `CUSTOM`.
     Type type() const;
 
-    operator cl_device_id() const { return this->id; }
+    operator cl_device_id() const { return this->id_; }
 
 private:
     template <typename T>
@@ -241,11 +245,11 @@ private:
     get_info(cl_device_info name) const
     {
         T val;
-        get_info_helper(clGetDeviceInfo, this->id, name, val);
+        get_info_helper(clGetDeviceInfo, this->id_, name, val);
         return val;
     }
 
-    cl_device_id id;
+    cl_device_id id_;
 
 public:
     static Device get_default();
