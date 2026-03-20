@@ -46,6 +46,8 @@ add(__global const int * connect,
 // clang-format on
 
 std::string src_dbl = R"(
+#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : enable
+
 /// atomic add for `double`
 void __attribute__((always_inline))
 atomic_add_d(volatile global double* addr,
@@ -59,7 +61,7 @@ atomic_add_d(volatile global double* addr,
     do {
         expected.f64 = current.f64;
         next.f64 = expected.f64 + val;
-        current.u64 = atomic_cmpxchg((volatile global ulong *) addr, expected.u64, next.u64);
+        current.u64 = atom_cmpxchg((volatile global ulong *) addr, expected.u64, next.u64);
     } while (current.u64 != expected.u64);
 }
 
