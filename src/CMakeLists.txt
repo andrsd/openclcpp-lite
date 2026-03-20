@@ -36,7 +36,7 @@ target_link_libraries(
 
 target_compile_features(openclcpp-lite PUBLIC cxx_std_20)
 
-target_link_libraries(openclcpp-lite PUBLIC fmt::fmt)
+target_link_libraries(openclcpp-lite PRIVATE fmt::fmt)
 
 # Install
 

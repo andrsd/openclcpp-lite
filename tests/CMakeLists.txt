@@ -52,6 +52,7 @@ target_link_libraries(
     openclcpp-lite-test
     PUBLIC
         openclcpp-lite
+        fmt::fmt
         GTest::gmock_main
 )
 
