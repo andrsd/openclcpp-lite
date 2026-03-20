@@ -15,6 +15,8 @@ option(OPENCLCPP_LITE_BUILD_TESTS "Build tests" NO)
 
 find_package(OpenCL REQUIRED)
 find_package(fmt 11.0 REQUIRED)
+find_package(jinja2 REQUIRED)
+find_package(pyyaml REQUIRED)
 
 add_subdirectory(src)
 
