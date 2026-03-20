@@ -251,7 +251,7 @@ Queue::flush() const
 }
 
 void
-Queue::finish() const
+Queue::wait() const
 {
     OPENCL_CHECK(clFinish(this->q_));
 }

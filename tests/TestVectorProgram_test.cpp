@@ -32,8 +32,10 @@ TEST(TestVectorProgram, test)
     auto vec_add = ocl::Kernel::create<FloatBuffer, FloatBuffer, FloatBuffer>(prg, "vec_add");
 
     auto q = ocl::Queue::get_default();
-    q.enqueue_kernel(vec_add(d_a, d_b, d_c), rng);
-    q.enqueue_read(d_c, rng, h_c.data());
+    q.submit([&](auto & h) {
+        h.kernel(vec_add(d_a, d_b, d_c), rng);
+        h.copy(d_c, h_c.data(), rng);
+    });
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
     }

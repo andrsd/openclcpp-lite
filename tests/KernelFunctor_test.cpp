@@ -64,10 +64,12 @@ TEST(KernelFunctorTest, execute)
 
     auto vec_add = ocl::Kernel::create<FloatBuffer, FloatBuffer, FloatBuffer>(prg, "vec_add");
 
-    q.enqueue_write(d_a, rng, h_a.data());
-    q.enqueue_write(d_b, rng, h_b.data());
-    q.enqueue_kernel(vec_add(d_a, d_b, d_c), rng);
-    q.enqueue_read(d_c, rng, h_c.data());
+    q.submit([&](auto & h) {
+        h.copy(h_a.data(), d_a, rng);
+        h.copy(h_b.data(), d_b, rng);
+        h.kernel(vec_add(d_a, d_b, d_c), rng);
+        h.copy(d_c, h_c.data(), rng);
+    });
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
     }
@@ -96,9 +98,11 @@ TEST(KernelFunctorTest, execute2)
 
     auto vec_add = ocl::Kernel::create<cl_float, FloatBuffer, FloatBuffer>(prg, "vec_scale");
 
-    q.enqueue_write(d_a, rng, h_a.data());
-    q.enqueue_kernel(vec_add(2., d_a, d_c), rng);
-    q.enqueue_read(d_c, rng, h_c.data());
+    q.submit([&](auto & h) {
+        h.copy(h_a.data(), d_a, rng);
+        h.kernel(vec_add(2., d_a, d_c), rng);
+        h.copy(d_c, h_c.data(), rng);
+    });
     for (int i = 0; i < N; i++) {
         EXPECT_FLOAT_EQ(h_c[i], 2. * (i + 1));
     }

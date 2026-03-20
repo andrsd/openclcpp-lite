@@ -101,7 +101,10 @@ TEST(AtomicsTest, atomic_add_float)
     BufferF d_C { rng_node };
 
     auto add = ocl::Kernel::create<BufferConnect, BufferF>(prg, "add");
-    q.enqueue_kernel(add(d_connect, d_C), rng_elem);
+    q.submit([&](auto & h) {
+        //
+        h.kernel(add(d_connect, d_C), rng_elem);
+    });
 
     auto * C = q.enqueue_map_buffer(d_C, true, ocl::READ, rng_node);
     EXPECT_DOUBLE_EQ(C[0], 1.);
@@ -139,7 +142,10 @@ TEST(AtomicsTest, atomic_add_double)
     BufferD d_C { rng_node };
 
     auto add = ocl::Kernel::create<BufferConnect, BufferD>(prg, "add_dbl");
-    q.enqueue_kernel(add(d_connect, d_C), rng_elem);
+    q.submit([&](auto & h) {
+        //
+        h.kernel(add(d_connect, d_C), rng_elem);
+    });
 
     auto * C = q.enqueue_map_buffer(d_C, true, ocl::READ, rng_node);
     EXPECT_DOUBLE_EQ(C[0], 1.);

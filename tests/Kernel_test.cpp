@@ -68,10 +68,12 @@ TEST(KernelTest, execute)
     k.set_arg(1, d_b);
     k.set_arg(2, d_c);
 
-    q.enqueue_write(d_a, rng, h_a.data());
-    q.enqueue_write(d_b, rng, h_b.data());
-    q.enqueue_kernel(k, rng);
-    q.enqueue_read(d_c, rng, h_c.data());
+    q.submit([&](auto & h){
+        h.copy(h_a.data(), d_a, rng);
+        h.copy(h_b.data(), d_b, rng);
+        h.kernel(k, rng);
+        h.copy(d_c, h_c.data(), rng);
+    });
     for (auto & i : h_c) {
         EXPECT_FLOAT_EQ(i, 101);
     }

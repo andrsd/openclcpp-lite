@@ -20,6 +20,7 @@ class Range;
 class Memory;
 template <typename T, int D>
 class Buffer;
+class Handler;
 
 /// OpenCL command queue
 class Queue {
@@ -61,85 +62,26 @@ public:
     /// general use in applications. This feature is provided for identifying memory leaks.
     unsigned int reference_count() const;
 
-    /// Enqueue commands to read from a buffer object to host memory in blocking mode
-    ///
-    /// @param buffer Buffer to read from
-    /// @param ptr The pointer to buffer in host memory where data is to be read into.
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
-    template <typename T, int D>
-    void
-    enqueue_read(const Buffer<T, D> & buffer,
-                 const Range<D> & range,
-                 void * ptr,
-                 const std::vector<Event> & wait_list = std::vector<Event>()) const
-    {
-        enqueue_read_raw(buffer, 0 * sizeof(T), range.size() * sizeof(T), ptr, wait_list);
-    }
-
-    /// Enqueue commands to read from a buffer object to host memory in non-blocking mode
-    ///
-    /// @param buffer Buffer to read from
-    /// @param ptr The pointer to buffer in host memory where data is to be read into.
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
-    /// @return Event object that identifies this particular kernel execution instance
-    template <typename T, int D>
-    Event
-    enqueue_iread(const Buffer<T, D> & buffer,
-                  const Range<D> & range,
-                  void * ptr,
-                  const std::vector<Event> & wait_list = std::vector<Event>()) const
-    {
-        return enqueue_iread_raw(buffer, 0 * sizeof(T), range.size() * sizeof(T), ptr, wait_list);
-    }
-
-    /// Enqueue commands to write to a buffer object from host memory in blocking mode
-    ///
-    /// @param buffer Buffer to write into
-    /// @param ptr The pointer to buffer in host memory where data is to be written from.
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
-    template <typename T, int D>
-    void
-    enqueue_write(const Buffer<T, D> & buffer,
-                  const Range<D> & range,
-                  const void * ptr,
-                  const std::vector<Event> & wait_list = std::vector<Event>()) const
-    {
-        enqueue_write_raw(buffer, 0 * sizeof(T), range.size() * sizeof(T), ptr, wait_list);
-    }
-
-    /// Enqueue commands to write to a buffer object from host memory in non-blocking mode
-    ///
-    /// @param buffer Buffer to write into
-    /// @param ptr The pointer to buffer in host memory where data is to be written from.
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
-    template <typename T, int D>
-    Event
-    enqueue_iwrite(const Buffer<T, D> & buffer,
-                   const Range<D> & range,
-                   const void * ptr,
-                   const std::vector<Event> & wait_list = std::vector<Event>()) const
-    {
-        return enqueue_iwrite_raw(buffer, 0 * sizeof(T), range.size() * sizeof(T), ptr, wait_list);
-    }
-
     /// Enqueues a command to copy from one buffer object to another.
     ///
     /// @param src Source buffer
     /// @param dest Destination buffer
     /// @param range Range.
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
     /// @return Event object that identifies this particular operation
     template <typename T, int D>
     Event
-    enqueue_copy(const Buffer<T, D> & src,
-                 const Buffer<T, D> & dest,
-                 const Range<D> & range,
-                 const std::vector<Event> & wait_list = std::vector<Event>()) const
+    copy(const Buffer<T, D> & src, const Buffer<T, D> & dest, const Range<D> & range) const
+    {
+        assert(src.byte_size() == dest.byte_size());
+        return enqueue_copy_raw(src, dest, 0 * sizeof(T), 0 * sizeof(T), range.size() * sizeof(T));
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const Buffer<T, D> & src,
+         const Buffer<T, D> & dest,
+         const Range<D> & range,
+         Event dep_event) const
     {
         assert(src.byte_size() == dest.byte_size());
         return enqueue_copy_raw(src,
@@ -147,7 +89,132 @@ public:
                                 0 * sizeof(T),
                                 0 * sizeof(T),
                                 range.size() * sizeof(T),
-                                wait_list);
+                                { dep_event });
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const Buffer<T, D> & src,
+         const Buffer<T, D> & dest,
+         const Range<D> & range,
+         const std::vector<Event> & dep_events) const
+    {
+        assert(src.byte_size() == dest.byte_size());
+        return enqueue_copy_raw(src,
+                                dest,
+                                0 * sizeof(T),
+                                0 * sizeof(T),
+                                range.size() * sizeof(T),
+                                dep_events);
+    }
+
+    /// Enqueue commands to write to a buffer object from host memory in blocking mode
+    ///
+    /// @param src The pointer to buffer in host memory where data is to be written from.
+    /// @param dest Buffer to write into
+    /// @param range Range.
+    template <typename T, int D>
+    Event
+    copy(const void * src, const Buffer<T, D> & dest, const Range<D> & range) const
+    {
+        return enqueue_iwrite_raw(dest, 0 * sizeof(T), range.size() * sizeof(T), src);
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const void * src, const Buffer<T, D> & dest, const Range<D> & range, Event dep_event) const
+    {
+        return enqueue_iwrite_raw(dest,
+                                  0 * sizeof(T),
+                                  range.size() * sizeof(T),
+                                  src,
+                                  { dep_event });
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const void * src,
+         const Buffer<T, D> & dest,
+         const Range<D> & range,
+         const std::vector<Event> & dep_events) const
+    {
+        return enqueue_iwrite_raw(dest, 0 * sizeof(T), range.size() * sizeof(T), src, dep_events);
+    }
+
+    /// Enqueue commands to read from a buffer object to host memory in non-blocking mode
+    ///
+    /// @param src Buffer to read from
+    /// @param dest The pointer to buffer in host memory where data is to be read into.
+    /// @param range Range.
+    /// @return Event object that identifies this particular kernel execution instance
+    template <typename T, int D>
+    Event
+    copy(const Buffer<T, D> & src, void * dest, const Range<D> & range) const
+    {
+        return enqueue_iread_raw(src, 0 * sizeof(T), range.size() * sizeof(T), dest);
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const Buffer<T, D> & src, void * dest, const Range<D> & range, Event dep_event) const
+    {
+        return enqueue_iread_raw(src, 0 * sizeof(T), range.size() * sizeof(T), dest, { dep_event });
+    }
+
+    template <typename T, int D>
+    Event
+    copy(const Buffer<T, D> & src,
+         void * dest,
+         const Range<D> & range,
+         const std::vector<Event> & dep_events) const
+    {
+        return enqueue_iread_raw(src, 0 * sizeof(T), range.size() * sizeof(T), dest, dep_events);
+    }
+
+    /// Enqueues a command to fill a buffer object with a pattern
+    ///
+    /// @tparam T C++ type of the buffer being filled
+    /// @tparam U C++ type of the pattern
+    /// @tparam D Range dimension
+    /// @param buffer Buffer being filled
+    /// @param pattern Pattern to fill the buffer with
+    /// @param range Range
+    /// @return Event object that identifies this particular write command
+    template <typename T, typename U, int D>
+    Event
+    fill(const Buffer<T, D> & buffer, const U & pattern, const Range<D> & range) const
+    {
+        return enqueue_fill_buffer_raw(buffer, &pattern, sizeof(U), 0, range.size() * sizeof(U));
+    }
+
+    template <typename T, typename U, int D>
+    Event
+    fill(const Buffer<T, D> & buffer,
+         const U & pattern,
+         const Range<D> & range,
+         Event dep_event) const
+    {
+        return enqueue_fill_buffer_raw(buffer,
+                                       &pattern,
+                                       sizeof(U),
+                                       0,
+                                       range.size() * sizeof(U),
+                                       { dep_event });
+    }
+
+    template <typename T, typename U, int D>
+    Event
+    fill(const Buffer<T, D> & buffer,
+         const U & pattern,
+         const Range<D> & range,
+         const std::vector<Event> & dep_events) const
+    {
+        return enqueue_fill_buffer_raw(buffer,
+                                       &pattern,
+                                       sizeof(U),
+                                       0,
+                                       range.size() * sizeof(U),
+                                       dep_events);
     }
 
     /// Enqueues a command to map a region of the buffer object given by `buffer` into the host
@@ -188,6 +255,24 @@ public:
     /// @return Event object that identifies this particular operation
     Event enqueue_unmap_mem_object(const Memory & mem, void * mapped_ptr) const;
 
+    template <typename F>
+    Event
+    submit(F && f)
+    {
+        Handler h(*this);
+        f(h);
+        return enqueue_marker();
+    }
+
+    /// Issues all previously queued OpenCL commands in a command-queue to the device associated
+    /// with the command-queue.
+    void flush() const;
+
+    /// Blocks until all previously queued OpenCL commands in a command-queue are issued to the
+    /// associated device and have completed.
+    void wait() const;
+
+private:
     /// A synchronization point that enqueues a barrier operation.
     ///
     /// @param wait_list Specify events that need to complete before
@@ -229,41 +314,6 @@ public:
         return Event(evt);
     }
 
-    /// Enqueues a command to fill a buffer object with a pattern
-    ///
-    /// @tparam T C++ type of the buffer being filled
-    /// @tparam U C++ type of the pattern
-    /// @tparam D Range dimension
-    /// @param buffer Buffer being filled
-    /// @param pattern Pattern to fill the buffer with
-    /// @param range Range
-    /// @param wait_list Specify events that need to complete before this particular command can be
-    ///        executed
-    /// @return Event object that identifies this particular write command
-    template <typename T, typename U, int D>
-    Event
-    enqueue_fill_buffer(const Buffer<T, D> & buffer,
-                        const U & pattern,
-                        const Range<D> & range,
-                        const std::vector<Event> & wait_list = std::vector<Event>()) const
-    {
-        return enqueue_fill_buffer_raw(buffer,
-                                       &pattern,
-                                       sizeof(U),
-                                       0,
-                                       range.size() * sizeof(U),
-                                       wait_list);
-    }
-
-    /// Issues all previously queued OpenCL commands in a command-queue to the device associated
-    /// with the command-queue.
-    void flush() const;
-
-    /// Blocks until all previously queued OpenCL commands in a command-queue are issued to the
-    /// associated device and have completed.
-    void finish() const;
-
-private:
     /// Enqueue commands to read from a buffer object to host memory in blocking mode
     ///
     /// @param buffer Buffer to read from
@@ -404,6 +454,98 @@ public:
 private:
     static std::once_flag have_default_;
     static Queue default_queue_;
+
+    friend class Handler;
+};
+
+/// Handler
+class Handler {
+public:
+    /// Enqueues a command to execute a kernel on a device.
+    ///
+    /// @param kernel Kernel to execute
+    /// @param global Global range
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular kernel execution instance
+    template <int N>
+    void
+    kernel(const Kernel & kernel, const Range<N> & global) const
+    {
+        this->q_.enqueue_kernel(kernel, global);
+    }
+
+    /// Enqueues a command to fill a buffer object with a pattern
+    ///
+    /// @tparam T C++ type of the buffer being filled
+    /// @tparam U C++ type of the pattern
+    /// @tparam D Range dimension
+    /// @param buffer Buffer being filled
+    /// @param pattern Pattern to fill the buffer with
+    /// @param range Range
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular write command
+    template <typename T, typename U, int D>
+    void
+    fill(const Buffer<T, D> & buffer, const U & pattern, const Range<D> & range)
+    {
+        this->q_.enqueue_fill_buffer_raw(buffer, &pattern, sizeof(U), 0, range.size() * sizeof(U));
+    }
+
+    /// Enqueue commands to read from a buffer object to host memory in blocking mode
+    ///
+    /// @param buffer Buffer to read from
+    /// @param ptr The pointer to buffer in host memory where data is to be read into.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    template <typename T, int D>
+    void
+    copy(const Buffer<T, D> & src, void * dest, const Range<D> & range) const
+    {
+        this->q_.enqueue_read_raw(src, 0 * sizeof(T), range.size() * sizeof(T), dest);
+    }
+
+    /// Enqueue commands to write to a buffer object from host memory in blocking mode
+    ///
+    /// @param buffer Buffer to write into
+    /// @param ptr The pointer to buffer in host memory where data is to be written from.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    template <typename T, int D>
+    void
+    copy(const void * src, const Buffer<T, D> & dest, const Range<D> & range) const
+    {
+        this->q_.enqueue_write_raw(dest, 0 * sizeof(T), range.size() * sizeof(T), src);
+    }
+
+    /// Enqueues a command to copy from one buffer object to another.
+    ///
+    /// @param src Source buffer
+    /// @param dest Destination buffer
+    /// @param range Range.
+    /// @param wait_list Specify events that need to complete before this particular command can be
+    ///        executed
+    /// @return Event object that identifies this particular operation
+    template <typename T, int D>
+    void
+    copy(const Buffer<T, D> & src, const Buffer<T, D> & dest, const Range<D> & range) const
+    {
+        assert(src.byte_size() == dest.byte_size());
+        this->q_.enqueue_copy_raw(src,
+                                  dest,
+                                  0 * sizeof(T),
+                                  0 * sizeof(T),
+                                  range.size() * sizeof(T));
+    }
+
+private:
+    Handler(Queue & q) : q_(q) {}
+
+    /// Queue to be handled
+    Queue & q_;
+
+    friend class Queue;
 };
 
 } // namespace openclcpp_lite

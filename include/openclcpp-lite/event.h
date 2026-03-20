@@ -84,12 +84,10 @@ private:
 
     /// Underlying OpenCL event
     cl_event evt_;
+
+public:
+    /// Waits on the host thread for commands identified by event objects to complete.
+    static void wait(const std::vector<Event> & events);
 };
-
-/// Waits on the host thread for commands identified by event object to complete.
-void wait_for_event(const Event & event);
-
-/// Waits on the host thread for commands identified by event objects to complete.
-void wait_for_events(const std::vector<Event> & event);
 
 } // namespace openclcpp_lite

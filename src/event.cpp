@@ -76,13 +76,7 @@ operator cl_event() const
 }
 
 void
-wait_for_event(const Event & event)
-{
-    event.wait();
-}
-
-void
-wait_for_events(const std::vector<Event> & events)
+Event::wait(const std::vector<Event> & events)
 {
     OPENCL_CHECK(
         clWaitForEvents(events.size(), events.empty() ? nullptr : (cl_event *) &events.front()));
