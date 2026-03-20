@@ -5,7 +5,7 @@
 #include "openclcpp-lite/device.h"
 #include "openclcpp-lite/utils.h"
 #include "openclcpp-lite/exception.h"
-#include "fmt/printf.h"
+#include "fmt/core.h"
 #include "cxxopts/cxxopts.hpp"
 
 namespace ocl = openclcpp_lite;

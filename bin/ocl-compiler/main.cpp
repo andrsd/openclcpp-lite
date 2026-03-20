@@ -7,9 +7,8 @@
 #include "openclcpp-lite/program.h"
 #include "openclcpp-lite/exception.h"
 #include "openclcpp-lite/utils.h"
+#include "fmt/core.h"
 #include <map>
-#include <iostream>
-#include <fstream>
 
 namespace ocl = openclcpp_lite;
 
@@ -242,10 +241,11 @@ set_target_platform(const std::string & platform_name)
                 return;
             }
         }
-        throw ocl::Exception("Requested platform '{}' is not available", platform_name);
+        throw ocl::Exception(
+            fmt::format("Requested platform '{}' is not available", platform_name));
     }
     else
-        throw ocl::Exception("Unknown platform '{}' specified", platform_name);
+        throw ocl::Exception(fmt::format("Unknown platform '{}' specified", platform_name));
 }
 
 void
@@ -431,7 +431,7 @@ parse_command_line(int argc, char * argv[])
         //
         else {
             if (arg[0] == '-')
-                throw ocl::Exception("Unrecognized option '{}'", arg);
+                throw ocl::Exception(fmt::format("Unrecognized option '{}'", arg));
             else {
                 file_names.push_back(arg);
             }

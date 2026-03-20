@@ -6,6 +6,7 @@
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/utils.h"
 #include "openclcpp-lite/exception.h"
+#include "fmt/format.h"
 
 namespace openclcpp_lite {
 
@@ -253,9 +254,10 @@ Program::from_binary(const Context & context,
                      const std::vector<std::vector<char>> & binaries)
 {
     if (devices.size() != binaries.size())
-        throw Exception("The number of devices ({}) must be equal to the number of binaries ({})",
+        throw Exception(
+            fmt::format("The number of devices ({}) must be equal to the number of binaries ({})",
                         devices.size(),
-                        binaries.size());
+                        binaries.size()));
     std::vector<cl_device_id> dev_ids;
     for (auto & dev : devices)
         dev_ids.push_back(dev);

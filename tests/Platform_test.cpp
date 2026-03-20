@@ -5,6 +5,8 @@ namespace ocl = openclcpp_lite;
 
 TEST(PlatformTest, get_platforms)
 {
+    testing::internal::CaptureStderr();
+
     auto platforms = ocl::get_platforms();
     for (auto & plat : platforms) {
         auto name = plat.name();
@@ -20,6 +22,8 @@ TEST(PlatformTest, get_platforms)
             std::cerr << "    - " << e << std::endl;
         std::cerr << "  profile: " << profile << std::endl;
     }
+
+    auto out = testing::internal::GetCapturedStderr();
 }
 
 TEST(PlatformTest, devices)

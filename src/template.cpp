@@ -2,13 +2,24 @@
 // SPDX-License-Identifier: MIT
 
 #include "openclcpp-lite/template.h"
-#include <iostream>
+#include "fmt/core.h"
 
 namespace openclcpp_lite {
 
 // params
 
 Template::Params::Params() {}
+
+std::string
+Template::Params::get(const std::string & name) const
+{
+    try {
+        return this->subst_.at(name);
+    }
+    catch (std::exception & e) {
+        throw Exception(fmt::format("No variable named '{}'", name));
+    }
+}
 
 // lexer
 

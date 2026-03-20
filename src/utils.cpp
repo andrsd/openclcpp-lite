@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "openclcpp-lite/utils.h"
+#include "fmt/core.h"
 #include <algorithm>
 
 namespace openclcpp_lite {
@@ -82,7 +83,7 @@ read_file_text(const std::string & file_name)
         std::ifstream ifs;
         ifs.open(file_name, std::ifstream::in);
         if (!ifs.is_open())
-            throw Exception("Failed to open a file for reading: {}", file_name);
+            throw Exception(fmt::format("Failed to open a file for reading: {}", file_name));
 
         char ch;
         while (ifs.get(ch))
@@ -91,7 +92,7 @@ read_file_text(const std::string & file_name)
         return src;
     }
     catch (std::exception & e) {
-        throw Exception("Failed to read a file: {}", e.what());
+        throw Exception(fmt::format("Failed to read a file: {}", e.what()));
     }
 }
 
@@ -103,7 +104,7 @@ read_file_bin(const std::string & file_name)
         std::ifstream ifs;
         ifs.open(file_name, std::ifstream::in | std::ifstream::binary);
         if (!ifs.is_open())
-            throw Exception("Failed to open a file for reading: {}", file_name);
+            throw Exception(fmt::format("Failed to open a file for reading: {}", file_name));
 
         char ch;
         while (ifs.get(ch))
@@ -112,7 +113,7 @@ read_file_bin(const std::string & file_name)
         return obj;
     }
     catch (std::exception & e) {
-        throw Exception("Failed to read a file: {}", e.what());
+        throw Exception(fmt::format("Failed to read a file: {}", e.what()));
     }
 }
 
@@ -122,14 +123,14 @@ write_file_bin(const std::string & file_name, const std::vector<char> & bin)
     std::ofstream ofs;
     ofs.open(file_name, std::ofstream::out | std::ofstream::binary);
     if (!ofs.is_open())
-        throw Exception("Failed to open a file for writing: {}", file_name);
+        throw Exception(fmt::format("Failed to open a file for writing: {}", file_name));
 
     try {
         ofs.write(bin.data(), bin.size());
         ofs.close();
     }
     catch (std::exception & e) {
-        throw Exception("Failed to write a file: {}", e.what());
+        throw Exception(fmt::format("Failed to write a file: {}", e.what()));
     }
 }
 

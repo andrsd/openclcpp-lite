@@ -42,13 +42,11 @@ else()
 endif()
 
 
-# target_include_directories(
-#     openclcpp-lite-test
-#     PUBLIC
-#         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-#         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-#         $<INSTALL_INTERFACE:include/openclcpp-lite>
-# )
+target_include_directories(
+    openclcpp-lite-test
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
 
 target_link_libraries(
     openclcpp-lite-test
@@ -58,11 +56,6 @@ target_link_libraries(
 )
 
 target_compile_features(openclcpp-lite-test PUBLIC cxx_std_20)
-
-if (${fmt_FOUND})
-    target_compile_definitions(openclcpp-lite-test PUBLIC OPENCLCPP_LITE_WITH_FMT)
-    target_link_libraries(openclcpp-lite-test PUBLIC fmt::fmt)
-endif()
 
 target_code_coverage(openclcpp-lite-test)
 

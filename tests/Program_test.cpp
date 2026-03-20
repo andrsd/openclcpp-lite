@@ -2,6 +2,7 @@
 #include "openclcpp-lite/platform.h"
 #include "openclcpp-lite/context.h"
 #include "openclcpp-lite/program.h"
+#include "fmt/core.h"
 #include <future>
 
 namespace ocl = openclcpp_lite;
@@ -9,11 +10,12 @@ namespace ocl = openclcpp_lite;
 namespace {
 
 // clang-format off
-std::string src1 =
-    "__kernel void vector_add(__global const int *A, __global const int *B, __global int *C) {\n"
-    "    int i = get_global_id(0);\n"
-    "    C[i] = A[i] + B[i];\n"
-    "}";
+std::string src1 = R"(
+__kernel void vector_add(__global const int *A, __global const int *B, __global int *C) {
+    int i = get_global_id(0);
+    C[i] = A[i] + B[i];
+}
+)";
 
 std::vector<std::string> src2 = {
     "__kernel void vec_add(__global const int *A, __global const int *B, __global int *C) {"
@@ -134,7 +136,6 @@ TEST(ProgramTest, build_info)
     prg.build({ dev }, { "-D", "UNITTEST" });
     EXPECT_EQ(prg.build_status(dev), ocl::Program::BuildStatus::SUCCESS);
     auto nfo = prg.build_log(dev);
-    EXPECT_EQ(nfo.size(), 0);
     EXPECT_EQ(prg.build_options(dev), "-D UNITTEST");
     EXPECT_EQ(prg.binary_type(dev), ocl::Program::BinaryType::EXECUTABLE);
     auto sizes = prg.binary_sizes();

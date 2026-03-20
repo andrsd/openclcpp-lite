@@ -10,6 +10,7 @@ TEST(ExceptionTest, test)
         FAIL();
     }
     catch (ocl::Exception & e) {
-        EXPECT_STREQ(e.what(), "asdf");
+        std::string text(e.what());
+        EXPECT_TRUE(text.ends_with("asdf"));
     }
 }

@@ -36,16 +36,7 @@ public:
         ///
         /// @param name Parameter name
         /// @return Parameter value
-        std::string
-        get(const std::string & name) const
-        {
-            try {
-                return this->subst_.at(name);
-            }
-            catch (std::exception & e) {
-                throw Exception("No variable named '{}'", name);
-            }
-        }
+        std::string get(const std::string & name) const;
 
     private:
         std::map<std::string, std::string> subst_;

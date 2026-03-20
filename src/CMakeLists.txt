@@ -36,10 +36,7 @@ target_link_libraries(
 
 target_compile_features(openclcpp-lite PUBLIC cxx_std_20)
 
-if (${fmt_FOUND})
-    target_compile_definitions(openclcpp-lite PUBLIC OPENCLCPP_LITE_WITH_FMT)
-    target_link_libraries(openclcpp-lite PUBLIC fmt::fmt)
-endif()
+target_link_libraries(openclcpp-lite PUBLIC fmt::fmt)
 
 # Install
 

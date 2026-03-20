@@ -24,7 +24,7 @@ TEST(TemplateTest, non_existing_var)
         FAIL();
     }
     catch (ocl::Exception & e) {
-        EXPECT_STREQ(e.what(), "No variable named 'type-asdf'");
+        EXPECT_TRUE(std::string(e.what()).ends_with("No variable named 'type-asdf'"));
     }
 }
 
@@ -38,7 +38,7 @@ TEST(TemplateTest, no_var_name)
         FAIL();
     }
     catch (ocl::Exception & e) {
-        EXPECT_STREQ(e.what(), "Malformed template");
+        EXPECT_TRUE(std::string(e.what()).ends_with("Malformed template"));
     }
 }
 
@@ -52,7 +52,7 @@ TEST(TemplateTest, not_closed)
         FAIL();
     }
     catch (ocl::Exception & e) {
-        EXPECT_STREQ(e.what(), "Malformed template");
+        EXPECT_TRUE(std::string(e.what()).ends_with("Malformed template"));
     }
 }
 

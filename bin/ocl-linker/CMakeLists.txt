@@ -18,6 +18,7 @@ target_link_libraries(
     ocl-linker
     PRIVATE
         openclcpp-lite
+        fmt::fmt
 )
 
 target_compile_features(ocl-linker PUBLIC cxx_std_20)

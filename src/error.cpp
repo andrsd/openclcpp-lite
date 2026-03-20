@@ -4,11 +4,7 @@
 #include "openclcpp-lite/error.h"
 #include "openclcpp-lite/exception.h"
 #include "openclcpp-lite/cl.h"
-#ifdef OPENCLCPP_LITE_WITH_FMT
-    #include "fmt/printf.h"
-#else
-    #include <sstream>
-#endif
+#include "fmt/core.h"
 #include <map>
 
 namespace openclcpp_lite {
@@ -85,29 +81,16 @@ error_message(cl_int ierr)
     auto it = error_msg.find(ierr);
     if (it != error_msg.end())
         return it->second;
-    else {
-#ifdef OPENCLCPP_LITE_WITH_FMT
+    else
         return fmt::format("Unknown error {}", ierr);
-#else
-        std::stringstream ss;
-        ss << "Unknown error " << ierr;
-        return ss.str();
-#endif
-    }
 }
 
 void
-check_error(cl_int ierr, const char * file, int line)
+check_error(cl_int ierr, const std::source_location location)
 {
     if (ierr != CL_SUCCESS) {
-#ifdef OPENCLCPP_LITE_WITH_FMT
-        std::string err = fmt::format("OpenCL error at {}:{}: {}", file, line, error_message(ierr));
-        throw Exception(err);
-#else
-        std::stringstream ss;
-        ss << "OpenCL error at " << file << ":" << line << ": " << error_message(ierr);
-        throw Exception(ss.str());
-#endif
+        auto err = fmt::format("[OpenCL error] {}", error_message(ierr));
+        throw Exception(err, location);
     }
 }
 
