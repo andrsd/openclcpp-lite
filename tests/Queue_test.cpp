@@ -221,11 +221,14 @@ TEST(QueueTest, fill_buffer_pattern)
     };
     Pattern pattern { 1., 2. };
 
-    const int N = 3;
+    const int N = 4;
     ocl::Range<1> rng { N };
     ocl::Buffer<Pattern> d_a { rng };
     auto q = ocl::Queue::get_default();
     ocl::Range<1> fill_rng { 2 };
+    // initialize the buffer
+    q.enqueue_fill_buffer(d_a, Pattern { 0., 0. }, rng);
+    // partially fill
     q.enqueue_fill_buffer(d_a, pattern, fill_rng);
 
     auto * vals = q.enqueue_map_buffer(d_a, true, ocl::READ, rng);
@@ -235,4 +238,6 @@ TEST(QueueTest, fill_buffer_pattern)
     EXPECT_EQ(vals[1].b, 2.);
     EXPECT_EQ(vals[2].a, 0.);
     EXPECT_EQ(vals[2].b, 0.);
+    EXPECT_EQ(vals[3].a, 0.);
+    EXPECT_EQ(vals[3].b, 0.);
 }
