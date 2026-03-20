@@ -95,25 +95,30 @@ Program::build(const std::vector<std::string> & options,
                void * user_data) const
 {
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clBuildProgram(this->prg_, 0, nullptr, opts.c_str(), pfn_notify, user_data));
+    auto ierr = clBuildProgram(this->prg_, 0, nullptr, opts.c_str(), pfn_notify, user_data);
+    if (ierr != CL_SUCCESS) {
+        auto dev = Device::get_default();
+        auto log = build_log(dev);
+        fmt::print(stderr, "{}", log);
+        throw Exception(internal::error_message(ierr));
+    }
 }
 
 void
-Program::build(const std::vector<Device> & devices,
+Program::build(Device device,
                const std::vector<std::string> & options,
                void(CL_CALLBACK * pfn_notify)(cl_program program, void * user_data),
                void * user_data) const
 {
-    std::vector<cl_device_id> ids;
-    for (auto & d : devices)
-        ids.push_back(d);
+    std::vector<cl_device_id> ids = { device };
     auto opts = utils::join(" ", options);
-    OPENCL_CHECK(clBuildProgram(this->prg_,
-                                ids.size(),
-                                ids.size() == 0 ? nullptr : ids.data(),
-                                opts.c_str(),
-                                pfn_notify,
-                                user_data));
+    auto ierr =
+        clBuildProgram(this->prg_, ids.size(), ids.data(), opts.c_str(), pfn_notify, user_data);
+    if (ierr != CL_SUCCESS) {
+        auto log = build_log(device);
+        fmt::print(stderr, "{}", log);
+        throw Exception(internal::error_message(ierr));
+    }
 }
 
 void
