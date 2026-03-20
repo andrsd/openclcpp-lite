@@ -15,33 +15,34 @@ namespace {
 // From https://streamhpc.com/blog/2016-02-09/atomic-operations-for-floats-in-opencl-improved/
 
 // clang-format off
-std::string src =
-    "void __attribute__((always_inline))\n"
-    "atomic_add_f(volatile global float* addr,\n"
-    "             const float val)\n"
-    "{\n"
-    "    union {\n"
-    "        uint u32;\n"
-    "        float f32;\n"
-    "    } next, expected, current;\n"
-    "    current.f32 = *addr;\n"
-    "    do {\n"
-    "        expected.f32 = current.f32;\n"
-    "        next.f32 = expected.f32 + val;\n"
-    "        current.u32 = atomic_cmpxchg((volatile global uint *) addr, expected.u32, next.u32);\n"
-    "    } while (current.u32 != expected.u32);\n"
-    "}\n"
-    "\n"
-    "__kernel void\n"
-    "add(__global const int * connect,\n"
-    "    __global float * C)\n"
-    "{\n"
-    "    int ie = get_global_id(0);\n"
-    "    int3 elem = vload3(ie, connect);\n"
-    "    atomic_add_f(C + elem[0], 1);\n"
-    "    atomic_add_f(C + elem[1], 1);\n"
-    "    atomic_add_f(C + elem[2], 1);\n"
-    "}";
+std::string src = R"(
+void __attribute__((always_inline))
+atomic_add_f(volatile global float* addr,
+                const float val)
+{
+    union {
+        uint u32;
+        float f32;
+    } next, expected, current;
+    current.f32 = *addr;
+    do {
+        expected.f32 = current.f32;
+        next.f32 = expected.f32 + val;
+        current.u32 = atomic_cmpxchg((volatile global uint *) addr, expected.u32, next.u32);
+    } while (current.u32 != expected.u32);
+}
+
+__kernel void
+add(__global const int * connect,
+    __global float * C)
+{
+    int ie = get_global_id(0);
+    int3 elem = vload3(ie, connect);
+    atomic_add_f(C + elem[0], 1);
+    atomic_add_f(C + elem[1], 1);
+    atomic_add_f(C + elem[2], 1);
+}
+)";
 // clang-format on
 
 std::string src_dbl = R"(

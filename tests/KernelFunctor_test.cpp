@@ -12,17 +12,27 @@ namespace ocl = openclcpp_lite;
 namespace {
 
 // clang-format off
-std::string src1 =
-    "__kernel void vec_add(__global const float *A, __global const float *B, __global float *C) {\n"
-    "    int i = get_global_id(0);\n"
-    "    C[i] = A[i] + B[i];\n"
-    "}";
+std::string src1 = R"(
+__kernel void
+vec_add(__global const float *A,
+        __global const float *B,
+        __global float *C)
+{
+    int i = get_global_id(0);
+    C[i] = A[i] + B[i];
+}
+)";
 
-std::string src2 =
-    "__kernel void vec_scale(const float alpha, __global const float *B, __global float *C) {\n"
-    "    int i = get_global_id(0);\n"
-    "    C[i] = alpha * B[i];\n"
-    "}";
+std::string src2 = R"(
+__kernel void
+vec_scale(const float alpha,
+          __global const float *B,
+          __global float *C)
+{
+    int i = get_global_id(0);
+    C[i] = alpha * B[i];
+}
+)";
 // clang-format on
 
 } // namespace
