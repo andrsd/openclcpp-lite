@@ -8,6 +8,7 @@
 #include "openclcpp-lite/templ.h"
 #include "openclcpp-lite/error.h"
 #include <vector>
+#include <unordered_set>
 #include <string>
 #include <mutex>
 
@@ -61,7 +62,7 @@ public:
 
     /// Returns a list of extension names (the extension names themselves do not contain any spaces)
     /// supported by the device.
-    std::vector<std::string> extensions() const;
+    std::unordered_set<std::string> extensions() const;
 
     /// Is `true` if the OpenCL device is a little endian device and `false` otherwise.
     bool endian_little() const;

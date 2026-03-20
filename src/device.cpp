@@ -65,12 +65,13 @@ Device::error_correction_support() const
     return get_info<cl_bool>(CL_DEVICE_ERROR_CORRECTION_SUPPORT);
 }
 
-std::vector<std::string>
+std::unordered_set<std::string>
 Device::extensions() const
 {
     auto str = get_info<std::string>(CL_DEVICE_EXTENSIONS);
     str = utils::rtrim(str);
-    return utils::split(str, " ");
+    auto data = utils::split(str, " ");
+    return std::unordered_set<std::string>(data.begin(), data.end());
 }
 
 unsigned long
