@@ -14,18 +14,14 @@
 
 namespace openclcpp_lite {
 
-template <typename T, int D>
+/// `D`-dimensional buffer
+///
+/// @tparam T C++ type of the data element this buffer stores
+template <typename T, int D = 1>
 class Buffer : public Memory {
 public:
     using type = T;
-};
 
-/// 1-dimensional buffer
-///
-/// @tparam T C++ type of the data element this buffer stores
-template <typename T>
-class Buffer<T, 1> : public Memory {
-public:
     /// Create a buffer from external memory buffer
     ///
     /// @param mem External memory buffer
@@ -35,7 +31,7 @@ public:
     ///
     /// @param range Size of the buffer
     /// @param mem_flags Memory flags
-    Buffer(const Range<1> & range, MemoryFlags mem_flags = READ_WRITE)
+    Buffer(const Range<D> & range, MemoryFlags mem_flags = READ_WRITE)
     {
         auto ctx = Context::get_default();
         cl_int err;
@@ -48,7 +44,7 @@ public:
     /// @param context OpenCL context
     /// @param range Size of the buffer
     /// @param mem_flags Memory flags
-    Buffer(const Context & context, const Range<1> & range, MemoryFlags mem_flags = READ_WRITE)
+    Buffer(const Context & context, const Range<D> & range, MemoryFlags mem_flags = READ_WRITE)
     {
         cl_int err;
         this->mem_ = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
@@ -60,14 +56,14 @@ public:
     /// @param src Host memory with the initial values
     /// @param range Size of the buffer
     /// @param mem_flags Memory flags
-    Buffer(const T * src, const Range<1> & range, MemoryFlags mem_flags = READ_WRITE)
+    Buffer(const T * src, const Range<D> & range, MemoryFlags mem_flags = READ_WRITE)
     {
         auto ctx = Context::get_default();
         cl_int err;
         this->mem_ = clCreateBuffer(ctx, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
         auto q = Queue::get_default();
-        auto * dst = q.enqueue_map_buffer<T, 1>(*this, true, WRITE, range);
+        auto * dst = q.enqueue_map_buffer<T, D>(*this, true, WRITE, range);
         memcpy(dst, src, byte_size());
         auto evt = q.enqueue_unmap_mem_object(*this, dst);
         evt.wait();
@@ -81,14 +77,14 @@ public:
     /// @param mem_flags Memory flags
     Buffer(const Context & context,
            const T * src,
-           const Range<1> & range,
+           const Range<D> & range,
            MemoryFlags mem_flags = READ_WRITE)
     {
         cl_int err;
         this->mem_ = clCreateBuffer(context, mem_flags, sizeof(T) * range.size(), nullptr, &err);
         OPENCL_CHECK(err);
         auto q = Queue::get_default();
-        auto * dst = q.enqueue_map_buffer<T, 1>(*this, true, WRITE, range);
+        auto * dst = q.enqueue_map_buffer<T, D>(*this, true, WRITE, range);
         memcpy(dst, src, byte_size());
         auto evt = q.enqueue_unmap_mem_object(*this, dst);
         evt.wait();

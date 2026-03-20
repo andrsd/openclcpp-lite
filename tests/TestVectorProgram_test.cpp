@@ -23,7 +23,7 @@ TEST(TestVectorProgram, test)
     }
 
     ocl::Range<1> rng { N };
-    using FloatBuffer = ocl::Buffer<float, 1>;
+    using FloatBuffer = ocl::Buffer<float>;
 
     FloatBuffer d_a { h_a.data(), rng };
     FloatBuffer d_b { h_b.data(), rng };

@@ -54,9 +54,9 @@ TEST(KernelTest, execute)
     }
 
     ocl::Range<1> rng { N };
-    ocl::Buffer<float, 1> d_a { rng };
-    ocl::Buffer<float, 1> d_b { rng };
-    ocl::Buffer<float, 1> d_c { rng };
+    ocl::Buffer<float> d_a { rng };
+    ocl::Buffer<float> d_b { rng };
+    ocl::Buffer<float> d_c { rng };
 
     ocl::Kernel k(prg, "vec_add");
     k.set_arg(0, d_a);

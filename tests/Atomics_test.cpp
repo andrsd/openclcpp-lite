@@ -91,8 +91,8 @@ TEST(AtomicsTest, atomic_add_float)
     using ELEM = std::array<cl_int, 3>;
     ocl::Range<1> rng_node { N_NODES };
     ocl::Range<1> rng_elem { N_ELEMS };
-    using BufferConnect = ocl::Buffer<ELEM, 1>;
-    using BufferF = ocl::Buffer<cl_float, 1>;
+    using BufferConnect = ocl::Buffer<ELEM>;
+    using BufferF = ocl::Buffer<cl_float>;
 
     std::vector<ELEM> connect = { { 0, 1, 2 }, { 2, 1, 3 }, { 1, 4, 3 } };
 
@@ -129,8 +129,8 @@ TEST(AtomicsTest, atomic_add_double)
     using ELEM = std::array<cl_int, 3>;
     ocl::Range<1> rng_node { N_NODES };
     ocl::Range<1> rng_elem { N_ELEMS };
-    using BufferConnect = ocl::Buffer<ELEM, 1>;
-    using BufferD = ocl::Buffer<cl_double, 1>;
+    using BufferConnect = ocl::Buffer<ELEM>;
+    using BufferD = ocl::Buffer<cl_double>;
 
     std::vector<ELEM> connect = { { 0, 1, 2 }, { 2, 1, 3 }, { 1, 4, 3 } };
 

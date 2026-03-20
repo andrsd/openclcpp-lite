@@ -33,7 +33,7 @@ TEST(QueueTest, read_write_buffer_winit)
     for (int i = 0; i < N; i++)
         h_a[i] = 100 + i;
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { h_a.data(), rng };
+    ocl::Buffer<int> d_a { h_a.data(), rng };
     std::vector<int> h_b(N);
     auto q = ocl::Queue::get_default();
     q.enqueue_read(d_a, rng, h_b.data());
@@ -52,7 +52,7 @@ TEST(QueueTest, read_write_buffer)
     for (int i = 0; i < N; i++)
         h_a[i] = 100 + i;
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
     std::vector<int> h_b(N);
     auto q = ocl::Queue::get_default();
     q.enqueue_write(d_a, rng, h_a.data());
@@ -73,8 +73,8 @@ TEST(QueueTest, copy_buffer)
         h_a[i] = 100 + i;
     std::vector<int> h_b(N);
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
-    ocl::Buffer<int, 1> d_b { rng };
+    ocl::Buffer<int> d_a { rng };
+    ocl::Buffer<int> d_b { rng };
     auto q = ocl::Queue::get_default();
     q.enqueue_write(d_a, rng, h_a.data());
     q.enqueue_copy(d_a, d_b, rng);
@@ -95,7 +95,7 @@ TEST(QueueTest, map_buffer)
         h_a[i] = 100 + i;
     ocl::Range<1> rng { N };
     auto q = ocl::Queue::get_default();
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
     q.enqueue_write(d_a, rng, h_a.data());
     auto * mapped_ints = q.enqueue_map_buffer(d_a, true, ocl::READ, rng);
 
@@ -115,7 +115,7 @@ TEST(QueueTest, iread_iwrite_buffer)
         h_a[i] = 100 + i;
     std::vector<int> h_b(N);
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
     auto q = ocl::Queue::get_default();
     auto wr_evt = q.enqueue_iwrite(d_a, rng, h_a.data());
     auto rd_evt = q.enqueue_iread(d_a, rng, h_b.data(), { wr_evt });
@@ -137,8 +137,8 @@ TEST(QueueTest, async_copy_buffer)
         h_a[i] = 100 + i;
     std::vector<int> h_b(N);
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
-    ocl::Buffer<int, 1> d_b { rng };
+    ocl::Buffer<int> d_a { rng };
+    ocl::Buffer<int> d_b { rng };
     auto q = ocl::Queue::get_default();
     auto wr_evt = q.enqueue_iwrite(d_a, rng, h_a.data());
     auto cp_evt = q.enqueue_copy(d_a, d_b, rng, { wr_evt });
@@ -163,8 +163,8 @@ TEST(QueueTest, barrier)
         h_b[i] = 100 - i;
     }
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
-    ocl::Buffer<int, 1> d_b { rng };
+    ocl::Buffer<int> d_a { rng };
+    ocl::Buffer<int> d_b { rng };
     auto q = ocl::Queue::get_default();
     auto wr_evt1 = q.enqueue_iwrite(d_a, rng, h_a.data());
     auto wr_evt2 = q.enqueue_iwrite(d_b, rng, h_b.data());
@@ -186,8 +186,8 @@ TEST(QueueTest, marker)
         h_b[i] = 100 - i;
     }
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
-    ocl::Buffer<int, 1> d_b { rng };
+    ocl::Buffer<int> d_a { rng };
+    ocl::Buffer<int> d_b { rng };
     auto q = ocl::Queue::get_default();
     auto wr_evt1 = q.enqueue_iwrite(d_a, rng, h_a.data());
     auto wr_evt2 = q.enqueue_iwrite(d_b, rng, h_b.data());
@@ -203,7 +203,7 @@ TEST(QueueTest, fill_buffer_scalar)
 {
     const int N = 3;
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
     auto q = ocl::Queue::get_default();
     q.enqueue_fill_buffer(d_a, 1234, rng);
 
@@ -223,7 +223,7 @@ TEST(QueueTest, fill_buffer_pattern)
 
     const int N = 3;
     ocl::Range<1> rng { N };
-    ocl::Buffer<Pattern, 1> d_a { rng };
+    ocl::Buffer<Pattern> d_a { rng };
     auto q = ocl::Queue::get_default();
     ocl::Range<1> fill_rng { 2 };
     q.enqueue_fill_buffer(d_a, pattern, fill_rng);

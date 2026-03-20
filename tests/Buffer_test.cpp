@@ -8,7 +8,7 @@ namespace ocl = openclcpp_lite;
 
 TEST(BufferTest, ref_cnt)
 {
-    ocl::Buffer<float, 1> b_f { ocl::Range<1> { 10 } };
+    ocl::Buffer<float> b_f { ocl::Range<1> { 10 } };
 
     EXPECT_EQ(b_f.reference_count(), 1);
     b_f.retain();
@@ -20,7 +20,7 @@ TEST(BufferTest, ref_cnt)
 TEST(BufferTest, test)
 {
     auto ctx = ocl::Context::get_default();
-    ocl::Buffer<float, 1> b_f { ocl::Range<1> { 10 } };
+    ocl::Buffer<float> b_f { ocl::Range<1> { 10 } };
     EXPECT_EQ(b_f.context(), ctx);
     EXPECT_EQ(b_f.byte_size(), sizeof(float) * 10);
     EXPECT_EQ(b_f.map_count(), 0);

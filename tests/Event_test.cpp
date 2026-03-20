@@ -16,7 +16,7 @@ TEST(EventTest, wait_for_event)
     }
 
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
     auto q = ocl::Queue::get_default();
     auto wr_evt1 = q.enqueue_iwrite(d_a, rng, h_a.data());
     ocl::wait_for_event(wr_evt1);
@@ -35,8 +35,8 @@ TEST(EventTest, wait_for_events)
     }
 
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
-    ocl::Buffer<int, 1> d_b { rng };
+    ocl::Buffer<int> d_a { rng };
+    ocl::Buffer<int> d_b { rng };
 
     ocl::Queue q(ctx);
     auto wr_evt1 = q.enqueue_iwrite(d_a, rng, h_a.data());
@@ -54,7 +54,7 @@ TEST(EventTest, profiling_info)
     for (int i = 0; i < N; i++)
         h_a[i] = i;
     ocl::Range<1> rng { N };
-    ocl::Buffer<int, 1> d_a { rng };
+    ocl::Buffer<int> d_a { rng };
 
     ocl::Queue q(ctx, true);
     auto wr_evt = q.enqueue_iwrite(d_a, rng, h_a.data());

@@ -46,7 +46,7 @@ TEST(KernelFunctorTest, execute)
     }
 
     ocl::Range<1> rng { N };
-    using FloatBuffer = ocl::Buffer<float, 1>;
+    using FloatBuffer = ocl::Buffer<float>;
 
     FloatBuffer d_a { h_a.data(), rng };
     FloatBuffer d_b { h_b.data(), rng };
@@ -79,7 +79,7 @@ TEST(KernelFunctorTest, execute2)
         h_a[i] = i + 1;
 
     ocl::Range<1> rng { N };
-    using FloatBuffer = ocl::Buffer<cl_float, 1>;
+    using FloatBuffer = ocl::Buffer<cl_float>;
 
     FloatBuffer d_a { h_a.data(), rng };
     FloatBuffer d_c { rng };

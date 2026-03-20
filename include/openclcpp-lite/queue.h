@@ -86,7 +86,7 @@ public:
     /// @return Event object that identifies this particular kernel execution instance
     template <typename T, int D>
     Event
-    enqueue_iread(const Buffer<T, 1> & buffer,
+    enqueue_iread(const Buffer<T, D> & buffer,
                   const Range<D> & range,
                   void * ptr,
                   const std::vector<Event> & wait_list = std::vector<Event>()) const
